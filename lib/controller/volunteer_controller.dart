@@ -20,8 +20,7 @@ class VolunteerController extends GetxController {
   final api = Api();
 
   void addVolunteer() async {
-    api
-        .addVolunteer(Users(
+    api.addVolunteer(Users(
       admissionNo: admissionNoController.text,
       name: nameController.text,
       email: emailController.text,
@@ -34,12 +33,12 @@ class VolunteerController extends GetxController {
     ))
         .then(
       (value) {
-        if (value.status == true) {
+        if (value?.status??false == true) {
           Get.back();
           Get.snackbar(
-              'Success', value.message ?? 'Volunteer added successfully.');
+              'Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          Get.snackbar('Error', value.message ?? 'Failed to add volunteer.');
+          Get.snackbar('Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -57,13 +56,13 @@ class VolunteerController extends GetxController {
       'roll_number': rollNoController.text,
     }).then(
       (response) {
-        if (response.status == true) {
+        if (response?.status == true) {
           Get.back();
           Get.snackbar(
-              'Success', response.message ?? 'Volunteer updated successfully.');
+              'Success', response?.message ?? 'Volunteer updated successfully.');
         } else {
           Get.snackbar(
-              'Error', response.message ?? 'Failed to update volunteer.');
+              'Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
     );
@@ -72,13 +71,13 @@ class VolunteerController extends GetxController {
   void deleteVolunteer() async {
     api.deleteVolunteer(admissionNoController.text).then(
       (response) {
-        if (response.status == true) {
+        if (response?.status == true) {
           Get.back();
           Get.snackbar(
-              "Success", response.message ?? "Volunteer deleted successfully.");
+              "Success", response?.message ?? "Volunteer deleted successfully.");
         } else {
           Get.snackbar(
-              "Error", response.message ?? "Failed to delete volunteer.");
+              "Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
     );
@@ -152,9 +151,8 @@ class VolunteerListController extends GetxController {
     isLoading.value = true;
     Api().listVolunteer().then(
       (value) {
-        usersList.assignAll(value.data ?? []);
+        usersList.assignAll(value?.data ?? []);
         isLoading.value = false;
-        log(value.data.toString());
       },
     );
   }

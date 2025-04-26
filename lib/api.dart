@@ -12,7 +12,7 @@ class Api {
 
 //------------------Login---------------------------//
 
-  Future<LoginResponse> login(Map<String, dynamic> data) async {
+  Future<LoginResponse?> login(Map<String, dynamic> data) async {
     try {
       final response =
           await http.post(Uri.parse('$baseUrl/login/'), body: data);
@@ -25,31 +25,13 @@ class Api {
     } catch (e) {
       log('Error during login:$e');
 
-      return LoginResponse(
-        status: false,
-        message: 'An error occurred during login: ${e.toString()}',
-        data: Users(),
-      );
-    }
-  }
-
-//------------------Upcoming Programs---------------------------//
-
-  Future<ProgramResponse?> upcomingPrograms() async {
-    try {
-      final response =
-          await http.get(Uri.parse('$baseUrl/get_upcoming_programs/'));
-      final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return ProgramResponse.fromJson(responseAsJson);
-    } catch (e) {
-      log('Error fetching upcoming programs: $e');
       return null;
     }
   }
 
 //------------------List Volunteer---------------------------//
 
-  Future<VolunteerList> listVolunteer() async {
+  Future<VolunteerList?> listVolunteer() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/get_volunteers/'));
       log(response.body.toString());
@@ -58,11 +40,7 @@ class Api {
     } catch (e) {
       log('Error:$e');
 
-      return VolunteerList(
-        data: [],
-        status: false,
-        message: 'An error occurred: ${e.toString()}',
-      );
+      return null;
     }
   }
 
@@ -84,7 +62,7 @@ class Api {
 
 //------------------Add Volunteer---------------------------//
 
-  Future<GeneralResponse> addVolunteer(Users user) async {
+  Future<GeneralResponse?> addVolunteer(Users user) async {
     try {
       final response = await http.post(Uri.parse('$baseUrl/add_volunteer/'),
           body: user.toJson());
@@ -94,16 +72,13 @@ class Api {
     } catch (e) {
       log('Error:$e');
 
-      return GeneralResponse(
-        status: false,
-        message: 'An error occurred: ${e.toString()}',
-      );
+      return null;
     }
   }
 
 //------------------Update Volunteer---------------------------//
 
-  Future<GeneralResponse> updateVolunteer(Map<String, dynamic> data) async {
+  Future<GeneralResponse?> updateVolunteer(Map<String, dynamic> data) async {
     try {
       final response =
           await http.patch(Uri.parse('$baseUrl/update_volunteer/'), body: data);
@@ -113,34 +88,100 @@ class Api {
     } catch (e) {
       log('Error:$e');
 
-      return GeneralResponse(
-        status: false,
-        message: 'An error occurred: ${e.toString()}',
-      );
+      return null;
     }
   }
 
 //------------------Delete Volunteer---------------------------//
 
-  Future<GeneralResponse> deleteVolunteer(String id) async {
+  Future<GeneralResponse?> deleteVolunteer(String id) async {
     try {
       final response = await http.delete(
           Uri.parse('$baseUrl/delete_volunteer/'),
           body: {'admission_number': id});
-      if (response.statusCode == 200) {
-        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-        return GeneralResponse.fromJson(responseJson);
-      } else {
-        throw Exception(
-            'Failed to delete volunteer.Status code:${response.statusCode}');
-      }
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
 
-      return GeneralResponse(
-        status: false,
-        message: 'An error occurred: ${e.toString()}',
-      );
+      return null;
+    }
+  }
+
+//------------------Get All Programs---------------------------//
+
+  Future<ProgramResponse?> allPrograms() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/get_all_programs/'));
+      final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return ProgramResponse.fromJson(responseAsJson);
+    } catch (e) {
+      log('Error fetching programs: $e');
+      return null;
+    }
+  }
+
+//------------------Upcoming Programs---------------------------//
+
+  Future<ProgramResponse?> upcomingPrograms() async {
+    try {
+      final response =
+          await http.get(Uri.parse('$baseUrl/get_upcoming_programs/'));
+      final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return ProgramResponse.fromJson(responseAsJson);
+    } catch (e) {
+      log('Error fetching upcoming programs: $e');
+      return null;
+    }
+  }
+
+//------------------Add Program---------------------------//
+
+  Future<GeneralResponse?> addProgram(Program program) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/add_program/'),
+          body: program.toJson());
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+
+      return null;
+    }
+  }
+
+//------------------Update Program---------------------------//
+
+  Future<GeneralResponse?> updateProgram(Map<String, dynamic> data) async {
+    try {
+      final response =
+          await http.patch(Uri.parse('$baseUrl/update_program/'), body: data);
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+
+      return null;
+    }
+  }
+
+//------------------Delete Program---------------------------//
+
+  Future<GeneralResponse?> deleteProgram(int id) async {
+    try {
+      final response = await http
+          .delete(Uri.parse('$baseUrl/delete_program/'), body: {'id': id});
+    
+        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+        return GeneralResponse.fromJson(responseJson);
+     
+    } catch (e) {
+      log('Error:$e');
+
+      return null;
     }
   }
 }

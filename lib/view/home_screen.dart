@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/controller/home_controller.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/program/program_list_screen.dart';
 import 'package:nss/view/volunteers/volunteer_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -177,7 +177,7 @@ class HomeScreen extends StatelessWidget {
           Colors.teal.shade300
         ]));
         children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
-            () => Get.to(() => HomeScreen()), [
+            () => Get.to(() => ProgramsScreen()), [
           Theme.of(context).colorScheme.onErrorContainer,
           Theme.of(context).colorScheme.error
         ]));
@@ -197,7 +197,7 @@ class HomeScreen extends StatelessWidget {
 
       case 'po':
         children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
-            () => Get.to(() => HomeScreen()), [
+            () => Get.to(() => ProgramsScreen()), [
           Theme.of(context).colorScheme.onErrorContainer,
           Theme.of(context).colorScheme.error
         ]));

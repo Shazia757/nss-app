@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/controller/volunteer_controller.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/users_model.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/custom_decorations.dart';
 import 'package:nss/view/login_screen.dart';
