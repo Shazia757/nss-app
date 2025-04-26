@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/controller/home_controller.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/view/attendance/manage_attendance_screen.dart';
+import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/custom_decorations.dart';
 import 'package:nss/view/program/program_list_screen.dart';
 import 'package:nss/view/volunteers/volunteer_list_screen.dart';
@@ -170,12 +172,17 @@ class HomeScreen extends StatelessWidget {
 
     switch (LocalStorage().readUser().role) {
       case 'sec':
-        children.add(_menuCard("View Attendance", Icons.event, context,
-            () => Get.to(() => HomeScreen()), [
-          Colors.teal.shade900,
-          Colors.teal.shade600,
-          Colors.teal.shade300
-        ]));
+        children.add(_menuCard(
+            "View Attendance",
+            Icons.event,
+            context,
+            () => Get.to(() => ViewAttendanceScreen(
+                id: LocalStorage().readUser().admissionNo!)),
+            [
+              Colors.teal.shade900,
+              Colors.teal.shade600,
+              Colors.teal.shade300
+            ]));
         children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
             () => Get.to(() => ProgramsScreen()), [
           Theme.of(context).colorScheme.onErrorContainer,
@@ -188,7 +195,7 @@ class HomeScreen extends StatelessWidget {
           Colors.blue.shade300
         ]));
         children.add(_menuCard("Manage Attendance", Icons.edit_calendar,
-            context, () => Get.to(() => HomeScreen()), [
+            context, () => Get.to(() => ManageAttendanceScreen()), [
           Colors.green.shade900,
           Colors.green.shade600,
           Colors.green.shade300
@@ -208,7 +215,7 @@ class HomeScreen extends StatelessWidget {
           Colors.blue.shade300
         ]));
         children.add(_menuCard("Manage Attendance", Icons.edit_calendar,
-            context, () => Get.to(() => HomeScreen()), [
+            context, () => Get.to(() => ManageAttendanceScreen()), [
           Colors.green.shade900,
           Colors.green.shade600,
           Colors.green.shade300
@@ -216,14 +223,19 @@ class HomeScreen extends StatelessWidget {
         break;
 
       default:
-        children.add(_menuCard("View Attendance", Icons.event, context,
-            () => Get.to(() => HomeScreen()), [
-          Colors.teal.shade900,
-          Colors.teal.shade600,
-          Colors.teal.shade300
-        ]));
+        children.add(_menuCard(
+            "View Attendance",
+            Icons.event,
+            context,
+            () => Get.to(() => ViewAttendanceScreen(
+                id: LocalStorage().readUser().admissionNo!)),
+            [
+              Colors.teal.shade900,
+              Colors.teal.shade600,
+              Colors.teal.shade300
+            ]));
         children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
-            () => Get.to(() => HomeScreen()), [
+            () => Get.to(() => ProgramsScreen()), [
           Theme.of(context).colorScheme.onErrorContainer,
           Theme.of(context).colorScheme.error
         ]));

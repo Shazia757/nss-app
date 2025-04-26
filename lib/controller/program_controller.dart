@@ -14,7 +14,7 @@ class ProgramListController extends GetxController {
     super.onInit();
   }
 
-  void getPrograms() async {
+  void getPrograms() {
     isLoading.value = true;
     Api().allPrograms().then(
       (value) {

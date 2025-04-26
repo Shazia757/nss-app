@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
+import 'package:nss/model/attendance_model.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/users_model.dart';
 import 'package:nss/model/volunteer_model.dart';
@@ -24,7 +25,6 @@ class Api {
       }
     } catch (e) {
       log('Error during login:$e');
-
       return null;
     }
   }
@@ -39,7 +39,6 @@ class Api {
       return VolunteerList.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -56,8 +55,8 @@ class Api {
       return VolunteerDetailResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-    }
     return null;
+    }
   }
 
 //------------------Add Volunteer---------------------------//
@@ -71,7 +70,6 @@ class Api {
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -87,7 +85,6 @@ class Api {
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -104,7 +101,6 @@ class Api {
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -114,6 +110,19 @@ class Api {
   Future<ProgramResponse?> allPrograms() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/get_all_programs/'));
+      final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return ProgramResponse.fromJson(responseAsJson);
+    } catch (e) {
+      log('Error fetching programs: $e');
+      return null;
+    }
+  }
+
+//------------------Get Program Names---------------------------//
+
+  Future<ProgramResponse?> programNames() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/get_programs/'));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -147,7 +156,6 @@ class Api {
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -163,7 +171,6 @@ class Api {
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-
       return null;
     }
   }
@@ -174,13 +181,55 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse('$baseUrl/delete_program/'), body: {'id': id});
-    
-        final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-        return GeneralResponse.fromJson(responseJson);
-     
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
+      return null;
+    }
+  }
 
+  //------------------Get Attendance---------------------------//
+
+  Future<AttendanceResponse?> getAttendance(String admissionNo) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/get_attendance/'),
+          body: {'admission_number': admissionNo});
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return AttendanceResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+
+  //------------------Add Attendance---------------------------//
+
+  Future<GeneralResponse?> addAttendance(Attendance attendance) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/add_attendance/'),
+          body: attendance.toJson());
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+
+  //------------------Delete Attendance---------------------------//
+
+  Future<GeneralResponse?> deleteAttendance(int id) async {
+    try {
+      final response = await http
+          .delete(Uri.parse('$baseUrl/delete_attendance/'), body: {'id': id});
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
       return null;
     }
   }
