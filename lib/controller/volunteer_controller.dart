@@ -18,7 +18,8 @@ class VolunteerController extends GetxController {
   final api = Api();
 
   void addVolunteer() async {
-    api.addVolunteer(Users(
+    api
+        .addVolunteer(Users(
       admissionNo: admissionNoController.text,
       name: nameController.text,
       email: emailController.text,
@@ -31,7 +32,7 @@ class VolunteerController extends GetxController {
     ))
         .then(
       (value) {
-        if (value?.status??false == true) {
+        if (value?.status ?? false == true) {
           Get.back();
           Get.snackbar(
               'Success', value?.message ?? 'Volunteer added successfully.');
@@ -56,8 +57,8 @@ class VolunteerController extends GetxController {
       (response) {
         if (response?.status == true) {
           Get.back();
-          Get.snackbar(
-              'Success', response?.message ?? 'Volunteer updated successfully.');
+          Get.snackbar('Success',
+              response?.message ?? 'Volunteer updated successfully.');
         } else {
           Get.snackbar(
               'Error', response?.message ?? 'Failed to update volunteer.');
@@ -71,8 +72,8 @@ class VolunteerController extends GetxController {
       (response) {
         if (response?.status == true) {
           Get.back();
-          Get.snackbar(
-              "Success", response?.message ?? "Volunteer deleted successfully.");
+          Get.snackbar("Success",
+              response?.message ?? "Volunteer deleted successfully.");
         } else {
           Get.snackbar(
               "Error", response?.message ?? "Failed to delete volunteer.");
@@ -158,7 +159,7 @@ class VolunteerListController extends GetxController {
   void updateVolunteer(String? admissionNo) {
     Api().volunteerDetails(admissionNo!).then(
       (value) {
-        Get.to(ProfileScreen(
+        Get.to(VolunteerAddScreen(
           isUpdateScreen: true,
           user: value!.volunteerDetails,
         ));

@@ -14,7 +14,7 @@ class VolunteersListScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(() => ProfileScreen(isUpdateScreen: false))
+          Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
               ?.then((value) => c.getData());
         },
         child: Icon(Icons.add),

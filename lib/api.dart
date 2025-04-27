@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:nss/model/attendance_model.dart';
+import 'package:nss/model/issues_model.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/users_model.dart';
 import 'package:nss/model/volunteer_model.dart';
@@ -17,14 +18,25 @@ class Api {
     try {
       final response =
           await http.post(Uri.parse('$baseUrl/login/'), body: data);
-      if (response.statusCode == 200) {
         final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
         return LoginResponse.fromJson(responseJson);
-      } else {
-        throw Exception('Failed to login.Status code:${response.statusCode}');
-      }
     } catch (e) {
       log('Error during login:$e');
+      return null;
+    }
+  }
+
+  //------------------Change Password---------------------------//
+
+  Future<GeneralResponse?> changePassword(Map<String, dynamic> data) async {
+    try {
+      final response =
+          await http.patch(Uri.parse('$baseUrl/change_password/'), body:data);
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
       return null;
     }
   }
@@ -55,7 +67,7 @@ class Api {
       return VolunteerDetailResponse.fromJson(responseJson);
     } catch (e) {
       log('Error:$e');
-    return null;
+      return null;
     }
   }
 
@@ -226,6 +238,52 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse('$baseUrl/delete_attendance/'), body: {'id': id});
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+
+  //------------------Get Admin Issues ---------------------------//
+
+  Future<IssueResponse?> getAdminIssues(String role) async {
+    try {
+      final response = await http
+          .post(Uri.parse('$baseUrl/get_issue_by_role/'), body: {'role': role});
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      
+      return IssueResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+  //------------------Get Volunteer Issues ---------------------------//
+
+  Future<IssueResponse?> getVolIssues(String admissionNo) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/get_issue_by_user/'),
+          body: {'admission_number': admissionNo});
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      
+      return IssueResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+
+  //------------------Add Issue---------------------------//
+
+  Future<GeneralResponse?> addIssue(Issues issues) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/add_attendance/'),
+          body: issues.toJson());
+
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {

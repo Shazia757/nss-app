@@ -6,7 +6,9 @@ import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/manage_attendance_screen.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/program/program_list_screen.dart';
+import 'package:nss/view/volunteers/profile_screen.dart';
 import 'package:nss/view/volunteers/volunteer_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,14 +24,14 @@ class HomeScreen extends StatelessWidget {
         actions: [
           if (MediaQuery.of(context).size.width > 800) ...[
             TextButton(
-              onPressed: () {},
+              onPressed: () => Get.to(() => ScreenIssues()),
               child: Text("Issues"),
               //  icon: Icon(Icons.bug_report_outlined),
             ),
             TextButton(
               child: Text("Profile"),
 
-              onPressed: () => {},
+              onPressed: () => Get.to(() => VolunteerAddScreen()),
               //   icon: Icon(Icons.person_2_outlined),
             ),
           ],

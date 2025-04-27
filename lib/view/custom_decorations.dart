@@ -3,6 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/view/home_screen.dart';
+import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
 typedef StringValueOf<T> = String Function(T item);
@@ -190,7 +191,7 @@ String formatKey(String key) {
 class CustomNavBar extends StatelessWidget {
   CustomNavBar({super.key, required this.currentIndex});
   final int currentIndex;
-  final pages = [HomeScreen(), HomeScreen(), ProfileScreen()];
+  final pages = [HomeScreen(), ScreenIssues(), VolunteerAddScreen()];
 
   @override
   Widget build(BuildContext context) {

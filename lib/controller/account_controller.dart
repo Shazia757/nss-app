@@ -21,8 +21,8 @@ class AccountController extends GetxController {
   @override
   onInit() {
     if (kDebugMode) {
-      userNameController.text = 'sec@fc';
-      passwordController.text = '0000';
+      userNameController.text = '2769';
+      passwordController.text = '1111';
     }
 
     super.onInit();
@@ -44,7 +44,7 @@ class AccountController extends GetxController {
     api.login({'admission_number': userName, 'password': password}).then(
       (response) async {
         if (response?.status == true && response?.data.admissionNo != null) {
-          await LocalStorage().writeUser(response?.data??Users());
+          await LocalStorage().writeUser(response?.data ?? Users());
           Get.snackbar('Welcome', '${response?.data.name}');
           Get.offAll(() => HomeScreen());
         } else {
@@ -55,5 +55,21 @@ class AccountController extends GetxController {
         isLoading.value = false;
       },
     );
+  }
+
+  Future<void> changePassword(String id) async {
+    if ((newPassController.text.trim().isEmpty)) {
+      Get.snackbar('Invalid', 'Please enter password.');
+    } else if (confirmPassController.text.trim().isEmpty) {
+      Get.snackbar('Invalid', 'Confirm password is empty.');
+    } else {
+      if (newPassController.text == confirmPassController.text) {
+        api.changePassword({
+          'admission_number': id,
+          'old_password': newPassController.text,
+          'new_password': confirmPassController.text
+        });
+      }
+    }
   }
 }
