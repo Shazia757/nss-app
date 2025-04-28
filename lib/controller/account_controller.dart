@@ -58,6 +58,7 @@ class AccountController extends GetxController {
   }
 
   Future<void> changePassword(String id) async {
+    isLoading.value = true;
     if ((newPassController.text.trim().isEmpty)) {
       Get.snackbar('Invalid', 'Please enter password.');
     } else if (confirmPassController.text.trim().isEmpty) {
@@ -66,26 +67,60 @@ class AccountController extends GetxController {
       if (newPassController.text == confirmPassController.text) {
         api.changePassword({
           'admission_number': id,
-          'old_password': newPassController.text,
+          'old_password': passwordController.text,
           'new_password': confirmPassController.text
-        });
+        }).then(
+          (value) {
+            isLoading.value = false;
+            if (value?.status == true) {
+              passwordController.clear();
+              newPassController.clear();
+              confirmPassController.clear();
+              Get.back();
+              Get.snackbar('Success', value?.message ?? 'Password Changed.');
+            } else {
+              Get.snackbar('Error', value?.message ?? 'Password not changed.');
+            }
+          },
+        );
+      } else {
+        Get.snackbar('Invalid', 'Passwords do not match');
       }
     }
   }
 
-  ///isupdatescreen
   Future<void> resetPassword(String id) async {
-    if ((newPassController.text.trim().isEmpty)) {
+    isLoading.value = true;
+    if ((passwordController.text.trim().isEmpty)) {
       Get.snackbar('Invalid', 'Please enter password.');
-    } else if (confirmPassController.text.trim().isEmpty) {
-      Get.snackbar('Invalid', 'Confirm password is empty.');
-    } else {
-      if (newPassController.text == confirmPassController.text) {
-        api.changePassword({
-          'admission_number': id,
-          'old_password': newPassController.text,
-          'new_password': confirmPassController.text
-        });
+      if ((newPassController.text.trim().isEmpty)) {
+        Get.snackbar('Invalid', 'Please enter password.');
+      } else if (confirmPassController.text.trim().isEmpty) {
+        Get.snackbar('Invalid', 'Confirm password is empty.');
+      } else {
+        if (newPassController.text == confirmPassController.text) {
+          api.resetPassword({
+            'admission_number': id,
+            'old_password': passwordController.text,
+            'new_password': confirmPassController.text
+          }).then(
+            (value) {
+              isLoading.value = false;
+              if (value?.status == true) {
+                passwordController.clear();
+                newPassController.clear();
+                confirmPassController.clear();
+                Get.back();
+                Get.snackbar('Success', value?.message ?? 'Password Changed.');
+              } else {
+                Get.snackbar(
+                    'Error', value?.message ?? 'Password not changed.');
+              }
+            },
+          );
+        } else {
+          Get.snackbar('Invalid', 'Passwords do not match');
+        }
       }
     }
   }

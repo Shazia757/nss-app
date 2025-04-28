@@ -31,7 +31,22 @@ class Api {
 
   Future<GeneralResponse?> changePassword(Map<String, dynamic> data) async {
     try {
-      final response = await http.patch(Uri.parse('$baseUrl/change_password/'),
+      log("request :${jsonEncode(data)}");
+      final response = await http.post(Uri.parse('$baseUrl/change_password/'),
+          body: jsonEncode(data), headers: headers);
+      log(response.body);
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Error:$e');
+      return null;
+    }
+  }
+  //------------------Reset Password---------------------------//
+
+  Future<GeneralResponse?> resetPassword(Map<String, dynamic> data) async {
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/reset_password/'),
           body: jsonEncode(data), headers: headers);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
