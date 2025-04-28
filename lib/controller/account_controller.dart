@@ -21,8 +21,8 @@ class AccountController extends GetxController {
   @override
   onInit() {
     if (kDebugMode) {
-      userNameController.text = '2769';
-      passwordController.text = '1111';
+      userNameController.text = 'sec@fc';
+      passwordController.text = '0000';
     }
 
     super.onInit();
@@ -58,6 +58,23 @@ class AccountController extends GetxController {
   }
 
   Future<void> changePassword(String id) async {
+    if ((newPassController.text.trim().isEmpty)) {
+      Get.snackbar('Invalid', 'Please enter password.');
+    } else if (confirmPassController.text.trim().isEmpty) {
+      Get.snackbar('Invalid', 'Confirm password is empty.');
+    } else {
+      if (newPassController.text == confirmPassController.text) {
+        api.changePassword({
+          'admission_number': id,
+          'old_password': newPassController.text,
+          'new_password': confirmPassController.text
+        });
+      }
+    }
+  }
+
+  ///isupdatescreen
+  Future<void> resetPassword(String id) async {
     if ((newPassController.text.trim().isEmpty)) {
       Get.snackbar('Invalid', 'Please enter password.');
     } else if (confirmPassController.text.trim().isEmpty) {

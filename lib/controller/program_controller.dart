@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/view/program/program_list_screen.dart';
 import '../model/programs_model.dart';
 
 class ProgramListController extends GetxController {
@@ -30,21 +31,27 @@ class AddProgramController extends GetxController {
   TextEditingController dateController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController durationController = TextEditingController();
+  var isUpdateButtonLoading = false.obs;
+  var isDeleteButtonLoading = false.obs;
 
   DateTime? date;
+
   addProgram() {
+    isUpdateButtonLoading.value = true;
     Api()
         .addProgram(Program(
             name: nameController.text,
             date: date,
             duration: int.tryParse(durationController.text),
-            createdBy: LocalStorage().readUser().admissionNo))
+            createdBy: LocalStorage().readUser().admissionNo,
+            description: descController.text))
         .then(
       (value) {
-        if (value?.status ?? false == true) {
+        isUpdateButtonLoading.value = false;
+        if (value?.status == true) {
+          Get.back();
           Get.snackbar(
               "Success", value?.message ?? "Program added successfully");
-          Get.back();
         } else {
           Get.snackbar("Error", value?.message ?? 'Failed to add program.');
         }
@@ -53,14 +60,17 @@ class AddProgramController extends GetxController {
   }
 
   updateProgram(int id) {
+    isUpdateButtonLoading.value = true;
     Api().updateProgram({
       'name': nameController.text,
-      'date': date,
-      'duration': int.tryParse(durationController.text),
+      'date': date.toString(),
+      'duration': durationController.text,
       'updated_by': LocalStorage().readUser().admissionNo,
-      'id': id
+      'id': id.toString(),
+      'description': descController.text
     }).then(
       (value) {
+        isUpdateButtonLoading.value = false;
         if (value?.status == true) {
           Get.back();
           Get.snackbar(
@@ -73,12 +83,15 @@ class AddProgramController extends GetxController {
   }
 
   deleteProgram(int id) {
+    isDeleteButtonLoading.value = true;
     Api().deleteProgram(id).then(
       (value) {
         if (value?.status == true) {
-          Get.back();
+    isDeleteButtonLoading.value = false;
+
           Get.snackbar(
               "Success", value?.message ?? "Program deleted successfully.");
+          Get.to(() => ProgramsScreen());
         } else {
           Get.snackbar("Error", value?.message ?? 'Failed to delete program.');
         }

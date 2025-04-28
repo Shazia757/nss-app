@@ -1,19 +1,16 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nss/api.dart';
+import 'package:nss/authentication/change_password_screen.dart';
 import 'package:nss/controller/volunteer_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/custom_decorations.dart';
-import 'package:nss/view/login_screen.dart';
+import 'package:nss/authentication/login_screen.dart';
 
 class VolunteerAddScreen extends StatelessWidget {
   const VolunteerAddScreen({super.key, this.isUpdateScreen, this.user});
   final bool? isUpdateScreen;
   final Users? user;
-
   @override
   Widget build(BuildContext context) {
     final isProfilePage = (isUpdateScreen == null);
@@ -150,17 +147,29 @@ class VolunteerAddScreen extends StatelessWidget {
                 ),
               ),
             SizedBox(height: 15),
-            if (isUpdateScreen == true || isProfilePage)
+            if (isProfilePage)
               _buildActionButton(
                 context: context,
                 text: "Change Password",
                 icon: Icons.password,
                 color: Theme.of(context).primaryColor,
                 onPressed: () {
-                  // Get.to(() => ChangePasswordScreen(
-                  //     userId: c.admissionNoController.text));
+                  Get.to(() => ChangePasswordScreen(
+                      isChangepassword: true,
+                      userId: c.admissionNoController.text));
                 },
               )
+            else if (isUpdateScreen == true)
+              _buildActionButton(
+                  context: context,
+                  text: "Reset Password",
+                  icon: Icons.password,
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () {
+                    Get.to(() => ChangePasswordScreen(
+                        isChangepassword: false,
+                        userId: c.admissionNoController.text));
+                  })
           ],
         ),
       ),

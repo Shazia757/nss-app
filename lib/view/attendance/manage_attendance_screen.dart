@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,7 +19,7 @@ class ManageAttendanceScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Obx(
-        () => c.isLoading.isTrue
+        () => c.isProgramLoading.isTrue
             ? SizedBox()
             : FloatingActionButton(
                 onPressed: () => addAttendanceBottomSheet(context, c),
@@ -38,7 +40,9 @@ class ManageAttendanceScreen extends StatelessWidget {
               ),
             );
           }
+
           return ListView.separated(
+            shrinkWrap: true,
             itemCount: c.usersList.length,
             itemBuilder: (context, index) => Obx(() => CheckboxListTile(
                   value: c.selectedVolList
@@ -72,21 +76,16 @@ class ManageAttendanceScreen extends StatelessWidget {
     return showModalBottomSheet(
       showDragHandle: true,
       context: context,
+      isScrollControlled: true,
       builder: (context) => ListView(
         padding: EdgeInsets.all(10),
         children: [
-          Obx(
-            () => DropdownButton(
-              onChanged: (value) => c.programName.value = value ?? 'N/A',
-              value: c.programName.value,
-              icon: Icon(Icons.event),
-              hint: Text('Program Name'),
-              items: [
-                ...c.programsList.map((element) => DropdownMenuItem(
-                    value: element.name, child: Text(element.name ?? 'N/A')))
-              ],
-            ),
-          ),
+          CustomWidgets.searchableDropDown(
+              controller: c.programNameController,
+              label: "Program Name",
+              onSelected: (po) => c.programNameController.text = po,
+              selectionList: c.programsList,
+              stringValueOf: (item) => item),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Row(
@@ -144,7 +143,7 @@ class ManageAttendanceScreen extends StatelessWidget {
                                       actions: [
                                         TextButton(
                                           onPressed: () => c.onSubmitAttendance(
-                                              Attendance().admissionNo!),
+                                              Attendance().admissionNo !),
                                           child: Text('OK'),
                                         ),
                                       ],

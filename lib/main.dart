@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nss/config/color_schemes.dart';
-import 'view/login_screen.dart';
+import 'authentication/login_screen.dart';
 import 'config/text_theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 

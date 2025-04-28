@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
-import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/volunteer_model.dart';
 import '../view/home_screen.dart';
 
@@ -16,9 +15,10 @@ class AttendanceController extends GetxController {
   RxList<Volunteer> usersList = <Volunteer>[].obs;
   RxList<String> selectedVolList = <String>[].obs;
   RxList<Attendance> attendanceList = <Attendance>[].obs;
-  RxList<Program> programsList = <Program>[].obs;
+  RxList<String> programsList = <String>[].obs;
   RxString programName = ''.obs;
   RxBool isLoading = true.obs;
+  RxBool isProgramLoading = true.obs;
   RxString totalHours = '0'.obs;
   RxString totalPrograms = '0'.obs;
 
@@ -33,11 +33,12 @@ class AttendanceController extends GetxController {
   }
 
   void getPrograms() {
-    isLoading.value = true;
+    isProgramLoading.value = true;
     Api().programNames().then(
       (value) {
-        programsList.assignAll(value?.programs ?? []);
-        isLoading.value = false;
+        value?.programs?.toSet();
+        programsList.assignAll(value?.programs?.toSet() ?? []);
+        isProgramLoading.value = false;
       },
     );
   }

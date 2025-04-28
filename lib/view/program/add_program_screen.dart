@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,8 +21,13 @@ class AddProgramScreen extends StatelessWidget {
       c.nameController.text = program?.name ?? '';
       c.descController.text = program?.description ?? '';
       c.date = program?.date;
-      c.dateController.text = DateFormat.yMMMd().format(program!.date!);
-      c.durationController.text = (program?.duration ?? 0).toString();
+      log(c.date.toString());
+      c.dateController.text = (program?.date) != null
+          ? DateFormat.yMMMd().format(program!.date!)
+          : '';
+      c.durationController.text = (program?.duration) != null
+          ? (program?.duration ?? 0).toString()
+          : '';
     }
     return Scaffold(
       appBar: AppBar(
@@ -47,6 +54,7 @@ class AddProgramScreen extends StatelessWidget {
                     readOnly: true,
                     onTap: () async {
                       final selectedDate = await showDatePicker(
+                          initialDate: c.date,
                           context: context,
                           firstDate:
                               DateTime.now().subtract(Duration(days: 30)),
@@ -56,6 +64,7 @@ class AddProgramScreen extends StatelessWidget {
                           ? DateFormat.yMMMd().format(selectedDate)
                           : "";
                       c.date = selectedDate;
+                      log(c.date.toString());
                     },
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: "Date"),
@@ -88,24 +97,40 @@ class AddProgramScreen extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            FilledButton(
-              onPressed: () => c.onSubmitProgramValidation()
-                  ? isUpdate
-                      ? c.updateProgram(program!.id!)
-                      : c.addProgram()
-                  : () {},
-              child: Text(isUpdate ? "Update" : "Add"),
+            Obx(
+              () => c.isUpdateButtonLoading.value
+                  ? Center(child: CircularProgressIndicator())
+                  : AbsorbPointer(
+                      absorbing: c.isUpdateButtonLoading.value ||
+                          c.isDeleteButtonLoading.value,
+                      child: FilledButton(
+                        onPressed: () => c.onSubmitProgramValidation()
+                            ? isUpdate
+                                ? c.updateProgram(program!.id!)
+                                : c.addProgram()
+                            : () {},
+                        child: Text(isUpdate ? "Update" : "Add"),
+                      ),
+                    ),
             ),
             SizedBox(
               height: 15,
             ),
             isUpdate
-                ? FilledButton(
-                    onPressed: () => c.deleteProgram(program!.id!),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.red.shade900,
+                ? Obx(
+                    () => AbsorbPointer(
+                      absorbing: c.isDeleteButtonLoading.value ||
+                          c.isUpdateButtonLoading.value,
+                      child: FilledButton(
+                        onPressed: () => c.deleteProgram(program!.id!),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.red.shade900,
+                        ),
+                        child: c.isDeleteButtonLoading.isTrue
+                            ? Center(child: CircularProgressIndicator())
+                            : Text("Delete"),
+                      ),
                     ),
-                    child: Text("Delete"),
                   )
                 : SizedBox(),
           ],

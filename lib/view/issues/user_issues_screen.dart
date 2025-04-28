@@ -80,17 +80,6 @@ class ScreenUserIssues extends StatelessWidget {
         ),
         Expanded(
           child: Obx(() {
-            // if (c.isLoading.value) {
-            //   return Center(
-            //     child: CircularProgressIndicator(
-            //       color: theme.primaryColor,
-            //     ),
-            //   );
-            // } else if (c.openedList.isEmpty) {
-            //   return Center(
-            //     child: Text("No issues reported"),
-            //   );
-            // }
             return TabBarView(children: [
               RefreshIndicator.adaptive(
                   onRefresh: () async => c.getVolIssues(),

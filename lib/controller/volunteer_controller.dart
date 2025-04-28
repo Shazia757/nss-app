@@ -25,7 +25,7 @@ class VolunteerController extends GetxController {
       email: emailController.text,
       createdBy: LocalStorage().readUser().admissionNo,
       phoneNo: phoneController.text,
-      dob: DateTime.parse(dobController.text),
+      dob:  DateTime.parse(dobController.text),
       department: depController.text,
       role: 'vol',
       rollNo: rollNoController.text,

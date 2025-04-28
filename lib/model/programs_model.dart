@@ -20,7 +20,7 @@ class Program {
       id: json['id'] as int?,
       name: json['name'] as String?,
       description: json['description'] as String?,
-      date: json['date'] != null ? DateTime.tryParse(json['date']) : null,
+      date: DateTime.tryParse(json['date']),
       duration: json['duration'] as int?,
       createdBy: json['created_by'] as String?,
     );
@@ -31,13 +31,12 @@ class Program {
       'id': id,
       'name': name,
       'description': description,
-      'date': date?.toIso8601String(),
-      'duration': duration,
+      'date': date.toString(),
+      'duration': duration.toString(),
       'created_by': createdBy,
     };
   }
 }
-
 
 class ProgramResponse {
   bool? status;
@@ -49,7 +48,6 @@ class ProgramResponse {
     this.message,
     this.programs,
   });
-
   factory ProgramResponse.fromJson(Map<String, dynamic> json) {
     return ProgramResponse(
       status: json['status'] as bool?,
@@ -65,6 +63,36 @@ class ProgramResponse {
       'status': status,
       'message': message,
       'programs': programs?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class ProgramNameResponse {
+  bool? status;
+  String? message;
+  List<String>? programs;
+
+  ProgramNameResponse({
+    this.status,
+    this.message,
+    this.programs,
+  });
+
+  factory ProgramNameResponse.fromJson(Map<String, dynamic> json) {
+    return ProgramNameResponse(
+      status: json['status'] as bool?,
+      message: json['message'] as String?,
+      programs: (json['programs'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'message': message,
+      'programs': programs,
     };
   }
 }
