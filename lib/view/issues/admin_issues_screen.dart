@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +21,10 @@ class ScreenAdminIssues extends StatelessWidget {
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+              onPressed: () => c.getAdminIssues(), icon: Icon(Icons.refresh))
+        ],
       ),
       bottomNavigationBar: CustomNavBar(currentIndex: 1),
       body: SafeArea(
@@ -130,7 +136,7 @@ class ScreenAdminIssues extends StatelessWidget {
           child: Text("To: $to", style: TextStyle(color: Colors.grey[700])),
         ),
         trailing: Text(
-          DateFormat.yMMMd().format(data.createdDate??DateTime.now()),
+          DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
         ),
         onTap: () {
           Get.defaultDialog(
@@ -144,7 +150,7 @@ class ScreenAdminIssues extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff5f5791)),
                       onPressed: () {
-                        c.resolveIssue();
+                        c.resolveIssue(data.id);
                         Get.back();
                       },
                       child: Text("Resolve",

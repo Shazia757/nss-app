@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/issues_model.dart';
+import 'package:nss/view/home_screen.dart';
 
 class IssuesController extends GetxController with GetTickerProviderStateMixin {
   final TextEditingController subjectController = TextEditingController();
@@ -30,6 +31,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     isLoading.value = true;
     Api().getAdminIssues(LocalStorage().readUser().role!).then(
       (value) {
+        log((value?.openIssues).toString());
         openedList.assignAll(value?.openIssues ?? []);
         closedList.assignAll(value?.closedIssues ?? []);
         isLoading.value = false;
@@ -41,7 +43,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
 
   void getVolIssues() {
     isLoading.value = true;
-    Api().getVolIssues(LocalStorage().readUser().role!).then(
+    Api().getVolIssues(LocalStorage().readUser().admissionNo!).then(
       (value) {
         openedList.assignAll(value?.openIssues ?? []);
         closedList.assignAll(value?.closedIssues ?? []);
@@ -53,21 +55,21 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void reportIssue() {
-    Api()
-        .addIssue(Issues(
-      subject: subjectController.text,
-      description: desController.text,
-      to: toController.text,
-      createdBy: LocalStorage().readUser().admissionNo,
-    ))
-        .then(
+    isLoading.value = true;
+    Api().addIssue({
+      'subject': subjectController.text,
+      'description': desController.text,
+      'assigned_to': submittedTo.value,
+      'created_by': (LocalStorage().readUser().admissionNo).toString(),
+      'updated_by': (LocalStorage().readUser().admissionNo).toString()
+    }).then(
       (value) {
-        if (value?.status ?? false == true) {
+        isLoading.value = false;
+        if (value?.status ?? false) {
           subjectController.clear();
           desController.clear();
           Get.snackbar(
               "Success", value?.message ?? "Issue reported successfully");
-          Get.back();
         } else {
           Get.snackbar("Error", value?.message ?? 'Failed to report issue.');
         }
@@ -75,8 +77,19 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     );
   }
 
-  void resolveIssue() {
-    Api().addIssue(Issues(isOpen: false));
+  void resolveIssue(int? id) {
+    Api().resolveIssue(
+        {'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
+      (value) {
+        if (value?.status ?? false) {
+          Get.back();
+          Get.snackbar(
+              "Success", value?.message ?? "Issue resolved successfully.");
+        } else {
+          Get.snackbar('Error', value?.message ?? 'Failed to resolve issue.');
+        }
+      },
+    );
   }
 
   bool onSubmitIssueValidation() {

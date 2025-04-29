@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nss/view/custom_decorations.dart';
 import '../../controller/program_controller.dart';
 import '../../model/programs_model.dart';
 
@@ -106,8 +107,20 @@ class AddProgramScreen extends StatelessWidget {
                       child: FilledButton(
                         onPressed: () => c.onSubmitProgramValidation()
                             ? isUpdate
-                                ? c.updateProgram(program!.id!)
-                                : c.addProgram()
+                                ? CustomWidgets().showConfirmationDialog(
+                                    title: "Update Program",
+                                    message:
+                                        "Are you sure you want to update the program?",
+                                    onConfirm: () {
+                                      c.updateProgram(program!.id!);
+                                    })
+                                : CustomWidgets().showConfirmationDialog(
+                                    title: "Add Program",
+                                    message:
+                                        "Are you sure you want to add the program?",
+                                    onConfirm: () {
+                                      c.addProgram();
+                                    })
                             : () {},
                         child: Text(isUpdate ? "Update" : "Add"),
                       ),

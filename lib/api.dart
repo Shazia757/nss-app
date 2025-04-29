@@ -22,7 +22,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return LoginResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error during login:$e');
+      log('Api error during login:$e');
       return null;
     }
   }
@@ -38,7 +38,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -52,7 +52,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -66,7 +66,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       // jsonEncode(object)
       return null;
     }
@@ -84,7 +84,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerDetailResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -93,13 +93,17 @@ class Api {
 
   Future<GeneralResponse?> addVolunteer(Users user) async {
     try {
+      log("request :${jsonEncode(user.toJson())}");
+
       final response = await http.post(Uri.parse('$baseUrl/add_volunteer/'),
           body: jsonEncode(user.toJson()), headers: headers);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      log(response.body);
+
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -108,13 +112,14 @@ class Api {
 
   Future<GeneralResponse?> updateVolunteer(Map<String, dynamic> data) async {
     try {
+      log("request :${jsonEncode(data)}");
       final response = await http.patch(Uri.parse('$baseUrl/update_volunteer/'),
           body: jsonEncode(data), headers: headers);
-
+      log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -131,7 +136,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -144,7 +149,7 @@ class Api {
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
-      log('Error fetching programs: $e');
+      log('Api error fetching programs: $e');
       return null;
     }
   }
@@ -157,7 +162,7 @@ class Api {
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramNameResponse.fromJson(responseAsJson);
     } catch (e) {
-      log('Error fetching programs: $e');
+      log('Api error fetching programs: $e');
       return null;
     }
   }
@@ -171,7 +176,7 @@ class Api {
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
-      log('Error fetching upcoming programs: $e');
+      log('Api error fetching upcoming programs: $e');
       return null;
     }
   }
@@ -193,7 +198,7 @@ class Api {
 
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -213,7 +218,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -228,7 +233,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -242,24 +247,29 @@ class Api {
           headers: headers);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return AttendanceResponse.fromJson(responseJson);
+      log("json resp:$responseJson");
+      final returnValue = AttendanceResponse.fromJson(responseJson);
+      log(returnValue.message ?? "Null msg");
+      return returnValue;
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
 
   //------------------Add Attendance---------------------------//
 
-  Future<GeneralResponse?> addAttendance(Attendance attendance) async {
+  Future<GeneralResponse?> addAttendance(Map<String, dynamic> data) async {
     try {
+      log("request :$data");
+      log('data: ${(data.toString())}');
       final response = await http.post(Uri.parse('$baseUrl/add_attendance/'),
-          body: jsonEncode(attendance.toJson()), headers: headers);
-
+          body: jsonEncode(data), headers: headers);
+      log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -275,7 +285,7 @@ class Api {
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -286,12 +296,12 @@ class Api {
     try {
       final response = await http.post(Uri.parse('$baseUrl/get_issue_by_role/'),
           body: jsonEncode({'role': role}), headers: headers);
-
+      log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
       return IssueResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
@@ -307,22 +317,37 @@ class Api {
 
       return IssueResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
       return null;
     }
   }
 
   //------------------Add Issue---------------------------//
 
-  Future<GeneralResponse?> addIssue(Issues issues) async {
+  Future<GeneralResponse?> addIssue(Map<String, dynamic> data) async {
     try {
-      final response = await http.post(Uri.parse('$baseUrl/add_attendance/'),
-          body: jsonEncode(issues.toJson()), headers: headers);
+      final response = await http.post(Uri.parse('$baseUrl/add_issue/'),
+          body: jsonEncode(data), headers: headers);
+      log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
-      log('Error:$e');
+      log('Api error:$e');
+      return null;
+    }
+  }
+  //------------------Resolve Issue---------------------------//
+
+  Future<GeneralResponse?> resolveIssue(Map<String, dynamic> data) async {
+    try {
+      final response = await http.patch(Uri.parse('$baseUrl/resolve_issue/'),
+          body: jsonEncode(data), headers: headers);
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      log('Api error:$e');
       return null;
     }
   }

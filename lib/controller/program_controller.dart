@@ -43,7 +43,7 @@ class AddProgramController extends GetxController {
             name: nameController.text,
             date: date,
             duration: int.tryParse(durationController.text),
-            createdBy: LocalStorage().readUser().admissionNo,
+            createdBy: (LocalStorage().readUser().admissionNo).toString(),
             description: descController.text))
         .then(
       (value) {

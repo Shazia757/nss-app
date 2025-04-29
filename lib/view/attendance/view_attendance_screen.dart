@@ -12,8 +12,7 @@ class ViewAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AttendanceController c = Get.put(AttendanceController());
-
-    c.getAttendance(id);
+    c.getAttendance(LocalStorage().readUser().admissionNo!);
     return Scaffold(
         appBar: AppBar(
           title: const Text('View Attendance'),
@@ -53,8 +52,8 @@ class ViewAttendanceScreen extends StatelessWidget {
               }
               return Table(
                 columnWidths: {
-                  0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.16),
-                  1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.35),
+                  0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.10),
+                  1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.22),
                   2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.10),
                   if (LocalStorage().readUser().role != 'vol')
                     3: FixedColumnWidth(
@@ -74,14 +73,7 @@ class ViewAttendanceScreen extends StatelessWidget {
                     ],
                   ),
                   ...c.attendanceList.map(
-                    (e) => _buildDataRow(data: e, c: c
-                        // date: e.date != null
-                        //     ? DateFormat.yMMMd().format(e.date!)
-                        //     : "N/A",
-                        // program: e.programName ?? " ",
-                        // hours: e.hours != null ? e.hours.toString() : "N/A",
-                        // id: e.id!,
-                        ),
+                    (e) => _buildDataRow(c: c, data: e),
                   ),
                 ],
               );

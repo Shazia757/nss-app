@@ -20,10 +20,12 @@ class VolunteersListScreen extends StatelessWidget {
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: Text("Volunteers List"),
-        backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-      ),
+          title: Text("Volunteers List"),
+          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          foregroundColor: Theme.of(context).colorScheme.primaryContainer,
+          actions: [
+            IconButton(onPressed: () => c.getData(), icon: Icon(Icons.refresh))
+          ]),
       body: SafeArea(child: Obx(
         () {
           if (c.isLoading.value) {
@@ -44,12 +46,13 @@ class VolunteersListScreen extends StatelessWidget {
               itemCount: c.usersList.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Text(c.usersList[index].admissionNo ?? ''),
+                  leading: Text((c.usersList[index].admissionNo).toString()),
                   title: Text(c.usersList[index].name ?? ''),
                   subtitle: Text(c.usersList[index].department ?? ''),
                   trailing: IconButton(
                       onPressed: () {
-                        c.updateVolunteer(c.usersList[index].admissionNo);
+                        c.updateVolunteer(
+                            (c.usersList[index].admissionNo).toString());
                       },
                       icon: Icon(
                         Icons.edit_note_outlined,

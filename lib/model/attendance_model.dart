@@ -4,7 +4,7 @@ class Attendance {
   DateTime? date;
   String? markedBy;
   int? hours;
-  int? admissionNo;
+  String? admissionNo;
 
   Attendance({
     this.id,
@@ -19,8 +19,8 @@ class Attendance {
     return Attendance(
       id: json['id'] as int?,
       name: json['program_name'] as String?,
-      admissionNo: json['admission_number'] as int?,
-      date: json['date'] != null ? DateTime.tryParse(json['date']) : null,
+      admissionNo: json['admission_number'] as String?,
+      date: DateTime.tryParse(json['date']),
       hours: json['hours'] as int?,
       markedBy: json['marked_by'] as String?,
     );
@@ -30,7 +30,7 @@ class Attendance {
     return {
       'id': id,
       'program_name': name,
-      'date': date?.toIso8601String(),
+      'date': date?.toString(),
       'hours': hours,
       'marked_by': markedBy,
       'admission_number': admissionNo

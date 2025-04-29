@@ -168,6 +168,33 @@ class CustomWidgets {
       barBlur: 30,
     ));
   }
+
+  void showConfirmationDialog(
+      {required String title,
+      required String message,
+      required VoidCallback onConfirm}) {
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(onPressed: () => Get.back(), child: Text("Cancel")),
+            TextButton(
+              onPressed: () {
+                onConfirm();
+                Get.back();
+              },
+              child: Text("Confirm", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 String formatKey(String key) {

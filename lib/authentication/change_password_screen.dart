@@ -14,7 +14,8 @@ class ChangePasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     AccountController c = Get.put(AccountController());
     if (!isChangepassword) {
-      c.admissionNoController.text = LocalStorage().readUser().admissionNo!;
+      c.admissionNoController.text =
+          (LocalStorage().readUser().admissionNo).toString();
     }
     return Scaffold(
       appBar: AppBar(

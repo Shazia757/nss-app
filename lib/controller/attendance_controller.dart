@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
@@ -13,14 +15,16 @@ class AttendanceController extends GetxController {
   TextEditingController searchController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   RxList<Volunteer> usersList = <Volunteer>[].obs;
-  RxList<String> selectedVolList = <String>[].obs;
+  RxList<Volunteer> selectedVolList = <Volunteer>[].obs;
+
   RxList<Attendance> attendanceList = <Attendance>[].obs;
   RxList<String> programsList = <String>[].obs;
   RxString programName = ''.obs;
   RxBool isLoading = true.obs;
   RxBool isProgramLoading = true.obs;
-  RxString totalHours = '0'.obs;
-  RxString totalPrograms = '0'.obs;
+  RxInt totalHours = 0.obs;
+  RxInt totalPrograms = 0.obs;
+  DateTime? date;
 
   void getUsers() {
     isLoading.value = true;
@@ -48,7 +52,11 @@ class AttendanceController extends GetxController {
     Api().getAttendance(id).then(
       (value) {
         attendanceList.assignAll(value?.attendance ?? []);
+        log(value.toString());
         isLoading.value = false;
+        totalHours.value = attendanceList.fold(
+            0, (sum, element) => (sum += element.hours ?? 0));
+        totalPrograms.value = attendanceList.length;
       },
     );
   }
@@ -73,26 +81,29 @@ class AttendanceController extends GetxController {
     return true;
   }
 
-  onSubmitAttendance(int admissionNo) {
-    Api()
-        .addAttendance(Attendance(
-      date: DateTime.tryParse(dateController.text),
-      hours: int.tryParse(durationController.text),
-      markedBy: LocalStorage().readUser().admissionNo,
-      name: programNameController.text,
-      admissionNo: admissionNo,
-    ))
-        .then(
-      (value) {
-        if (value?.status == true) {
-          Get.snackbar(
-              'Success', value?.message ?? 'Attendance added successfully');
-          Get.offAll(() => HomeScreen());
-        } else {
-          Get.snackbar('Error', value?.message ?? 'Failed to add attendance.');
-        }
-      },
-    );
+  onSubmitAttendance() {
+    isLoading.value=true;
+    for (Volunteer e in selectedVolList) {
+      Api().addAttendance({
+        'date': date.toString(),
+        'hours': int.tryParse(durationController.text),
+        'marked_by': (LocalStorage().readUser().admissionNo).toString(),
+        'program_name': programNameController.text,
+        'admission_number': e.admissionNo.toString(),
+      }).then(
+        (value) {
+          isLoading.value=false;
+          if (value?.status == true) {
+            Get.offAll(() => HomeScreen());
+            Get.snackbar(
+                'Success', value?.message ?? 'Attendance added successfully');
+          } else {
+            Get.snackbar(
+                'Error', value?.message ?? 'Failed to add attendance.');
+          }
+        },
+      );
+    }
   }
 
   deleteAttendance(int id) {

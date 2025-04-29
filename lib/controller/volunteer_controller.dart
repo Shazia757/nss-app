@@ -25,7 +25,7 @@ class VolunteerController extends GetxController {
       email: emailController.text,
       createdBy: LocalStorage().readUser().admissionNo,
       phoneNo: phoneController.text,
-      dob:  DateTime.parse(dobController.text),
+      dob: dob,
       department: depController.text,
       role: 'vol',
       rollNo: rollNoController.text,
@@ -50,7 +50,7 @@ class VolunteerController extends GetxController {
       'email': emailController.text,
       'updated_by': LocalStorage().readUser().admissionNo,
       'phone_number': phoneController.text,
-      'date_of_birth': dob,
+      'date_of_birth': dob.toString(),
       'department': depController.text,
       'roll_number': rollNoController.text,
     }).then(
@@ -91,6 +91,7 @@ class VolunteerController extends GetxController {
     admissionNoController.text = user.admissionNo ?? "";
     dobController.text =
         (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
+    dob = user.dob;
   }
 
   void clearTextFields() {
@@ -105,7 +106,7 @@ class VolunteerController extends GetxController {
 
   bool onSubmitVolValidation() {
     if (nameController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter program name');
+      Get.snackbar('Invalid', 'Please enter volunteer name');
       return false;
     }
     if (emailController.text.isEmpty) {

@@ -102,6 +102,7 @@ class VolunteerAddScreen extends StatelessWidget {
                   controller: c.dobController,
                   disableTap: isProfilePage,
                   label: "Date of Birth",
+                  initialDate: c.dob,
                   firstDate: DateTime(1900),
                   lastDate: DateTime.now().subtract(Duration(days: 365 * 10)),
                   selectedDate: (value) => c.dob = value,
@@ -122,12 +123,21 @@ class VolunteerAddScreen extends StatelessWidget {
                   onPressed: () {
                     if (c.onSubmitVolValidation()) {
                       if (isUpdateScreen ?? false) {
-                        _showConfirmationDialog(context, "Update Volunteer",
-                            "Are you sure you want to update the details?", () {
-                          c.updateVolunteer();
-                        });
+                        CustomWidgets().showConfirmationDialog(
+                            title: "Update Volunteer",
+                            message:
+                                "Are you sure you want to update the details?",
+                            onConfirm: () {
+                              c.updateVolunteer();
+                            });
                       } else {
-                        c.addVolunteer();
+                        CustomWidgets().showConfirmationDialog(
+                            title: "Add Volunteer",
+                            message:
+                                "Are you sure you want to add new volunteer?",
+                            onConfirm: () {
+                              c.addVolunteer();
+                            });
                       }
                     }
                   }),
@@ -139,11 +149,10 @@ class VolunteerAddScreen extends StatelessWidget {
                 text: "Delete Volunteer",
                 icon: Icons.delete,
                 color: Theme.of(context).colorScheme.error,
-                onPressed: () => _showConfirmationDialog(
-                  context,
-                  "Delete Volunteer",
-                  "Are you sure you want to delete this volunteer?",
-                  () => c.deleteVolunteer(),
+                onPressed: () => CustomWidgets().showConfirmationDialog(
+                  title: "Delete Volunteer",
+                  message: "Are you sure you want to delete this volunteer?",
+                  onConfirm: () => c.deleteVolunteer(),
                 ),
               ),
             SizedBox(height: 15),
@@ -224,31 +233,6 @@ class VolunteerAddScreen extends StatelessWidget {
       ),
       label: Text(text,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  void _showConfirmationDialog(BuildContext context, String title,
-      String message, VoidCallback onConfirm) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(onPressed: () => Get.back(), child: Text("Cancel")),
-            TextButton(
-              onPressed: () {
-                onConfirm();
-                Get.back();
-              },
-              child: Text("Confirm", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
     );
   }
 }

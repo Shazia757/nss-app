@@ -44,19 +44,23 @@ class ScreenUserIssues extends StatelessWidget {
               child: TabBar(
                 controller: c.tabController,
                 tabs: [
-                  Tab(child: Text("Issues Reported")),
                   Tab(child: Text("Report an issue")),
+                  Tab(child: Text("Issues Reported")),
                 ],
               ),
             ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () => c.getAdminIssues(), icon: Icon(Icons.refresh))
+          ],
         ),
         bottomNavigationBar: CustomNavBar(currentIndex: 1),
         body: TabBarView(
           controller: c.tabController,
           children: [
+            reportIssueView(context),
             reportedIssueView(Theme.of(context)),
-            reportIssueView(),
           ],
         ),
       ),
@@ -83,19 +87,17 @@ class ScreenUserIssues extends StatelessWidget {
             return TabBarView(children: [
               RefreshIndicator.adaptive(
                   onRefresh: () async => c.getVolIssues(),
-                  child: Center(
-                    child: c.isLoading.isTrue
-                        ? CircularProgressIndicator()
-                        : c.closedList.isEmpty
-                            ? Text('No issues found.')
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) => listTileView(
-                                    c.openedList[index],
-                                    count: "${index + 1}"),
-                                itemCount: c.openedList.length,
-                              ),
-                  )),
+                  child: c.isLoading.isTrue
+                      ? Center(child: CircularProgressIndicator())
+                      : c.closedList.isEmpty
+                          ? Center(child: Text('No issues found.'))
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => listTileView(
+                                  c.openedList[index],
+                                  count: "${index + 1}"),
+                              itemCount: c.openedList.length,
+                            )),
               RefreshIndicator.adaptive(
                   onRefresh: () async => c.getVolIssues(),
                   child: Center(
@@ -119,7 +121,7 @@ class ScreenUserIssues extends StatelessWidget {
     );
   }
 
-  Widget reportIssueView() {
+  Widget reportIssueView(BuildContext context) {
     return ListView(
       padding: EdgeInsets.all(10),
       children: [
@@ -155,15 +157,25 @@ class ScreenUserIssues extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: FilledButton(
-            onPressed: () {
-              c.onSubmitIssueValidation() ? c.reportIssue() : () {};
-            },
-            style: FilledButton.styleFrom(backgroundColor: Colors.red[900]),
-            child: Text("Report"),
-          ),
-        ),
+            padding: const EdgeInsets.all(8.0),
+            child: Obx(() => c.isLoading.value
+                ? CircularProgressIndicator()
+                : FilledButton(
+                    onPressed: () {
+                      if (c.onSubmitIssueValidation()) {
+                        CustomWidgets().showConfirmationDialog(
+                            title: "Report Issue",
+                            message:
+                                "Are you sure you want to report the issue?",
+                            onConfirm: () {
+                              c.reportIssue();
+                            });
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                        backgroundColor: Colors.red[900]),
+                    child: Text("Report"),
+                  ))),
       ],
     );
   }

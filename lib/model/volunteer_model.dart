@@ -34,15 +34,9 @@ class Users {
         name: json['name'] as String?,
         email: json['email'] as String?,
         phoneNo: json['phone_number'] as String?,
-        dob: (json['date_of_birth'] != null)
-            ? DateTime.parse(json['date_of_birth'])
-            : null,
-        createdDate: (json['created_date'] != null)
-            ? DateTime.parse(json['created_date'])
-            : null,
-        updatedDate: (json['updated_date'] != null)
-            ? DateTime.parse(json['updated_date'])
-            : null,
+        dob: DateTime.tryParse(json['date_of_birth']),
+        createdDate: DateTime.tryParse(json['created_date']),
+        updatedDate: DateTime.tryParse(json['updated_date']),
         department: json['department'] as String?,
         role: json['role'] as String?,
         rollNo: json['roll_number'] as String?,
@@ -60,11 +54,11 @@ class Users {
       'name': name,
       'email': email,
       'department': department,
-      'date_of_birth': dob?.toIso8601String(),
+      'date_of_birth': dob?.toString(),
       'created_by': createdBy,
       'updated_by': updatedBy,
-      'created_date': createdDate?.toIso8601String(),
-      'updated_date': updatedDate?.toIso8601String()
+      'created_date': createdDate?.toString(),
+      'updated_date': updatedDate?.toString()
     };
   }
 
@@ -109,10 +103,9 @@ class VolunteerDetailResponse {
 
   factory VolunteerDetailResponse.fromJson(Map<String, dynamic> json) {
     return VolunteerDetailResponse(
-      status: json['status'] as bool?,
-      message: json['message'] as String?,
-      volunteerDetails: Users.fromJson(json['volunteer_details'])
-       );
+        status: json['status'] as bool?,
+        message: json['message'] as String?,
+        volunteerDetails: Users.fromJson(json['volunteer_details']));
   }
 
   Map<String, dynamic> toJson() {
