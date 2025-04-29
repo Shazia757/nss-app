@@ -14,8 +14,11 @@ class VolunteerController extends GetxController {
   TextEditingController rollNoController = TextEditingController();
   TextEditingController admissionNoController = TextEditingController();
   TextEditingController dobController = TextEditingController();
+
   DateTime? dob;
   final api = Api();
+
+  RxString role = 'vol'.obs;
 
   void addVolunteer() async {
     api
@@ -27,7 +30,7 @@ class VolunteerController extends GetxController {
       phoneNo: phoneController.text,
       dob: dob,
       department: depController.text,
-      role: 'vol',
+      role: role.value,
       rollNo: rollNoController.text,
     ))
         .then(
@@ -53,6 +56,7 @@ class VolunteerController extends GetxController {
       'date_of_birth': dob.toString(),
       'department': depController.text,
       'roll_number': rollNoController.text,
+      'role': role.value,
     }).then(
       (response) {
         if (response?.status == true) {
@@ -92,6 +96,7 @@ class VolunteerController extends GetxController {
     dobController.text =
         (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
+    role.value = user.role ?? 'vol';
   }
 
   void clearTextFields() {

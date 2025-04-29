@@ -113,6 +113,27 @@ class VolunteerAddScreen extends StatelessWidget {
                   )),
             ),
             SizedBox(height: 20),
+            ((!isProfilePage) && (LocalStorage().readUser().role == 'po'))
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Promote As Secretary',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      Obx(() => Switch(
+                          value: c.role.value == 'sec',
+                          onChanged: (value) {
+                            if (value) {
+                              c.role.value = 'sec';
+                            } else {
+                              c.role.value = 'vol';
+                            }
+                          })),
+                    ],
+                  )
+                : SizedBox(),
             if (!isProfilePage) ...[
               _buildActionButton(
                   context: context,
