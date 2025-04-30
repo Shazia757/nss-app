@@ -40,61 +40,41 @@ class AddProgramScreen extends StatelessWidget {
         minimum: EdgeInsets.all(15),
         child: ListView(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Name"),
-              controller: c.nameController,
-            ),
+            _buildTextField(c.nameController, "Name"),
             SizedBox(
               height: 10,
             ),
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    readOnly: true,
-                    onTap: () async {
-                      final selectedDate = await showDatePicker(
-                          initialDate: c.date,
+                    child: GetBuilder(
+                  id: 'date',
+                  builder: (AddProgramController c) =>
+                      CustomWidgets().datePickerTextField(
+                          padding: const EdgeInsets.only(left: 2, right: 8.0),
                           context: context,
-                          firstDate:
-                              DateTime.now().subtract(Duration(days: 30)),
-                          lastDate: DateTime.now().add(Duration(days: 365)));
-
-                      c.dateController.text = (selectedDate != null)
-                          ? DateFormat.yMMMd().format(selectedDate)
-                          : "";
-                      c.date = selectedDate;
-                      log(c.date.toString());
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: "Date"),
-                    controller: c.dateController,
-                  ),
-                ),
+                          controller: c.dateController,
+                          firstDate: DateTime(2023),
+                          lastDate: DateTime.now(),
+                          label: "Date",
+                          selectedDate: (p0) {
+                            c.date = p0;
+                            c.update(['date', true]);
+                          },
+                          initialDate: c.date),
+                )),
                 SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                        labelText: "Duration", border: OutlineInputBorder()),
-                    controller: c.durationController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                )
+                    child: _buildTextField(c.durationController, "Duration",
+                        keyboardType: TextInputType.numberWithOptions())),
               ],
             ),
             SizedBox(
               height: 10,
             ),
-            TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(), hintText: "Description"),
-              controller: c.descController,
-              maxLines: 8,
-            ),
+            _buildTextField(c.nameController, "Description", maxLines: 8),
             SizedBox(
               height: 10,
             ),
@@ -151,4 +131,30 @@ class AddProgramScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildTextField(TextEditingController controller, String label,
+    {EdgeInsets margin = EdgeInsets.zero,
+    TextInputType? keyboardType,
+    int? maxLines}) {
+  return Padding(
+    padding: margin,
+    child: Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: TextField(
+          maxLines: maxLines,
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            labelText: label,
+            border: InputBorder.none,
+            labelStyle: TextStyle(fontSize: 14),
+          ),
+        ),
+      ),
+    ),
+  );
 }

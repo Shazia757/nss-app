@@ -26,6 +26,13 @@ class AttendanceController extends GetxController {
   RxInt totalPrograms = 0.obs;
   DateTime? date;
 
+  @override
+  void onInit() {
+    getUsers();
+    getPrograms();
+    super.onInit();
+  }
+
   void getUsers() {
     isLoading.value = true;
     Api().listVolunteer().then(
@@ -82,7 +89,7 @@ class AttendanceController extends GetxController {
   }
 
   onSubmitAttendance() {
-    isLoading.value=true;
+    isLoading.value = true;
     for (Volunteer e in selectedVolList) {
       Api().addAttendance({
         'date': date.toString(),
@@ -92,7 +99,7 @@ class AttendanceController extends GetxController {
         'admission_number': e.admissionNo.toString(),
       }).then(
         (value) {
-          isLoading.value=false;
+          isLoading.value = false;
           if (value?.status == true) {
             Get.offAll(() => HomeScreen());
             Get.snackbar(

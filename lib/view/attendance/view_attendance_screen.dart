@@ -50,32 +50,43 @@ class ViewAttendanceScreen extends StatelessWidget {
                   ),
                 );
               }
-              return Table(
-                columnWidths: {
-                  0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.10),
-                  1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.22),
-                  2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.10),
-                  if (LocalStorage().readUser().role != 'vol')
-                    3: FixedColumnWidth(
-                        MediaQuery.of(context).size.width * 0.10),
-                },
-                border: TableBorder.all(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.teal),
-                children: [
-                  TableRow(
-                    children: [
-                      _buildTableCell('Date', isHeader: true),
-                      _buildTableCell('Program Name', isHeader: true),
-                      _buildTableCell('Hours', isHeader: true),
-                      if (LocalStorage().readUser().role != 'vol')
-                        _buildTableCell('Remove', isHeader: true),
-                    ],
-                  ),
-                  ...c.attendanceList.map(
-                    (e) => _buildDataRow(c: c, data: e),
-                  ),
+              return DataTable(
+                columnSpacing: 15,
+                columns: [
+                  DataColumn(label: _buildTableCell('Date', isHeader: true)),
+                  DataColumn(
+                      label: _buildTableCell('Program Name', isHeader: true)),
+                  DataColumn(label: _buildTableCell('Hours', isHeader: true)),
+                  DataColumn(
+                      label: (LocalStorage().readUser().role != 'vol')
+                          ? _buildTableCell('Remove', isHeader: true)
+                          : SizedBox())
                 ],
+                border: TableBorder.all(
+                    style: BorderStyle.none,
+                    color: Theme.of(context).primaryColor),
+                rows: c.attendanceList.map((data) {
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(
+                        data.date != null
+                            ? DateFormat.yMMMd().format(data.date!)
+                            : "N/A",
+                      )),
+                      DataCell(Text(data.name ?? '')),
+                      DataCell(Text(data.hours.toString())),
+                      if (LocalStorage().readUser().role != 'vol')
+                        DataCell(
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              c.deleteAttendance;
+                            },
+                          ),
+                        ),
+                    ],
+                  );
+                }).toList(),
               );
             }),
             SizedBox(height: 20),
@@ -91,7 +102,7 @@ class ViewAttendanceScreen extends StatelessWidget {
         ));
   }
 
-  TableRow _buildDataRow(
+  TableRow buildDataRow(
       {required Attendance data, required AttendanceController c}) {
     return TableRow(
       children: [
@@ -111,16 +122,11 @@ class ViewAttendanceScreen extends StatelessWidget {
   }
 
   Widget _buildTableCell(String text, {bool isHeader = false}) {
-    return Container(
-      color: isHeader ? Colors.teal : null,
-      padding: const EdgeInsets.all(12.0),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-          fontSize: 16,
-        ),
-        textAlign: TextAlign.center,
+    return Text(
+      text,
+      style: TextStyle(
+        fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+        fontSize: 16,
       ),
     );
   }

@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:nss/controller/attendance_controller.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/custom_decorations.dart';
 
@@ -16,8 +12,7 @@ class ManageAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AttendanceController c = Get.put(AttendanceController());
-    c.getUsers();
-    c.getPrograms();
+   
 
     return Scaffold(
       floatingActionButton: Obx(() => !c.isProgramLoading.isTrue
@@ -104,27 +99,22 @@ class ManageAttendanceScreen extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 2, right: 8.0),
-                    child: TextField(
-                      readOnly: true,
-                      onTap: () async {
-                        final selectedDate = await showDatePicker(
-                            initialDate: c.selectedDate,
-                            context: context,
-                            firstDate: DateTime(2023),
-                            lastDate: DateTime.now());
-                        c.dateController.text = (selectedDate != null)
-                            ? DateFormat.yMMMd().format(selectedDate)
-                            : "";
-                        c.date = selectedDate;
-                      },
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(), labelText: "Date"),
-                      controller: c.dateController,
-                    ),
-                  ),
-                ),
+                    child: GetBuilder(
+                  id: 'date',
+                  builder: (AttendanceController c) =>
+                      CustomWidgets().datePickerTextField(
+                          padding: const EdgeInsets.only(left: 2, right: 8.0),
+                          context: context,
+                          controller: c.dateController,
+                          firstDate: DateTime(2023),
+                          lastDate: DateTime.now(),
+                          label: "Date",
+                          selectedDate: (p0) {
+                            c.date = p0;
+                            c.update(['date', true]);
+                          },
+                          initialDate: c.date),
+                )),
                 Expanded(
                   child: TextField(
                     controller: c.durationController,

@@ -230,3 +230,30 @@ class ScreenUserIssues extends StatelessWidget {
     );
   }
 }
+
+Widget buildTextField(TextEditingController controller, String label,
+    {EdgeInsets margin = EdgeInsets.zero,
+    TextInputType? keyboardType,
+    int? maxLines}) {
+  return Padding(
+    padding: margin,
+    child: Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: TextField(
+          maxLines: maxLines,
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            labelText: label,
+            border: InputBorder.none,
+            labelStyle: TextStyle(fontSize: 14),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+

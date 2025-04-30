@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/issues_model.dart';
-import 'package:nss/view/home_screen.dart';
 
 class IssuesController extends GetxController with GetTickerProviderStateMixin {
   final TextEditingController subjectController = TextEditingController();

@@ -210,7 +210,8 @@ class VolunteerAddScreen extends StatelessWidget {
       TextEditingController controller, String label, bool isProfilePage,
       {EdgeInsets margin = EdgeInsets.zero,
       TextInputType? keyboardType,
-      bool isEnabled = true}) {
+      bool isEnabled = true,
+      }) {
     return Padding(
       padding: margin,
       child: Card(
