@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nss/view/custom_decorations.dart';
-import '../controller/account_controller.dart';
+import 'package:nss/controller/account_controller.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
               Card(
                   margin:
                       const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                  color: theme.colorScheme.surface,
+                  color: theme.colorScheme.onPrimary,
                   elevation: 5,
                   child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -42,23 +42,36 @@ class LoginScreen extends StatelessWidget {
                           "Sign in to your account",
                           style: theme.textTheme.titleLarge,
                         ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          controller: c.userNameController,
-                          decoration: CustomWidgets.textFieldDecoration(
+                        CustomWidgets().textField(
+                            color: Colors.grey.shade100,
+                            controller: c.userNameController,
                             label: "Admission No / E-Mail",
                             errorText: c.errorMessage.value.isNotEmpty
                                 ? c.errorMessage.value
                                 : null,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          controller: c.passwordController,
-                          obscureText: true,
-                          decoration: CustomWidgets.textFieldDecoration(
-                              label: "Password"),
-                        ),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            margin: EdgeInsets.symmetric(vertical: 10)),
+                        Obx(() => SizedBox(
+                              height: 65,
+                              child: CustomWidgets().textField(
+                                color: Colors.grey.shade100,
+                                controller: c.passwordController,
+                                hideText: c.isObscure.value,
+                                label: "Password",
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                suffix: GestureDetector(
+                                  onTapDown: (_) => c.showPassword(),
+                                  onTapUp: (_) => c.hidePassword(),
+                                  onTapCancel: c.hidePassword,
+                                  child: Icon(
+                                    c.isObscure.value
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            )),
                         const SizedBox(height: 20),
                         Obx(
                           () => c.isLoading.value

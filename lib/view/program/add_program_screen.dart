@@ -1,10 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import '../../controller/program_controller.dart';
 import '../../model/programs_model.dart';
 
@@ -40,7 +38,10 @@ class AddProgramScreen extends StatelessWidget {
         minimum: EdgeInsets.all(15),
         child: ListView(
           children: [
-            _buildTextField(c.nameController, "Name"),
+            CustomWidgets().textField(
+              controller: c.nameController,
+              label: "Name",
+            ),
             SizedBox(
               height: 10,
             ),
@@ -50,7 +51,12 @@ class AddProgramScreen extends StatelessWidget {
                     child: GetBuilder(
                   id: 'date',
                   builder: (AddProgramController c) =>
-                      CustomWidgets().datePickerTextField(
+                      CustomWidgets().customDatePickerTextField(
+                          decoration: InputDecoration(
+                            labelText: 'Date',
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(fontSize: 14),
+                          ),
                           padding: const EdgeInsets.only(left: 2, right: 8.0),
                           context: context,
                           controller: c.dateController,
@@ -67,14 +73,19 @@ class AddProgramScreen extends StatelessWidget {
                   width: 10,
                 ),
                 Expanded(
-                    child: _buildTextField(c.durationController, "Duration",
+                    child: CustomWidgets().textField(
+                        controller: c.durationController,
+                        label: "Duration",
                         keyboardType: TextInputType.numberWithOptions())),
               ],
             ),
             SizedBox(
               height: 10,
             ),
-            _buildTextField(c.nameController, "Description", maxLines: 8),
+            CustomWidgets().textField(
+                controller: c.descController,
+                label: "Description",
+                maxlines: 8),
             SizedBox(
               height: 10,
             ),
@@ -112,18 +123,19 @@ class AddProgramScreen extends StatelessWidget {
             isUpdate
                 ? Obx(
                     () => AbsorbPointer(
-                      absorbing: c.isDeleteButtonLoading.value ||
-                          c.isUpdateButtonLoading.value,
-                      child: FilledButton(
-                        onPressed: () => c.deleteProgram(program!.id!),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Colors.red.shade900,
-                        ),
-                        child: c.isDeleteButtonLoading.isTrue
-                            ? Center(child: CircularProgressIndicator())
-                            : Text("Delete"),
-                      ),
-                    ),
+                        absorbing: c.isDeleteButtonLoading.value ||
+                            c.isUpdateButtonLoading.value,
+                        child: FilledButton(
+                          onPressed: () {
+                            c.deleteProgram(program!.id!);
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.red.shade900,
+                          ),
+                          child: c.isDeleteButtonLoading.isTrue
+                              ? Center(child: CircularProgressIndicator())
+                              : Text("Delete"),
+                        )),
                   )
                 : SizedBox(),
           ],
@@ -131,30 +143,4 @@ class AddProgramScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildTextField(TextEditingController controller, String label,
-    {EdgeInsets margin = EdgeInsets.zero,
-    TextInputType? keyboardType,
-    int? maxLines}) {
-  return Padding(
-    padding: margin,
-    child: Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: TextField(
-          maxLines: maxLines,
-          controller: controller,
-          keyboardType: keyboardType,
-          decoration: InputDecoration(
-            labelText: label,
-            border: InputBorder.none,
-            labelStyle: TextStyle(fontSize: 14),
-          ),
-        ),
-      ),
-    ),
-  );
 }

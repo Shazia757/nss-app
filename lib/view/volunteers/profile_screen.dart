@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nss/authentication/change_password_screen.dart';
+import 'package:nss/view/authentication/change_password_screen.dart';
 import 'package:nss/controller/volunteer_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
-import 'package:nss/view/custom_decorations.dart';
-import 'package:nss/authentication/login_screen.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/authentication/login_screen.dart';
 
 class VolunteerAddScreen extends StatelessWidget {
   const VolunteerAddScreen({super.key, this.isUpdateScreen, this.user});
@@ -42,7 +42,8 @@ class VolunteerAddScreen extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.logout, color: Colors.white),
               onPressed: () {
-                Get.to(() => LoginScreen());
+                LocalStorage().clearAll();
+                Get.offAll(() => LoginScreen());
               },
             ),
           ),
@@ -68,28 +69,46 @@ class VolunteerAddScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
             ],
-            _buildTextField(c.nameController, "Name", isProfilePage),
-            _buildTextField(c.emailController, "Email", isProfilePage,
+            CustomWidgets().textField(
+              controller: c.nameController,
+              label: "Name",
+              readOnly: isProfilePage,
+            ),
+            CustomWidgets().textField(
+                controller: c.emailController,
+                label: "Email",
+                readOnly: isProfilePage,
                 margin: EdgeInsets.symmetric(vertical: 10)),
-            _buildTextField(c.phoneController, "Phone", isProfilePage),
-            _buildTextField(c.depController, "Department", isProfilePage,
-                margin: EdgeInsets.symmetric(vertical: 10)),
+            CustomWidgets().textField(
+                controller: c.phoneController,
+                label: "Phone",
+                readOnly: isProfilePage),
+            CustomWidgets().textField(
+                controller: c.depController,
+                label: "Department",
+                readOnly: isProfilePage,
+                margin: EdgeInsets.symmetric(vertical: 5)),
+            CustomWidgets().textField(
+                controller: c.yearController,
+                label: "Year of Study",
+                readOnly: isProfilePage,
+                keyboardType: TextInputType.number),
             Row(
               children: [
                 Expanded(
-                    child: _buildTextField(
-                        c.rollNoController, "Roll No", isProfilePage,
+                    child: CustomWidgets().textField(
+                        controller: c.rollNoController,
+                        label: "Roll No",
+                        readOnly: isProfilePage,
                         keyboardType: TextInputType.number)),
                 SizedBox(width: 10),
                 Expanded(
-                  child: _buildTextField(
-                    c.admissionNoController,
-                    "Admission No",
-                    isProfilePage,
-                    keyboardType: TextInputType.number,
-                    isEnabled: !(isUpdateScreen == true),
-                  ),
-                ),
+                    child: CustomWidgets().textField(
+                        controller: c.admissionNoController,
+                        label: "Admission No",
+                        keyboardType: TextInputType.number,
+                        isEnabled: !(isUpdateScreen ?? false),
+                        readOnly: isProfilePage)),
               ],
             ),
             Card(
@@ -135,46 +154,64 @@ class VolunteerAddScreen extends StatelessWidget {
                   )
                 : SizedBox(),
             if (!isProfilePage) ...[
-              _buildActionButton(
-                  context: context,
-                  text:
-                      "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
-                  icon: Icons.add,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    if (c.onSubmitVolValidation()) {
-                      if (isUpdateScreen ?? false) {
-                        CustomWidgets().showConfirmationDialog(
-                            title: "Update Volunteer",
-                            message:
-                                "Are you sure you want to update the details?",
-                            onConfirm: () {
-                              c.updateVolunteer();
-                            });
-                      } else {
-                        CustomWidgets().showConfirmationDialog(
-                            title: "Add Volunteer",
-                            message:
-                                "Are you sure you want to add new volunteer?",
-                            onConfirm: () {
-                              c.addVolunteer();
-                            });
-                      }
-                    }
-                  }),
+              Obx(
+                () => c.isUpdateButtonLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : AbsorbPointer(
+                        absorbing: c.isUpdateButtonLoading.value ||
+                            c.isDeleteButtonLoading.value,
+                        child: _buildActionButton(
+                            context: context,
+                            text:
+                                "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
+                            icon: Icons.add,
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              if (c.onSubmitVolValidation()) {
+                                if (isUpdateScreen ?? false) {
+                                  CustomWidgets().showConfirmationDialog(
+                                      title: "Update Volunteer",
+                                      message:
+                                          "Are you sure you want to update the details?",
+                                      onConfirm: () {
+                                        c.updateVolunteer();
+                                      });
+                                } else {
+                                  CustomWidgets().showConfirmationDialog(
+                                      title: "Add Volunteer",
+                                      message:
+                                          "Are you sure you want to add new volunteer?",
+                                      onConfirm: () {
+                                        c.addVolunteer();
+                                      });
+                                }
+                              }
+                            }),
+                      ),
+              ),
               SizedBox(height: 15),
             ],
             if (isUpdateScreen ?? false)
-              _buildActionButton(
-                context: context,
-                text: "Delete Volunteer",
-                icon: Icons.delete,
-                color: Theme.of(context).colorScheme.error,
-                onPressed: () => CustomWidgets().showConfirmationDialog(
-                  title: "Delete Volunteer",
-                  message: "Are you sure you want to delete this volunteer?",
-                  onConfirm: () => c.deleteVolunteer(),
-                ),
+              Obx(
+                () => c.isDeleteButtonLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : AbsorbPointer(
+                        absorbing: c.isDeleteButtonLoading.value ||
+                            c.isUpdateButtonLoading.value,
+                        child: _buildActionButton(
+                          context: context,
+                          text: "Delete Volunteer",
+                          icon: Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                          onPressed: () =>
+                              CustomWidgets().showConfirmationDialog(
+                            title: "Delete Volunteer",
+                            message:
+                                "Are you sure you want to delete this volunteer?",
+                            onConfirm: () => c.deleteVolunteer(),
+                          ),
+                        ),
+                      ),
               ),
             SizedBox(height: 15),
             if (isProfilePage)
@@ -201,35 +238,6 @@ class VolunteerAddScreen extends StatelessWidget {
                         userId: c.admissionNoController.text));
                   })
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-      TextEditingController controller, String label, bool isProfilePage,
-      {EdgeInsets margin = EdgeInsets.zero,
-      TextInputType? keyboardType,
-      bool isEnabled = true,
-      }) {
-    return Padding(
-      padding: margin,
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: TextField(
-            controller: controller,
-            readOnly: isProfilePage,
-            enabled: isEnabled,
-            keyboardType: keyboardType,
-            decoration: InputDecoration(
-              labelText: label,
-              border: InputBorder.none,
-              labelStyle: TextStyle(fontSize: 14),
-            ),
-          ),
         ),
       ),
     );

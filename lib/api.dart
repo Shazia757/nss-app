@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/model/issues_model.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/users_model.dart';
 import 'package:nss/model/volunteer_model.dart';
+import 'package:nss/view/common_pages/no_connection_page.dart';
 
 class Urls {}
 
@@ -33,10 +36,13 @@ class Api {
     try {
       log("request :${jsonEncode(data)}");
       final response = await http.post(Uri.parse('$baseUrl/change_password/'),
-          body: jsonEncode(data), headers: headers);
+          body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
+    } on http.ClientException catch (e) {
+      log('Api error:$e');
+      checkConnectivity();
     } catch (e) {
       log('Api error:$e');
       return null;
@@ -350,5 +356,14 @@ class Api {
       log('Api error:$e');
       return null;
     }
+  }
+}
+
+checkConnectivity() async {
+  final List<ConnectivityResult> result =
+      await (Connectivity().checkConnectivity());
+
+  if (result.contains(ConnectivityResult.none)) {
+    Get.to(() => NoInternetScreen());
   }
 }

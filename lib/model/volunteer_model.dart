@@ -11,7 +11,8 @@ class Users {
   String? rollNo;
   String? createdBy;
   String? updatedBy;
-  String? password;
+ 
+  String? year;
 
   Users(
       {this.admissionNo,
@@ -26,23 +27,24 @@ class Users {
       this.rollNo,
       this.createdBy,
       this.updatedBy,
-      this.password});
+      this.year});
 
-  factory Users.fromJson(Map<String, dynamic> json) {
+  factory Users.fromJson(Map<String, dynamic>? json) {
     return Users(
-        admissionNo: json['admission_number'] as String?,
-        name: json['name'] as String?,
-        email: json['email'] as String?,
-        phoneNo: json['phone_number'] as String?,
-        dob: DateTime.tryParse(json['date_of_birth']),
-        createdDate: DateTime.tryParse(json['created_date']),
-        updatedDate: DateTime.tryParse(json['updated_date']),
-        department: json['department'] as String?,
-        role: json['role'] as String?,
-        rollNo: json['roll_number'] as String?,
-        createdBy: json['created_by'] as String?,
-        updatedBy: json['updated_by'] as String?,
-        password: null);
+        admissionNo: json?['admission_number'] as String?,
+        name: json?['name'] as String?,
+        email: json?['email'] as String?,
+        phoneNo: json?['phone_number'] as String?,
+        dob: DateTime.tryParse(json?['date_of_birth']),
+        createdDate: DateTime.tryParse(json?['created_date']),
+        updatedDate: DateTime.tryParse(json?['updated_date']),
+        department: json?['department'] as String?,
+        role: json?['role'] as String?,
+        rollNo: json?['roll_number'] as String?,
+        createdBy: json?['created_by'] as String?,
+        updatedBy: json?['updated_by'] as String?,
+      
+        year: json?['year'] as String?);
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +60,8 @@ class Users {
       'created_by': createdBy,
       'updated_by': updatedBy,
       'created_date': createdDate?.toString(),
-      'updated_date': updatedDate?.toString()
+      'updated_date': updatedDate?.toString(),
+      'year': year
     };
   }
 

@@ -5,6 +5,9 @@ import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/issues_model.dart';
+import 'package:nss/view/issues/admin_issues_screen.dart';
+
+enum Date { oldestToLatest, latestToOldest }
 
 class IssuesController extends GetxController with GetTickerProviderStateMixin {
   final TextEditingController subjectController = TextEditingController();
@@ -16,6 +19,26 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   late TabController tabController;
   RxList<Issues> openedList = <Issues>[].obs;
   RxList<Issues> closedList = <Issues>[].obs;
+  RxList<Issues> sortedopenedList = <Issues>[].obs;
+  RxList<Issues> sortedclosedList = <Issues>[].obs;
+  List<String> get reportedTo => ["sec", "po", "Secretary and Program Officer"];
+  var selected = "both".obs;
+  List<Issues> get openFilteredTo {
+    if (selected.value == "both") return openedList;
+    return openedList.where((p0) => p0.to == selected.value).toList();
+  }
+
+  List<Issues> get closedFilteredTo {
+    if (selected.value == "both") return openedList;
+    return openedList.where((p0) => p0.to == selected.value).toList();
+  }
+
+  List<String> get resolvedBy => ["sec", "sec", "sec", "sec"];
+  var selectedSec = "sec".obs;
+  List<Issues> get filteredResolvedBy {
+    if (selected.value == "sec") return openedList;
+    return closedList.where((p0) => p0.to == selected.value).toList();
+  }
 
   @override
   void onInit() {
@@ -102,5 +125,25 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
       return false;
     }
     return true;
+  }
+
+  void sortOpenedList(Date selectedDate) {
+    if (selectedDate == Date.oldestToLatest) {
+      openedList.sort((a, b) => a.updatedDate!.compareTo(b.updatedDate!));
+    } else {
+      openedList.sort((a, b) => b.updatedDate!.compareTo(a.updatedDate!));
+    }
+  }
+
+  void sortClosedList(Date selectedDate) {
+    if (selectedDate == Date.oldestToLatest) {
+      closedList.sort((a, b) => a.updatedDate!.compareTo(b.updatedDate!));
+    } else {
+      closedList.sort((a, b) => b.updatedDate!.compareTo(a.updatedDate!));
+    }
+  }
+
+  void select(String to) {
+    selected.value = to;
   }
 }

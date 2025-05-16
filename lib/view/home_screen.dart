@@ -5,7 +5,7 @@ import 'package:nss/controller/home_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/manage_attendance_screen.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
-import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/program/program_list_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
@@ -20,19 +20,27 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text("Welcome, ${LocalStorage().readUser().name}"),
+        title: Text(
+          "Welcome, ${LocalStorage().readUser().name}",
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           if (MediaQuery.of(context).size.width > 800) ...[
-            TextButton(
-              onPressed: () => Get.to(() => ScreenIssues()),
-              child: Text("Issues"),
-              //  icon: Icon(Icons.bug_report_outlined),
-            ),
-            TextButton(
-              child: Text("Profile"),
+            Wrap(
+              spacing: 10,
+              children: [
+                TextButton(
+                  onPressed: () => Get.to(() => ScreenIssues()),
+                  child: Text("Issues"),
+                  //  icon: Icon(Icons.bug_report_outlined),
+                ),
+                TextButton(
+                  child: Text("Profile"),
 
-              onPressed: () => Get.to(() => VolunteerAddScreen()),
-              //   icon: Icon(Icons.person_2_outlined),
+                  onPressed: () => Get.to(() => VolunteerAddScreen()),
+                  //   icon: Icon(Icons.person_2_outlined),
+                ),
+              ],
             ),
           ],
           Visibility(
@@ -59,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
+                      Flexible(
                         flex: 2,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 20),
-                      Expanded(
+                      Flexible(
                         flex: 1,
                         child: _upcomingEvents(c, context),
                       ),
@@ -243,18 +251,22 @@ class HomeScreen extends StatelessWidget {
         ]));
     }
 
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: isDesktop
-          ? 4
-          : LocalStorage().readUser().role == 'po'
-              ? 3
-              : 2,
-      childAspectRatio: isDesktop ? 1.2 : 1,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      children: children,
+    return Expanded(
+      child: SingleChildScrollView(
+        child: GridView.count(
+          shrinkWrap: true,
+          crossAxisCount: isDesktop
+              ? 4
+              : LocalStorage().readUser().role == 'po'
+                  ? 3
+                  : 2,
+          childAspectRatio: isDesktop ? 1.2 : 1,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          children: children,
+        ),
+      ),
     );
   }
 
@@ -279,13 +291,16 @@ class HomeScreen extends StatelessWidget {
             children: [
               Icon(icon, size: 40, color: Colors.white),
               SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              Flexible(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -305,7 +320,10 @@ class HomeScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.notifications_active),
+                Icon(
+                  Icons.notifications_active,
+                  color: Colors.amber,
+                ),
                 SizedBox(width: 5),
                 Obx(() => Text("Upcoming Events (${c.upcomingPrograms.length})",
                     style:

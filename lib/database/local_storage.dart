@@ -14,8 +14,13 @@ class LocalStorage {
   }
 
   Users readUser() {
-    final data = _box.read('user');
-    return Users.fromJson(data);
+    try {
+      final data = _box.read('user');
+      return Users.fromJson(data);
+    } catch (e) {
+      log(e.toString());
+    }
+    return Users();
   }
 
   clearAll() {

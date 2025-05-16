@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nss/config/color_schemes.dart';
-import 'authentication/login_screen.dart';
+import 'package:nss/view/common_pages/splash_screen.dart';
+import 'package:nss/view/home_screen.dart';
 import 'config/text_theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+
+import 'database/local_storage.dart';
+import 'view/authentication/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-   runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,6 +35,6 @@ class MyApp extends StatelessWidget {
             const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
           ],
         ),
-        home: const LoginScreen(),
+        home: SplashScreen()
       );
 }

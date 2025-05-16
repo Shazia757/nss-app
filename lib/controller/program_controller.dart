@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
@@ -7,7 +9,10 @@ import '../model/programs_model.dart';
 
 class ProgramListController extends GetxController {
   RxList<Program> programsList = <Program>[].obs;
+  RxList<Program> searchList = <Program>[].obs;
   RxBool isLoading = true.obs;
+  TextEditingController searchController = TextEditingController();
+  Rx<Date> date = Rx<Date>(Date.oldestToLatest);
 
   @override
   void onInit() {
@@ -15,14 +20,37 @@ class ProgramListController extends GetxController {
     super.onInit();
   }
 
-  void getPrograms() {
+  void getPrograms() async {
     isLoading.value = true;
     Api().allPrograms().then(
       (value) {
         programsList.assignAll(value?.programs ?? []);
+        searchList.assignAll(programsList);
         isLoading.value = false;
       },
     );
+  }
+
+  void onSearchTextChanged(String searchText) async {
+    if (searchText.isEmpty) {
+      searchController.clear();
+      searchList.assignAll(programsList);
+    } else {
+      final filtered = programsList.where((program) {
+        final name = program.name?.toLowerCase() ?? '';
+        return name.contains(searchText.toLowerCase());
+      }).toList();
+
+      searchList.assignAll(filtered);
+    }
+  }
+
+  void sortByDate(Date selectedDate) {
+    if (selectedDate == Date.oldestToLatest) {
+      searchList.sort((a, b) => a.date!.compareTo(b.date!));
+    } else {
+      searchList.sort((a, b) => b.date!.compareTo(a.date!));
+    }
   }
 }
 
@@ -87,8 +115,7 @@ class AddProgramController extends GetxController {
     Api().deleteProgram(id).then(
       (value) {
         if (value?.status == true) {
-    isDeleteButtonLoading.value = false;
-
+          isDeleteButtonLoading.value = false;
           Get.snackbar(
               "Success", value?.message ?? "Program deleted successfully.");
           Get.to(() => ProgramsScreen());

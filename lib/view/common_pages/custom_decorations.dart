@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nss/view/home_screen.dart';
 import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
@@ -25,6 +27,26 @@ class CustomWidgets {
       errorText: errorText,
     );
   }
+
+  static Center noDataWidget = Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Lottie.asset('assets/empty_list.json', height: 200),
+        SizedBox(height: 20),
+        Text(
+          'No data available',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'There’s nothing to show here at the moment.',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
 
   static Padding searchableDropDown<T>({
     EdgeInsetsGeometry padding = EdgeInsets.zero,
@@ -105,6 +127,98 @@ class CustomWidgets {
           }
         },
         decoration: decoration ?? textFieldDecoration(label: label),
+      ),
+    );
+  }
+
+  Card textField({
+    required TextEditingController controller,
+    required String label,
+    EdgeInsets margin = const EdgeInsets.symmetric(vertical: 5),
+    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 10),
+    TextInputType? keyboardType,
+    bool isEnabled = true,
+    bool readOnly = false,
+    bool? hideText,
+    TextStyle? labelStyle,
+    void Function()? onTap,
+    List<TextInputFormatter>? inputFormatters,
+    double elevation = 2,
+    String? errorText,
+    Widget? suffix,
+    Color? color,
+    int maxlines = 1,
+  }) {
+    return Card(
+      color: color,
+      elevation: elevation,
+      margin: margin,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: padding,
+        child: TextField(
+          controller: controller,
+          readOnly: readOnly,
+          enabled: isEnabled,
+          onTap: onTap,
+          obscureText: hideText ?? false,
+          inputFormatters: inputFormatters,
+          keyboardType: keyboardType,
+          maxLines: maxlines,
+          decoration: InputDecoration(
+            errorText: errorText,
+            labelText: label,
+            border: InputBorder.none,
+            labelStyle: labelStyle,
+            suffix: suffix,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding customDatePickerTextField({
+    required BuildContext context,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    EdgeInsetsGeometry padding = EdgeInsets.zero,
+    required String label,
+    required TextEditingController controller,
+    DateTime? currentDate,
+    DateTime? initialDate,
+    required void Function(DateTime) selectedDate,
+    bool disableTap = false,
+    InputDecoration? decoration,
+  }) {
+    return Padding(
+      padding: padding,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            controller: controller,
+            readOnly: true,
+            onTap: () async {
+              if (!disableTap) {
+                DateTime pickedDate = await showDatePicker(
+                      context: context,
+                      firstDate: firstDate,
+                      lastDate: lastDate,
+                      currentDate: currentDate,
+                      initialDate: initialDate,
+                    ) ??
+                    lastDate;
+
+                controller.text = DateFormat.yMMMd().format(pickedDate);
+
+                selectedDate(pickedDate);
+              }
+            },
+            decoration: decoration ?? textFieldDecoration(label: label),
+          ),
+        ),
       ),
     );
   }
@@ -202,16 +316,7 @@ String formatKey(String key) {
       RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
   formattedKey =
       formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
-  formattedKey = formattedKey
-      .replaceAll('P N R', 'PNR ')
-      .replaceAll('Crs', 'CRS ')
-      .replaceAll('P A N', 'PAN ')
-      .replaceAll('Agent G S T', 'Agent GST')
-      .replaceAll('O D ', 'OD ')
-      .replaceAll('Or', "/")
-      .replaceAll('I D', "ID")
-      .replaceAll('Of', "of")
-      .replaceAll('Y Q', 'YQ');
+  formattedKey = formattedKey;
   return formattedKey;
 }
 

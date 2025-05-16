@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import '../../controller/attendance_controller.dart';
@@ -31,22 +32,23 @@ class ViewAttendanceScreen extends StatelessWidget {
                 );
               } else if (c.attendanceList.isEmpty) {
                 return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Icon(Icons.error,
-                            color: Theme.of(context).primaryColor),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Attendance not found",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset('assets/empty_list.json', height: 200),
+                      SizedBox(height: 20),
+                      Text(
+                        'No data available',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'There’s nothing to show here at the moment.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 );
               }
@@ -79,9 +81,7 @@ class ViewAttendanceScreen extends StatelessWidget {
                         DataCell(
                           IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              c.deleteAttendance;
-                            },
+                            onPressed: () => c.deleteAttendance(data.id ?? 0),
                           ),
                         ),
                     ],
@@ -89,14 +89,14 @@ class ViewAttendanceScreen extends StatelessWidget {
                 }).toList(),
               );
             }),
-            SizedBox(height: 20),
+            SizedBox(height: 100),
             Obx(() => Center(
                     child: Text(
-                  "Total hours attended: ${c.totalHours}\nTotal programs attended: ${c.totalPrograms}",
+                  "   Total hours attended: ${c.totalHours}\nTotal programs attended: ${c.totalPrograms}",
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ))),
           ],
         ));

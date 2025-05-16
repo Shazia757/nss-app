@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nss/controller/attendance_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
-import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 
 class ManageAttendanceScreen extends StatelessWidget {
   const ManageAttendanceScreen({super.key});
@@ -12,8 +13,7 @@ class ManageAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AttendanceController c = Get.put(AttendanceController());
-   
-
+    TextEditingController searchController = TextEditingController();
     return Scaffold(
       floatingActionButton: Obx(() => !c.isProgramLoading.isTrue
           ? c.selectedVolList.isNotEmpty
@@ -34,45 +34,91 @@ class ManageAttendanceScreen extends StatelessWidget {
       ),
       body: SafeArea(child: Obx(
         () {
-          if (c.usersList.isEmpty) {
+          if (c.isLoading.value) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).primaryColor,
               ),
             );
+          } else if (c.usersList.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/empty_list.json', height: 200),
+                  SizedBox(height: 20),
+                  Text(
+                    'No data available',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'There’s nothing to show here at the moment.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           }
 
-          return ListView.separated(
-            shrinkWrap: true,
-            itemCount: c.usersList.length,
-            itemBuilder: (context, index) {
-              return Obx(() => CheckboxListTile(
-                    value: c.selectedVolList.any(
-                      (element) =>
-                          element.admissionNo == c.usersList[index].admissionNo,
-                    ),
-                    secondary: InkWell(
-                      onTap: () => Get.to(() => ViewAttendanceScreen(
-                          id: LocalStorage().readUser().admissionNo!)),
-                      child: CircleAvatar(
-                        radius: 40,
-                        child: Text(c.usersList[index].admissionNo ?? ''),
-                      ),
-                    ),
-                    title: Text(c.usersList[index].name ?? ''),
-                    subtitle: Text(c.usersList[index].department ?? ''),
-                    onChanged: (value) {
-                      if (value == true) {
-                        c.selectedVolList.add(c.usersList[index]);
-                      } else {
-                        c.selectedVolList.removeWhere((element) =>
-                            element.admissionNo ==
-                            c.usersList[index].admissionNo);
-                      }
+          return RefreshIndicator.adaptive(
+            onRefresh: () async => c.onInit(),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                SearchBar(
+                    constraints: BoxConstraints.tight(Size(400, 50)),
+                    leading: Icon(Icons.search),
+                    controller: searchController,
+                    hintText: 'Search',
+                    onChanged: (value) => c.onSearchTextChanged(value),
+                    trailing: [
+                      IconButton(
+                          onPressed: () => c.onSearchTextChanged(''),
+                          icon: Icon(Icons.cancel))
+                    ]),
+                Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: c.searchList.length,
+                    itemBuilder: (context, index) {
+                      return Obx(() => CheckboxListTile(
+                            value: c.selectedVolList.any(
+                              (element) =>
+                                  element.admissionNo ==
+                                  c.searchList[index].admissionNo,
+                            ),
+                            secondary: InkWell(
+                              onTap: () => Get.to(() => ViewAttendanceScreen(
+                                  id: LocalStorage().readUser().admissionNo!)),
+                              child: CircleAvatar(
+                                radius: 40,
+                                child:
+                                    Text(c.searchList[index].admissionNo ?? ''),
+                              ),
+                            ),
+                            title: Text(c.searchList[index].name ?? ''),
+                            subtitle:
+                                Text(c.searchList[index].department ?? ''),
+                            onChanged: (value) {
+                              if (value == true) {
+                                c.selectedVolList.add(c.searchList[index]);
+                              } else {
+                                c.selectedVolList.removeWhere((element) =>
+                                    element.admissionNo ==
+                                    c.searchList[index].admissionNo);
+                              }
+                            },
+                          ));
                     },
-                  ));
-            },
-            separatorBuilder: (context, index) => Divider(),
+                    separatorBuilder: (context, index) => Divider(),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       )),
@@ -116,12 +162,9 @@ class ManageAttendanceScreen extends StatelessWidget {
                           initialDate: c.date),
                 )),
                 Expanded(
-                  child: TextField(
+                  child: CustomWidgets().textField(
                     controller: c.durationController,
-                    decoration: CustomWidgets.textFieldDecoration(
-                      label: 'Duration',
-                      prefix: Icon(Icons.event),
-                    ),
+                    label: 'Duration',
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),

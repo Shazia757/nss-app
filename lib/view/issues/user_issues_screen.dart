@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/view/custom_decorations.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 
 import '../../controller/issues_controller.dart';
 import '../../model/issues_model.dart';
@@ -90,7 +91,29 @@ class ScreenUserIssues extends StatelessWidget {
                   child: c.isLoading.isTrue
                       ? Center(child: CircularProgressIndicator())
                       : c.closedList.isEmpty
-                          ? Center(child: Text('No issues found.'))
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Lottie.asset('assets/empty_list.json',
+                                      height: 200),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    'No data available',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'There’s nothing to show here at the moment.',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            )
                           : ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) => listTileView(
@@ -136,25 +159,12 @@ class ScreenUserIssues extends StatelessWidget {
                 ],
               )),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: c.subjectController,
-            decoration: InputDecoration(
-                label: Text("Subject"), border: OutlineInputBorder()),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
+        CustomWidgets()
+            .textField(controller: c.subjectController, label: "Subject"),
+        CustomWidgets().textField(
             controller: c.desController,
-            minLines: 10,
-            maxLines: 12,
-            decoration: InputDecoration(
-                hintText: "Description",
-                border: OutlineInputBorder(),
-                label: Text("Description")),
-          ),
+          maxlines: 12,
+          label: "Description",
         ),
         Padding(
             padding: const EdgeInsets.all(8.0),
@@ -230,30 +240,3 @@ class ScreenUserIssues extends StatelessWidget {
     );
   }
 }
-
-Widget buildTextField(TextEditingController controller, String label,
-    {EdgeInsets margin = EdgeInsets.zero,
-    TextInputType? keyboardType,
-    int? maxLines}) {
-  return Padding(
-    padding: margin,
-    child: Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: TextField(
-          maxLines: maxLines,
-          controller: controller,
-          keyboardType: keyboardType,
-          decoration: InputDecoration(
-            labelText: label,
-            border: InputBorder.none,
-            labelStyle: TextStyle(fontSize: 14),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-

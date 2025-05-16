@@ -15,10 +15,13 @@ class AttendanceController extends GetxController {
   TextEditingController searchController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   RxList<Volunteer> usersList = <Volunteer>[].obs;
+  RxList<Volunteer> searchList = <Volunteer>[].obs;
   RxList<Volunteer> selectedVolList = <Volunteer>[].obs;
 
   RxList<Attendance> attendanceList = <Attendance>[].obs;
   RxList<String> programsList = <String>[].obs;
+  RxInt sortColumnIndex = 0.obs;
+  RxBool isAscending = true.obs;
   RxString programName = ''.obs;
   RxBool isLoading = true.obs;
   RxBool isProgramLoading = true.obs;
@@ -38,6 +41,7 @@ class AttendanceController extends GetxController {
     Api().listVolunteer().then(
       (value) {
         usersList.assignAll(value?.data ?? []);
+        searchList.assignAll(usersList);
         isLoading.value = false;
       },
     );
@@ -116,6 +120,7 @@ class AttendanceController extends GetxController {
   deleteAttendance(int id) {
     Api().deleteAttendance(id).then(
       (value) {
+        log(value?.message ?? "Program deleted successfully.");
         if (value?.status == true) {
           Get.back();
           Get.snackbar(
@@ -126,5 +131,48 @@ class AttendanceController extends GetxController {
         }
       },
     );
+  }
+
+  // void sort(int columnIndex, bool ascending) {
+  //   sortColumnIndex.value = columnIndex;
+  //   isAscending.value = ascending;
+
+  //   if (columnIndex == 0) {
+  //     attendanceList.sort((a, b) =>
+  //         ascending ? a.date!.compareTo(b.date!) : b.date!.compareTo(a.date!));
+  //   } else if (columnIndex == 1) {
+  //     attendanceList.sort((a, b) => ascending
+  //         ? (a.name ?? '').compareTo(b.name ?? '')
+  //         : (b.name ?? '').compareTo(a.name ?? ''));
+  //   } else if (columnIndex == 2) {
+  //     attendanceList.sort((a, b) {
+  //       final hoursA = a.hours;
+  //       final hoursB = b.hours;
+
+  //       if (hoursA == null && hoursB == null) return 0;
+  //       if (hoursA == null) return 1;
+  //       if (hoursB == null) return -1;
+
+  //       return ascending ? hoursA.compareTo(hoursB) : hoursB.compareTo(hoursA);
+  //     });
+  //   }
+  //   attendanceList.refresh();
+  // }
+
+  void onSearchTextChanged(String value) async {
+    if (value.isEmpty) {
+      searchController.clear();
+      searchList.assignAll(usersList);
+    } else {
+      final filtered = usersList.where((volunteer) {
+        final name = volunteer.name?.toLowerCase() ?? '';
+        final admnNo = volunteer.admissionNo ?? '';
+
+        return admnNo.contains(value.toLowerCase()) || name.contains(value);
+      }).toList();
+
+      searchList.assignAll(filtered);
+      log(searchList.toString());
+    }
   }
 }

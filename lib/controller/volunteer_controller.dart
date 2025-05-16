@@ -14,6 +14,9 @@ class VolunteerController extends GetxController {
   TextEditingController rollNoController = TextEditingController();
   TextEditingController admissionNoController = TextEditingController();
   TextEditingController dobController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
+  var isUpdateButtonLoading = false.obs;
+  var isDeleteButtonLoading = false.obs;
 
   DateTime? dob;
   final api = Api();
@@ -21,20 +24,22 @@ class VolunteerController extends GetxController {
   RxString role = 'vol'.obs;
 
   void addVolunteer() async {
+    isUpdateButtonLoading.value = true;
     api
         .addVolunteer(Users(
-      admissionNo: admissionNoController.text,
-      name: nameController.text,
-      email: emailController.text,
-      createdBy: LocalStorage().readUser().admissionNo,
-      phoneNo: phoneController.text,
-      dob: dob,
-      department: depController.text,
-      role: role.value,
-      rollNo: rollNoController.text,
-    ))
+            admissionNo: admissionNoController.text,
+            name: nameController.text,
+            email: emailController.text,
+            createdBy: LocalStorage().readUser().admissionNo,
+            phoneNo: phoneController.text,
+            dob: dob,
+            department: depController.text,
+            role: role.value,
+            rollNo: rollNoController.text,
+            year: yearController.text))
         .then(
       (value) {
+        isUpdateButtonLoading.value = false;
         if (value?.status ?? false == true) {
           Get.back();
           Get.snackbar(
@@ -47,6 +52,7 @@ class VolunteerController extends GetxController {
   }
 
   void updateVolunteer() async {
+    isUpdateButtonLoading.value = true;
     api.updateVolunteer({
       'admission_number': admissionNoController.text,
       'name': nameController.text,
@@ -57,8 +63,10 @@ class VolunteerController extends GetxController {
       'department': depController.text,
       'roll_number': rollNoController.text,
       'role': role.value,
+      'year': yearController.text
     }).then(
       (response) {
+        isUpdateButtonLoading.value = true;
         if (response?.status == true) {
           Get.back();
           Get.snackbar('Success',
@@ -72,8 +80,11 @@ class VolunteerController extends GetxController {
   }
 
   void deleteVolunteer() async {
+    isDeleteButtonLoading.value = false;
     api.deleteVolunteer(admissionNoController.text).then(
       (response) {
+        isDeleteButtonLoading.value = true;
+
         if (response?.status == true) {
           Get.back();
           Get.snackbar("Success",
@@ -97,6 +108,7 @@ class VolunteerController extends GetxController {
         (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
     role.value = user.role ?? 'vol';
+    yearController.text = user.year ?? "";
   }
 
   void clearTextFields() {
@@ -107,6 +119,7 @@ class VolunteerController extends GetxController {
     rollNoController.clear();
     admissionNoController.clear();
     dobController.clear();
+    yearController.clear();
   }
 
   bool onSubmitVolValidation() {
@@ -138,13 +151,21 @@ class VolunteerController extends GetxController {
       Get.snackbar('Invalid', 'Please add date of birth');
       return false;
     }
+    if (yearController.text.isEmpty) {
+      Get.snackbar('Invalid', 'Please add year of study');
+      return false;
+    }
     return true;
   }
 }
 
 class VolunteerListController extends GetxController {
+  TextEditingController searchController = TextEditingController();
+
   RxBool isLoading = true.obs;
   RxList<Volunteer> usersList = <Volunteer>[].obs;
+  RxList<Volunteer> searchList = <Volunteer>[].obs;
+  RxList<String> departmentList = <String>[].obs;
 
   @override
   void onInit() {
@@ -157,6 +178,7 @@ class VolunteerListController extends GetxController {
     Api().listVolunteer().then(
       (value) {
         usersList.assignAll(value?.data ?? []);
+        searchList.assignAll(usersList);
         isLoading.value = false;
       },
     );
@@ -171,5 +193,21 @@ class VolunteerListController extends GetxController {
         ));
       },
     );
+  }
+
+  void onSearchTextChanged(String value) {
+    if (value.isEmpty) {
+      searchController.clear();
+      searchList.assignAll(usersList);
+    } else {
+      final filtered = usersList.where((volunteer) {
+        final name = volunteer.name?.toLowerCase() ?? '';
+        final admnNo = volunteer.admissionNo ?? '';
+
+        return admnNo.contains(value.toLowerCase()) || name.contains(value);
+      }).toList();
+
+      searchList.assignAll(filtered);
+    }
   }
 }

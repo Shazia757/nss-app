@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
 import '../../controller/volunteer_controller.dart';
@@ -36,30 +37,72 @@ class VolunteersListScreen extends StatelessWidget {
             );
           } else if (c.usersList.isEmpty) {
             return Center(
-              child: Text("No volunteers found"),
-            );
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset('assets/empty_list.json', height: 200),
+                      SizedBox(height: 20),
+                      Text(
+                        'No data available',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'There’s nothing to show here at the moment.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
           }
 
           return RefreshIndicator.adaptive(
-            onRefresh: () async => c.getData(),
-            child: ListView.separated(
-              itemCount: c.usersList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Text((c.usersList[index].admissionNo).toString()),
-                  title: Text(c.usersList[index].name ?? ''),
-                  subtitle: Text(c.usersList[index].department ?? ''),
-                  trailing: IconButton(
-                      onPressed: () {
-                        c.updateVolunteer(
-                            (c.usersList[index].admissionNo).toString());
-                      },
-                      icon: Icon(
-                        Icons.edit_note_outlined,
-                      )),
-                );
-              },
-              separatorBuilder: (context, index) => Divider(),
+            onRefresh: () async => c.onInit(),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                SearchBar(
+                    constraints: BoxConstraints.tight(Size(400, 50)),
+                    leading: Icon(Icons.search),
+                    controller: c.searchController,
+                    hintText: 'Search',
+                    onChanged: (value) => c.onSearchTextChanged(value),
+                    trailing: [
+                      IconButton(
+                          onPressed: () {
+                           
+                            c.onSearchTextChanged('');
+                          },
+                          icon: Icon(Icons.cancel))
+                    ]),
+                Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: c.searchList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading:
+                            Text((c.searchList[index].admissionNo).toString()),
+                        title: Text(c.searchList[index].name ?? ''),
+                        subtitle: Text(c.searchList[index].department ?? ''),
+                        trailing: IconButton(
+                            onPressed: () {
+                              c.updateVolunteer(
+                                  (c.searchList[index].admissionNo).toString());
+                            },
+                            icon: Icon(
+                              Icons.edit_note_outlined,
+                            )),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                  ),
+                ),
+              ],
             ),
           );
         },
