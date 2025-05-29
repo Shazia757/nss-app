@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nss/controller/attendance_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
@@ -13,7 +12,6 @@ class ManageAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AttendanceController c = Get.put(AttendanceController());
-    TextEditingController searchController = TextEditingController();
     return Scaffold(
       floatingActionButton: Obx(() => !c.isProgramLoading.isTrue
           ? c.selectedVolList.isNotEmpty
@@ -28,8 +26,7 @@ class ManageAttendanceScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
         actions: [
-          IconButton(
-              onPressed: () => c.attendanceList(), icon: Icon(Icons.refresh))
+          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
         ],
       ),
       body: SafeArea(child: Obx(
@@ -41,25 +38,7 @@ class ManageAttendanceScreen extends StatelessWidget {
               ),
             );
           } else if (c.usersList.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset('assets/empty_list.json', height: 200),
-                  SizedBox(height: 20),
-                  Text(
-                    'No data available',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'There’s nothing to show here at the moment.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
+           return CustomWidgets.noDataWidget;
           }
 
           return RefreshIndicator.adaptive(
@@ -69,17 +48,15 @@ class ManageAttendanceScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                SearchBar(
-                    constraints: BoxConstraints.tight(Size(400, 50)),
-                    leading: Icon(Icons.search),
-                    controller: searchController,
-                    hintText: 'Search',
-                    onChanged: (value) => c.onSearchTextChanged(value),
-                    trailing: [
-                      IconButton(
-                          onPressed: () => c.onSearchTextChanged(''),
-                          icon: Icon(Icons.cancel))
-                    ]),
+                CustomWidgets().searchBar(
+                  constraints: BoxConstraints.tight(Size(350, 50)),
+                  leading: Icon(Icons.search),
+                  controller: c.searchController,
+                  hintText: 'Search',
+                  onChanged: (value) => c.onSearchTextChanged(value),
+                  visible: c.searchController.text.isNotEmpty,
+                  onPressedCancel: () => c.onSearchTextChanged(''),
+                ),
                 Expanded(
                   child: ListView.separated(
                     shrinkWrap: true,
@@ -137,7 +114,10 @@ class ManageAttendanceScreen extends StatelessWidget {
           CustomWidgets.searchableDropDown(
               controller: c.programNameController,
               label: "Program Name",
-              onSelected: (po) => c.programNameController.text = po,
+              onSelected: (po) {
+                c.programNameController.text = po;
+                c.programName = po;
+              },
               selectionList: c.programsList,
               stringValueOf: (item) => item),
           Padding(
@@ -147,19 +127,27 @@ class ManageAttendanceScreen extends StatelessWidget {
                 Expanded(
                     child: GetBuilder(
                   id: 'date',
-                  builder: (AttendanceController c) =>
-                      CustomWidgets().datePickerTextField(
-                          padding: const EdgeInsets.only(left: 2, right: 8.0),
-                          context: context,
-                          controller: c.dateController,
-                          firstDate: DateTime(2023),
-                          lastDate: DateTime.now(),
-                          label: "Date",
-                          selectedDate: (p0) {
-                            c.date = p0;
-                            c.update(['date', true]);
-                          },
-                          initialDate: c.date),
+                  builder: (AttendanceController c) => Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: CustomWidgets().datePickerTextField(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        context: context,
+                        controller: c.dateController,
+                        firstDate: DateTime(2023),
+                        lastDate: DateTime.now(),
+                        label: "Date",
+                        selectedDate: (p0) {
+                          c.date = p0;
+                          c.update(['date', true]);
+                        },
+                        initialDate: c.date,
+                        decoration: InputDecoration(
+                          label: Text("Date"),
+                          border: InputBorder.none,
+                        )),
+                  ),
                 )),
                 Expanded(
                   child: CustomWidgets().textField(
@@ -176,11 +164,68 @@ class ManageAttendanceScreen extends StatelessWidget {
               ? Center(child: CircularProgressIndicator())
               : FilledButton(
                   onPressed: () {
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) {
+                    //     return AlertDialog(
+                    //         actions: [
+                    //           TextButton(
+                    //               onPressed: () => Get.back(),
+                    //               child: Text("Cancel")),
+                    //           TextButton(
+                    //             onPressed: () {
+                    //               c.onSubmitAttendance();
+                    //               Get.back();
+                    //             },
+                    //             child: Text("Confirm",
+                    //                 style: TextStyle(color: Colors.red)),
+                    //           ),
+                    //         ],
+                    //         shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(12)),
+                    //         title: Text(
+                    //             'Are you sure you want to add attendance for the following volunteers?'),
+                    //         content: Expanded(
+                    //           child: ListView.separated(
+                    //             shrinkWrap: true,
+                    //             itemCount: c.selectedVolList.length,
+                    //             itemBuilder: (context, index) {
+                    //               return ListTile(
+                    //                 leading: Text(
+                    //                     (c.selectedVolList[index].admissionNo)
+                    //                         .toString()),
+                    //                 title: Text(
+                    //                     c.selectedVolList[index].name ?? ''),
+                    //                 subtitle: Text(
+                    //                     c.selectedVolList[index].department ??
+                    //                         ''),
+                    //               );
+                    //             },
+                    //             separatorBuilder: (context, index) =>
+                    //                 Divider(),
+                    //           ),
+                    //         ));
+                    //   },
+                    // );
                     if (c.onSubmitAttendanceValidation()) {
                       CustomWidgets().showConfirmationDialog(
                           title: "Submit Attendance",
-                          message:
-                              "Are you sure you want to submit the attendance?",
+                          content: SizedBox(
+                            height: 200,
+                            width: double.maxFinite,
+                            child: ListView.builder(
+                                itemCount: c.selectedVolList.length,
+                                itemBuilder: (context, i) => ListTile(
+                                      trailing: Text(
+                                          (c.selectedVolList[i].admissionNo)
+                                              .toString()),
+                                      title:
+                                          Text(c.selectedVolList[i].name ?? ''),
+                                      subtitle: Text(
+                                          c.selectedVolList[i].department ??
+                                              ''),
+                                    )),
+                          ),
                           onConfirm: () {
                             c.onSubmitAttendance();
                           });
@@ -188,31 +233,6 @@ class ManageAttendanceScreen extends StatelessWidget {
                   },
                   child: Text("Submit"),
                 )),
-          SizedBox(width: 10),
-          Obx(() => Text("Selected volunteers (${c.selectedVolList.length}):",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))),
-          Expanded(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: c.selectedVolList.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(c.selectedVolList[index].admissionNo ?? 'N/A'),
-                        SizedBox(width: 25),
-                        Text(c.selectedVolList[index].name ?? 'N/A'),
-                      ],
-                    ),
-                    Text(c.selectedVolList[index].department ?? 'N/A'),
-                  ],
-                );
-              },
-              separatorBuilder: (context, index) => Divider(),
-            ),
-          )
         ],
       ),
     );

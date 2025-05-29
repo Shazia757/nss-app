@@ -1,33 +1,24 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import '../../controller/program_controller.dart';
 import '../../model/programs_model.dart';
 
 class AddProgramScreen extends StatelessWidget {
   final Program? program;
-
   final bool isUpdate;
-
   const AddProgramScreen({super.key, required this.isUpdate, this.program});
 
   @override
   Widget build(BuildContext context) {
     AddProgramController c = Get.put(AddProgramController());
+
     if (isUpdate) {
-      c.nameController.text = program?.name ?? '';
-      c.descController.text = program?.description ?? '';
-      c.date = program?.date;
-      log(c.date.toString());
-      c.dateController.text = (program?.date) != null
-          ? DateFormat.yMMMd().format(program!.date!)
-          : '';
-      c.durationController.text = (program?.duration) != null
-          ? (program?.duration ?? 0).toString()
-          : '';
+      c.setUpdateData(program!);
+    } else {
+      c.clearTextFields();
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("${isUpdate ? "Update" : "Add"} Program"),
@@ -127,7 +118,13 @@ class AddProgramScreen extends StatelessWidget {
                             c.isUpdateButtonLoading.value,
                         child: FilledButton(
                           onPressed: () {
-                            c.deleteProgram(program!.id!);
+                            CustomWidgets().showConfirmationDialog(
+                                title: "Delete Program",
+                                message:
+                                    "Are you sure you want to delete the program?",
+                                onConfirm: () {
+                                  c.deleteProgram(program!.id!);
+                                });
                           },
                           style: FilledButton.styleFrom(
                             backgroundColor: Colors.red.shade900,

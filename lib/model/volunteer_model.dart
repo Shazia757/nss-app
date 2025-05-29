@@ -11,7 +11,7 @@ class Users {
   String? rollNo;
   String? createdBy;
   String? updatedBy;
- 
+
   String? year;
 
   Users(
@@ -43,7 +43,6 @@ class Users {
         rollNo: json?['roll_number'] as String?,
         createdBy: json?['created_by'] as String?,
         updatedBy: json?['updated_by'] as String?,
-      
         year: json?['year'] as String?);
   }
 
@@ -124,22 +123,24 @@ class Volunteer {
   String? admissionNo;
   String? name;
   String? department;
+  String? role;
 
-  Volunteer({this.admissionNo, this.name, this.department});
+  Volunteer({this.admissionNo, this.name, this.department, this.role});
 
   factory Volunteer.fromJson(Map<String, dynamic> json) {
     return Volunteer(
-      admissionNo: json['admission_number'] as String?,
-      name: json['name'] as String?,
-      department: json['department'] as String?,
-    );
+        admissionNo: json['admission_number'] as String?,
+        name: json['name'] as String?,
+        department: json['department'] as String?,
+        role: json['role'] as String?);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'admission_number': admissionNo,
       'name': name,
-      'department': department
+      'department': department,
+      'role': role
     };
   }
 }

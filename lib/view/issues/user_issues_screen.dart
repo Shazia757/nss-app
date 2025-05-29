@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -37,7 +36,7 @@ class ScreenUserIssues extends StatelessWidget {
         appBar: AppBar(
           title: Text("Issues"),
           backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          foregroundColor: Colors.white,
+          foregroundColor: Theme.of(context).colorScheme.primaryContainer,
           bottom: PreferredSize(
             preferredSize: Size(double.infinity, 50),
             child: Container(
@@ -52,8 +51,7 @@ class ScreenUserIssues extends StatelessWidget {
             ),
           ),
           actions: [
-            IconButton(
-                onPressed: () => c.getAdminIssues(), icon: Icon(Icons.refresh))
+            IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
           ],
         ),
         bottomNavigationBar: CustomNavBar(currentIndex: 1),
@@ -81,8 +79,12 @@ class ScreenUserIssues extends StatelessWidget {
             color: theme.colorScheme.surfaceDim,
           ),
           tabs: [Tab(text: "Opened"), Tab(text: "Closed")],
-          onTap: (_) => c.getVolIssues(),
+          onTap: (i) {
+            c.isResolved.value = (i == 1);
+            c.getVolIssues();
+          },
         ),
+        Obx(() => filterAndSort()),
         Expanded(
           child: Obx(() {
             return TabBarView(children: [
@@ -90,51 +92,30 @@ class ScreenUserIssues extends StatelessWidget {
                   onRefresh: () async => c.getVolIssues(),
                   child: c.isLoading.isTrue
                       ? Center(child: CircularProgressIndicator())
-                      : c.closedList.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Lottie.asset('assets/empty_list.json',
-                                      height: 200),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    'No data available',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'There’s nothing to show here at the moment.',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.grey),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            )
+                      : c.modifiedOpenedList.isEmpty
+                          ? CustomWidgets.noDataWidget
                           : ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) => listTileView(
-                                  c.openedList[index],
+                                  c.modifiedOpenedList[index],
                                   count: "${index + 1}"),
-                              itemCount: c.openedList.length,
+                              itemCount: c.modifiedOpenedList.length,
                             )),
               RefreshIndicator.adaptive(
                   onRefresh: () async => c.getVolIssues(),
                   child: Center(
                     child: c.isLoading.isTrue
                         ? CircularProgressIndicator()
-                        : c.closedList.isEmpty
+                        : c.modifiedClosedList.isEmpty
                             ? Text('No resolved issues.')
                             : ListView.builder(
                                 padding: EdgeInsets.all(10),
                                 itemBuilder: (context, index) {
-                                  return listTileView(c.closedList[index],
+                                  return listTileView(
+                                      c.modifiedClosedList[index],
                                       count: "${index + 1}");
                                 },
-                                itemCount: c.closedList.length,
+                                itemCount: c.modifiedClosedList.length,
                               ),
                   )),
             ]);
@@ -148,28 +129,69 @@ class ScreenUserIssues extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.all(10),
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Obx(() => DropdownButton<String>(
-                value: c.submittedTo.value,
-                onChanged: (value) => c.submittedTo.value = value!,
-                items: [
-                  DropdownMenuItem(value: 'sec', child: Text("Secretary")),
-                  DropdownMenuItem(value: 'po', child: Text("Program Officer")),
-                ],
-              )),
+        // Text('  Report To:', style: Theme.of(context).textTheme.labelLarge),
+        Row(
+          children: [
+            Expanded(
+              child: Obx(() => InkWell(
+                    onTap: () {
+                      c.submittedTo.value = 'sec';
+                    },
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: (c.submittedTo.value == 'sec')
+                            ? (Theme.of(context).colorScheme.primaryContainer)
+                            : null,
+                        border: Border.all(
+                            color: (c.submittedTo.value == 'sec')
+                                ? (Theme.of(context).colorScheme.primary)
+                                : Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('To Secretary'),
+                    ),
+                  )),
+            ),
+            SizedBox(width: 5),
+            Expanded(
+              child: Obx(() => InkWell(
+                    onTap: () {
+                      c.submittedTo.value = 'po';
+                    },
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: (c.submittedTo.value == 'po')
+                            ? (Theme.of(context).colorScheme.primaryContainer)
+                            : null,
+                        border: Border.all(
+                            color: (c.submittedTo.value == 'po')
+                                ? (Theme.of(context).colorScheme.primary)
+                                : Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('To Program Officer'),
+                    ),
+                  )),
+            ),
+          ],
         ),
-        CustomWidgets()
-            .textField(controller: c.subjectController, label: "Subject"),
         CustomWidgets().textField(
-            controller: c.desController,
+            controller: c.subjectController,
+            label: "Subject",
+            margin: EdgeInsets.symmetric(vertical: 10)),
+        CustomWidgets().textField(
+          controller: c.desController,
           maxlines: 12,
           label: "Description",
         ),
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: Obx(() => c.isLoading.value
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : FilledButton(
                     onPressed: () {
                       if (c.onSubmitIssueValidation()) {
@@ -237,6 +259,70 @@ class ScreenUserIssues extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Column filterAndSort() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomWidgets().menuBuilder(menuChildren: [
+              MenuItemButton(
+                  child: Text("Secretary"),
+                  onPressed: () => c.filterByRole('sec')),
+              Visibility(
+                visible: LocalStorage().readUser().role != 'sec',
+                child: MenuItemButton(
+                    child: Text("Program Officer"),
+                    onPressed: () => c.filterByRole('po')),
+              ),
+              Visibility(
+                visible: LocalStorage().readUser().role != 'sec',
+                child: MenuItemButton(
+                    child: Text("All"), onPressed: () => c.filterByRole('all')),
+              ),
+            ], label: "\tAssigned to", icon: Icons.filter_alt_rounded),
+            SizedBox(
+              height: 38,
+              width: 2,
+              child: VerticalDivider(indent: 5, endIndent: 2),
+            ),
+            CustomWidgets().menuBuilder(menuChildren: [
+              MenuItemButton(
+                  child: Text("Oldest"),
+                  onPressed: () => c.sortByOldestDate(true)),
+              MenuItemButton(
+                  child: Text("Latest"),
+                  onPressed: () => c.sortByOldestDate(false)),
+            ], label: "\t\tSort by date", icon: Icons.sort),
+            Visibility(
+              visible: c.isResolved.isTrue,
+              child: SizedBox(
+                height: 38,
+                width: 2,
+                child: VerticalDivider(indent: 5, endIndent: 2),
+              ),
+            ),
+            Visibility(
+              visible: c.isResolved.isTrue,
+              child: CustomWidgets().menuBuilder(
+                  menuChildren: c.adminList
+                      .map(
+                        (e) => MenuItemButton(
+                            child: Text(e?.name ?? "N/A"),
+                            onPressed: () => c.resolvedBy(e?.admissionNo)),
+                      )
+                      .toList(),
+                  label: "\t\tResolved by ",
+                  icon: Icons.task_alt_outlined),
+            ),
+          ],
+        ),
+        Divider(),
+        SizedBox(height: 5)
+      ],
     );
   }
 }

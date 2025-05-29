@@ -9,26 +9,28 @@ class Issues {
   String? updatedBy;
   bool? isOpen;
 
-  Issues(
-      {this.to,
-      this.createdDate,
-      this.createdBy,
-      this.subject,
-      this.description,
-      this.updatedBy,
-      this.id,
-      this.updatedDate,
-      this.isOpen});
+  Issues({
+    this.to,
+    this.createdDate,
+    this.createdBy,
+    this.subject,
+    this.description,
+    this.updatedBy,
+    this.id,
+    this.updatedDate,
+    this.isOpen,
+  });
   factory Issues.fromJson(Map<String, dynamic> data) {
     return Issues(
-        to: data['assigned_to'],
-        createdDate: DateTime.tryParse(data['created_at']),
-        updatedDate: DateTime.tryParse(data['updated_at']),
-        subject: data['subject'],
-        description: data['description'],
-        createdBy: data['created_by'],
-        id: data['id'],
-        updatedBy: data['updated_by']);
+      to: data['assigned_to'],
+      createdDate: DateTime.tryParse(data['created_at']),
+      updatedDate: DateTime.tryParse(data['updated_at']),
+      subject: data['subject'],
+      description: data['description'],
+      createdBy: data['created_by'],
+      id: data['id'],
+      updatedBy: data['updated_by'],
+    );
   }
   Map<String, dynamic> toJson() {
     return {
@@ -38,13 +40,13 @@ class Issues {
       'subject': subject,
       'description': description,
       'id': id,
-      'updated_by': updatedBy
+      'updated_by': updatedBy,
     };
   }
 
   @override
   String toString() {
-    return '$subject,$isOpen';
+    return '{$subject,$updatedDate}';
   }
 }
 

@@ -35,8 +35,10 @@ class Api {
   Future<GeneralResponse?> changePassword(Map<String, dynamic> data) async {
     try {
       log("request :${jsonEncode(data)}");
-      final response = await http.post(Uri.parse('$baseUrl/change_password/'),
-          body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse('$baseUrl/change_password/'),
+              body: jsonEncode(data), headers: headers)
+          .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -45,8 +47,8 @@ class Api {
       checkConnectivity();
     } catch (e) {
       log('Api error:$e');
-      return null;
     }
+    return null;
   }
   //------------------Reset Password---------------------------//
 
@@ -65,9 +67,23 @@ class Api {
 
 //------------------List Volunteer---------------------------//
 
-  Future<VolunteerList?> listVolunteer() async {
+  Future<VolunteerList?> getVolunteers() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/get_volunteers/'));
+      log(response.body.toString());
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return VolunteerList.fromJson(responseJson);
+    } catch (e) {
+      log('Api error:$e');
+      // jsonEncode(object)
+      return null;
+    }
+  }
+//------------------List Admins---------------------------//
+
+  Future<VolunteerList?> getAdmins() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/get_admins/'));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
@@ -175,7 +191,7 @@ class Api {
 
 //------------------Upcoming Programs---------------------------//
 
-  Future<ProgramResponse?> upcomingPrograms() async {
+  Future<ProgramResponse?> getUpcomingPrograms() async {
     try {
       final response =
           await http.get(Uri.parse('$baseUrl/get_upcoming_programs/'));

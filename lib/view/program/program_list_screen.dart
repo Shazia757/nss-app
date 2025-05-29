@@ -3,11 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:nss/controller/program_controller.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/model/programs_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/program/add_program_screen.dart';
-import 'package:nss/view/program/program_details_screen.dart';
-
-enum Date { oldestToLatest, latestToOldest }
 
 class ProgramsScreen extends StatelessWidget {
   const ProgramsScreen({super.key});
@@ -15,7 +13,6 @@ class ProgramsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProgramListController c = Get.put(ProgramListController());
-    Date? date;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +20,48 @@ class ProgramsScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
         actions: [
-          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
+          MenuAnchor(
+            menuChildren: [
+              MenuItemButton(
+                child: Text("Oldest"),
+                onPressed: () {
+                  c.date.value = 'oldest';
+                  c.sortByDate();
+                },
+              ),
+              MenuItemButton(
+                child: Text("Latest"),
+                onPressed: () {
+                  c.date.value = 'latest';
+                  c.sortByDate();
+                },
+              ),
+            ],
+            builder: (context, controller, child) {
+              return TextButton.icon(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
+                label: Text(
+                  'Sort',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+                icon: Icon(
+                  Icons.swap_vert,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+            },
+          ),
+          // IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh)),
         ],
       ),
       body: Obx(
@@ -44,71 +82,147 @@ class ProgramsScreen extends StatelessWidget {
                   SizedBox(
                     height: 70,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
                           width: 10,
                         ),
                         Expanded(
-                          child: SearchBar(
-                              constraints: BoxConstraints.tight(Size(100, 50)),
-                              leading: Icon(Icons.search),
-                              controller: c.searchController,
-                              hintText: 'Search',
-                              onChanged: (value) =>
-                                  c.onSearchTextChanged(value),
-                              trailing: [
-                                IconButton(
-                                    onPressed: () => c.onSearchTextChanged(''),
-                                    icon: Icon(Icons.cancel))
-                              ]),
+                          child: CustomWidgets().searchBar(
+                            constraints: BoxConstraints.tight(Size(350, 50)),
+                            leading: Icon(Icons.search),
+                            controller: c.searchController,
+                            hintText: 'Search Program',
+                            onChanged: (value) => c.onSearchTextChanged(value),
+                            visible: c.searchController.text.isNotEmpty,
+                            onPressedCancel: () => c.onSearchTextChanged(''),
+                          ),
                         ),
-                        PopupMenuButton(
-                          tooltip: "Sort by",
-                          initialValue: date,
-                          onSelected: (value) => date = value,
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: Date.oldestToLatest,
-                              child: Text("Oldest"),
-                              onTap: () => c.sortByDate(Date.oldestToLatest),
-                            ),
-                            PopupMenuItem(
-                              value: Date.latestToOldest,
-                              child: Text("Latest"),
-                              onTap: () => c.sortByDate(Date.latestToOldest),
-                            )
-                          ],
-                          child: Text('Sort'),
-                        ),
+                        // PopupMenuButton(
+                        //   tooltip: "Sort by",
+                        //   initialValue: c.date.value,
+                        //   onSelected: (value) {
+                        //     c.date.value = value;
+                        //     c.sortByDate();
+                        //   },
+                        //   itemBuilder: (context) => [
+                        //     PopupMenuItem(
+                        //       value: 'oldest',
+                        //       child: Text("Oldest"),
+                        //     ),
+                        //     PopupMenuItem(
+                        //       value: 'latest',
+                        //       child: Text("Latest"),
+                        //     )
+                        //   ],
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Icon(Icons.swap_vert),
+                        //   ),
+                        // ),
                         SizedBox(
-                          width: 10,
-                        )
+                          width: 5,
+                        ),
                       ],
                     ),
                   ),
                   Expanded(
-                    child: ListView.separated(
+                    child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           final date = (c.searchList[index].date == null)
                               ? "N/A"
                               : DateFormat.yMMMd()
                                   .format(c.searchList[index].date!);
-                          return ListTile(
-                            onTap: () {
-                              Get.to(() => ProgramDetails(
-                                    data: c.searchList[index],
-                                  ))?.then((value) => c.onInit());
-                            },
-                            leading: CircleAvatar(
-                                child: Text((index + 1).toString())),
-                            title: Text(c.searchList[index].name ?? "N/A"),
-                            subtitle: Text(date),
-                            trailing: Text(
-                                "${c.searchList[index].duration.toString()} Hours"),
+                          return Card.outlined(
+                            elevation: 2,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          date,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                        Text(
+                                          "${c.searchList[index].duration.toString()} hours",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, bottom: 8),
+                                    child: Text(
+                                      c.searchList[index].name ?? "",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, bottom: 8),
+                                    child: Text(
+                                        c.searchList[index].description ?? ""),
+                                  ),
+                                  Visibility(
+                                    visible: (LocalStorage().readUser().role !=
+                                        'vol'),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton.icon(
+                                        onPressed: () {
+                                          Get.to(() => AddProgramScreen(
+                                                  isUpdate: true,
+                                                  program: c.searchList[index]))
+                                              ?.then(
+                                            (value) {
+                                              Get.back();
+                                            },
+                                          );
+                                        },
+                                        label: Text('Edit'),
+                                        icon: Icon(Icons.edit),
+                                        style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           );
+
+                          // ListTile(
+                          //   onTap: () {
+                          //     Get.to(() => ProgramDetails(
+                          //           data: c.searchList[index],
+                          //         ))?.then((value) => c.onInit());
+                          //   },
+                          //   leading: CircleAvatar(
+                          //       child: Text((index + 1).toString())),
+                          //   title: Text(c.searchList[index].name ?? "N/A"),
+                          //   subtitle: Text(date),
+                          //   trailing: Text(
+                          //       "${c.searchList[index].duration.toString()} Hours"),
+                          // );
                         },
-                        separatorBuilder: (context, index) => Divider(),
                         itemCount: c.searchList.length),
                   ),
                 ],
@@ -118,10 +232,15 @@ class ProgramsScreen extends StatelessWidget {
       floatingActionButton: Visibility(
         visible: LocalStorage().readUser().role != 'vol',
         child: FloatingActionButton(
-          child: Icon(Icons.add),
+          shape: CircleBorder(),
+          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
           onPressed: () {
             Get.to(() => AddProgramScreen(isUpdate: false));
           },
+          child: Icon(
+            Icons.add,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/authentication/login_screen.dart';
+import 'package:nss/view/volunteers/delete_account_screen.dart';
 
 class VolunteerAddScreen extends StatelessWidget {
   const VolunteerAddScreen({super.key, this.isUpdateScreen, this.user});
@@ -43,7 +44,11 @@ class VolunteerAddScreen extends StatelessWidget {
               icon: Icon(Icons.logout, color: Colors.white),
               onPressed: () {
                 LocalStorage().clearAll();
-                Get.offAll(() => LoginScreen());
+                CustomWidgets().showConfirmationDialog(
+                  title: 'Logout',
+                  message: 'Are you sure you want to logout?',
+                  onConfirm: () => Get.offAll(() => LoginScreen()),
+                );
               },
             ),
           ),
@@ -236,7 +241,48 @@ class VolunteerAddScreen extends StatelessWidget {
                     Get.to(() => ChangePasswordScreen(
                         isChangepassword: false,
                         userId: c.admissionNoController.text));
-                  })
+                  }),
+            SizedBox(
+              height: 15,
+            ),
+            if (isProfilePage)
+              _buildActionButton(
+                  context: context,
+                  text: "Delete Account",
+                  icon: Icons.delete,
+                  color: Theme.of(context).colorScheme.error,
+                  onPressed: () => Get.to(DeleteAccountScreen())),
+            SizedBox(
+              height: 15,
+            ),
+            if (isProfilePage)
+              InkWell(
+                onTap: () {},
+                child: Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            SizedBox(
+              height: 10,
+            ),
+            if (isProfilePage)
+              InkWell(
+                onTap: () {},
+                child: Text(
+                  'Terms & Conditions',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.primary),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

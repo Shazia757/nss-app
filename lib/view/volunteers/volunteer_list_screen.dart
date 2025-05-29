@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
 import '../../controller/volunteer_controller.dart';
@@ -16,7 +16,7 @@ class VolunteersListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
-              ?.then((value) => c.getData());
+              ?.then((value) => c.onInit());
         },
         child: Icon(Icons.add),
       ),
@@ -36,26 +36,7 @@ class VolunteersListScreen extends StatelessWidget {
               ),
             );
           } else if (c.usersList.isEmpty) {
-            return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset('assets/empty_list.json', height: 200),
-                      SizedBox(height: 20),
-                      Text(
-                        'No data available',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'There’s nothing to show here at the moment.',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
+            return CustomWidgets.noDataWidget;
           }
 
           return RefreshIndicator.adaptive(
@@ -65,20 +46,14 @@ class VolunteersListScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                SearchBar(
-                    constraints: BoxConstraints.tight(Size(400, 50)),
-                    leading: Icon(Icons.search),
-                    controller: c.searchController,
-                    hintText: 'Search',
-                    onChanged: (value) => c.onSearchTextChanged(value),
-                    trailing: [
-                      IconButton(
-                          onPressed: () {
-                           
-                            c.onSearchTextChanged('');
-                          },
-                          icon: Icon(Icons.cancel))
-                    ]),
+                CustomWidgets().searchBar(
+                  constraints: BoxConstraints.tight(Size(350, 50)),
+                  controller: c.searchController,
+                  hintText: 'Search Volunteer',
+                  onChanged: (value) => c.onSearchTextChanged(value),
+                  visible: c.searchController.text.isNotEmpty,
+                  onPressedCancel: () => c.onSearchTextChanged(''),
+                ),
                 Expanded(
                   child: ListView.separated(
                     shrinkWrap: true,

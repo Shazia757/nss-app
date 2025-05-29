@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/program/program_list_screen.dart';
 import '../model/programs_model.dart';
 
@@ -12,7 +14,7 @@ class ProgramListController extends GetxController {
   RxList<Program> searchList = <Program>[].obs;
   RxBool isLoading = true.obs;
   TextEditingController searchController = TextEditingController();
-  Rx<Date> date = Rx<Date>(Date.oldestToLatest);
+  RxString date='oldest'.obs;
 
   @override
   void onInit() {
@@ -45,8 +47,8 @@ class ProgramListController extends GetxController {
     }
   }
 
-  void sortByDate(Date selectedDate) {
-    if (selectedDate == Date.oldestToLatest) {
+  void sortByDate() {
+    if (date.value == 'oldest') {
       searchList.sort((a, b) => a.date!.compareTo(b.date!));
     } else {
       searchList.sort((a, b) => b.date!.compareTo(a.date!));
@@ -61,8 +63,9 @@ class AddProgramController extends GetxController {
   TextEditingController durationController = TextEditingController();
   var isUpdateButtonLoading = false.obs;
   var isDeleteButtonLoading = false.obs;
-
   DateTime? date;
+
+  
 
   addProgram() {
     isUpdateButtonLoading.value = true;
@@ -78,10 +81,11 @@ class AddProgramController extends GetxController {
         isUpdateButtonLoading.value = false;
         if (value?.status == true) {
           Get.back();
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program added successfully");
         } else {
-          Get.snackbar("Error", value?.message ?? 'Failed to add program.');
+          CustomWidgets.showSnackBar(
+              "Error", value?.message ?? 'Failed to add program.');
         }
       },
     );
@@ -101,10 +105,11 @@ class AddProgramController extends GetxController {
         isUpdateButtonLoading.value = false;
         if (value?.status == true) {
           Get.back();
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program updated successfully.");
         } else {
-          Get.snackbar('Error', value?.message ?? 'Failed to update program.');
+          CustomWidgets.showSnackBar(
+              'Error', value?.message ?? 'Failed to update program.');
         }
       },
     );
@@ -116,11 +121,12 @@ class AddProgramController extends GetxController {
       (value) {
         if (value?.status == true) {
           isDeleteButtonLoading.value = false;
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program deleted successfully.");
           Get.to(() => ProgramsScreen());
         } else {
-          Get.snackbar("Error", value?.message ?? 'Failed to delete program.');
+          CustomWidgets.showSnackBar(
+              "Error", value?.message ?? 'Failed to delete program.');
         }
       },
     );
@@ -128,21 +134,39 @@ class AddProgramController extends GetxController {
 
   bool onSubmitProgramValidation() {
     if (nameController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter program name');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter program name');
       return false;
     }
     if (dateController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter date');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter date');
       return false;
     }
     if (durationController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter duration');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter duration');
       return false;
     }
     if (descController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add description');
+      CustomWidgets.showSnackBar('Invalid', 'Please add description');
       return false;
     }
     return true;
+  }
+
+  void setUpdateData(Program program) {
+    nameController.text = program.name ?? '';
+    descController.text = program.description ?? '';
+    date = program.date;
+    log(date.toString());
+    dateController.text =
+        (program.date) != null ? DateFormat.yMMMd().format(program.date!) : '';
+    durationController.text =
+        (program.duration) != null ? (program.duration ?? 0).toString() : '';
+  }
+
+  void clearTextFields() {
+    nameController.clear();
+    durationController.clear();
+    descController.clear();
+    dateController.clear();
   }
 }

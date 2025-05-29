@@ -16,7 +16,7 @@ class HomeController extends GetxController {
   void fetchUpcomingPrograms() async {
     isLoading.value = true;
     upcomingPrograms.clear();
-    api.upcomingPrograms().then(
+    api.getUpcomingPrograms().then(
       (value) {
         upcomingPrograms.assignAll(value?.programs ?? []);
         isLoading.value = false;

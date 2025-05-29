@@ -7,17 +7,9 @@ import 'package:nss/view/common_pages/custom_decorations.dart';
 import '../../controller/issues_controller.dart';
 import '../../model/issues_model.dart';
 
-enum To { sec, po, secAndpo }
-
 class ScreenAdminIssues extends StatelessWidget {
   ScreenAdminIssues({super.key});
   final IssuesController c = Get.put(IssuesController());
-  final date = Rx<Date>(Date.oldestToLatest);
-  final Map<String, String> roleLabels = {
-    'sec': 'Secretary',
-    'po': 'Program Officer',
-    'both': 'Secretary and Program Officer',
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +19,9 @@ class ScreenAdminIssues extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).colorScheme.primaryContainer,
         actions: [
-          IconButton(
-              onPressed: () => c.getAdminIssues(), icon: Icon(Icons.refresh))
+          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
         ],
       ),
       bottomNavigationBar: CustomNavBar(currentIndex: 1),
@@ -41,83 +32,26 @@ class ScreenAdminIssues extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
+                controller: c.adminTabController,
                 labelColor: Theme.of(context).colorScheme.onPrimaryContainer,
                 unselectedLabelColor:
                     Theme.of(context).colorScheme.onPrimaryContainer,
+                onTap: (value) => c.isResolved.value = (value == 1),
                 tabs: [
                   Tab(text: "Opened"),
                   Tab(text: "Resolved"),
                 ],
               ),
+              Obx(() => filterAndSort()),
               Expanded(
-                child: TabBarView(children: [
+                child: TabBarView(controller: c.adminTabController, children: [
                   Column(
                     children: [
-                      SizedBox(
-                        width: 400,
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            (LocalStorage().readUser().role == 'po')
-                                ? TextButton.icon(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                        constraints:
-                                            BoxConstraints.tight(Size.infinite),
-                                        useSafeArea: true,
-                                        showDragHandle: true,
-                                        context: context,
-                                        builder: (context) {
-                                          return Column(
-                                            children: [
-                                              Text('Reported To'),
-                                              SizedBox(height: 5),
-                                              Obx(
-                                                () => Wrap(
-                                                  spacing: 8,
-                                                  children: roleLabels.entries
-                                                      .map((e) {
-                                                    return ChoiceChip(
-                                                      label: Text(e.value),
-                                                      selected:
-                                                          c.selected.value ==
-                                                              e.key,
-                                                      onSelected: (value) =>
-                                                          c.selected(e.key),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    label: Text('Filter'),
-                                    icon: Icon(Icons.filter_alt),
-                                  )
-                                : SizedBox(),
-                            TextButton.icon(
-                              label: Text('Sort'),
-                              onPressed: () =>
-                                  sortBottomSheet(context, c, (Date? value) {
-                                if (value != null) {
-                                  date.value = value;
-                                  c.sortOpenedList(value);
-                                }
-                              }),
-                              icon: Icon(Icons.sort),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Expanded(
                         child: Obx(() {
                           if (c.isLoading.value) {
                             return Center(child: CircularProgressIndicator());
-                          } else if (c.openFilteredTo.isEmpty) {
+                          } else if (c.modifiedOpenedList.isEmpty) {
                             return Center(child: Text("No issues reported"));
                           }
                           return ListView.separated(
@@ -125,114 +59,38 @@ class ScreenAdminIssues extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return issueListTile(
                                 count: index + 1,
-                                data: c.openFilteredTo[index],
+                                data: c.modifiedOpenedList[index],
                                 isOpen: true,
                               );
                             },
                             separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.openFilteredTo.length,
+                            itemCount: c.modifiedOpenedList.length,
                           );
                         }),
                       ),
                     ],
                   ),
+                  // ---------------------- 2nd view ----------------------
                   Column(
                     children: [
-                      SizedBox(
-                        width: 400,
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            (LocalStorage().readUser().role == 'po')
-                                ? TextButton.icon(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                        constraints:
-                                            BoxConstraints.tight(Size.infinite),
-                                        useSafeArea: true,
-                                        showDragHandle: true,
-                                        context: context,
-                                        builder: (context) {
-                                          return Column(
-                                            children: [
-                                              Text('Reported To'),
-                                              SizedBox(height: 5),
-                                              Obx(
-                                                () => Wrap(
-                                                  spacing: 8,
-                                                  children: roleLabels.entries
-                                                      .map((e) {
-                                                    return ChoiceChip(
-                                                      label: Text(e.value),
-                                                      selected:
-                                                          c.selected.value ==
-                                                              e.key,
-                                                      onSelected: (value) =>
-                                                          c.selected(e.key),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ),
-                                              SizedBox(height: 10),
-                                              Text('Resolved By'),
-                                              SizedBox(height: 5),
-                                              Obx(() => Wrap(
-                                                    spacing: 8,
-                                                    children:
-                                                        c.resolvedBy.map((e) {
-                                                      return ChoiceChip(
-                                                        label: Text(e),
-                                                        selected:
-                                                            c.selected.value ==
-                                                                e,
-                                                        onSelected: (value) =>
-                                                            c.selected(e),
-                                                      );
-                                                    }).toList(),
-                                                  )),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    label: Text('Filter'),
-                                    icon: Icon(Icons.filter_alt),
-                                  )
-                                : SizedBox(),
-                            TextButton.icon(
-                              label: Text('Sort'),
-                              onPressed: () =>
-                                  sortBottomSheet(context, c, (Date? value) {
-                                if (value != null) {
-                                  date.value = value;
-                                  c.sortClosedList(value);
-                                }
-                              }),
-                              icon: Icon(Icons.sort),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Expanded(
                         child: Obx(() {
                           if (c.isLoading.value) {
                             return Center(child: CircularProgressIndicator());
-                          } else if (c.closedList.isEmpty) {
-                            return Center(child: Text("No issues reported"));
+                          } else if (c.modifiedClosedList.isEmpty) {
+                            return Center(child: Text("No issues resolved"));
                           }
                           return ListView.separated(
                             padding: EdgeInsets.all(10),
                             itemBuilder: (context, index) {
                               return issueListTile(
                                 count: index + 1,
-                                data: c.closedList[index],
+                                data: c.modifiedClosedList[index],
                                 isOpen: false,
                               );
                             },
                             separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.closedList.length,
+                            itemCount: c.modifiedClosedList.length,
                           );
                         }),
                       ),
@@ -244,6 +102,70 @@ class ScreenAdminIssues extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Column filterAndSort() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomWidgets().menuBuilder(menuChildren: [
+              MenuItemButton(
+                  child: Text("Secretary"),
+                  onPressed: () => c.filterByRole('sec')),
+              Visibility(
+                visible: LocalStorage().readUser().role != 'sec',
+                child: MenuItemButton(
+                    child: Text("Program Officer"),
+                    onPressed: () => c.filterByRole('po')),
+              ),
+              Visibility(
+                visible: LocalStorage().readUser().role != 'sec',
+                child: MenuItemButton(
+                    child: Text("All"), onPressed: () => c.filterByRole('all')),
+              ),
+            ], label: "\tAssigned to", icon: Icons.filter_alt_rounded),
+            SizedBox(
+              height: 38,
+              width: 2,
+              child: VerticalDivider(indent: 5, endIndent: 2),
+            ),
+            CustomWidgets().menuBuilder(menuChildren: [
+              MenuItemButton(
+                  child: Text("Oldest"),
+                  onPressed: () => c.sortByOldestDate(true)),
+              MenuItemButton(
+                  child: Text("Latest"),
+                  onPressed: () => c.sortByOldestDate(false)),
+            ], label: "\t\tSort by date", icon: Icons.sort),
+            Visibility(
+              visible: c.isResolved.isTrue,
+              child: SizedBox(
+                height: 38,
+                width: 2,
+                child: VerticalDivider(indent: 5, endIndent: 2),
+              ),
+            ),
+            Visibility(
+              visible: c.isResolved.isTrue,
+              child: CustomWidgets().menuBuilder(
+                  menuChildren: c.adminList
+                      .map(
+                        (e) => MenuItemButton(
+                            child: Text(e?.name ?? "N/A"),
+                            onPressed: () => c.resolvedBy(e?.admissionNo)),
+                      )
+                      .toList(),
+                  label: "\t\tResolved by ",
+                  icon: Icons.task_alt_outlined),
+            ),
+          ],
+        ),
+        Divider(),
+        SizedBox(height: 5)
+      ],
     );
   }
 
@@ -281,9 +203,41 @@ class ScreenAdminIssues extends StatelessWidget {
           DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
         ),
         onTap: () {
+          c.getUserDetails(data.createdBy);
           Get.defaultDialog(
             title: data.subject ?? "N/A",
-            middleText: data.description ?? "N/A",
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(isOpen ? 'Reported on:' : 'Resolved on:'),
+                        Text('Reported by:'),
+                        Text('Admission number: '),
+                        Text('Department:'),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(isOpen
+                            ? DateFormat.yMMMd()
+                                .format(data.createdDate ?? DateTime.now())
+                            : DateFormat.yMMMd()
+                                .format(data.updatedDate ?? DateTime.now())),
+                        Text('${c.usersName}'),
+                        Text('${data.createdBy}'),
+                        Text('${c.department}')
+                      ],
+                    ),
+                  ],
+                ),
+                Text(data.description ?? "N/A"),
+              ],
+            ),
             backgroundColor: Colors.white,
             titleStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             actions: [
@@ -308,52 +262,6 @@ class ScreenAdminIssues extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  sortBottomSheet(BuildContext context, IssuesController c,
-      void Function(Date?)? onChanged) {
-    return showModalBottomSheet(
-      constraints: BoxConstraints.tight(Size.infinite),
-      useSafeArea: true,
-      context: context,
-      builder: (context) {
-        return Expanded(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'SORT BY',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Divider(),
-              Obx(
-                () => ListTile(
-                  title: Text('Date-Oldest to Latest'),
-                  trailing: Radio<Date>(
-                      value: Date.oldestToLatest,
-                      groupValue: date.value,
-                      onChanged: onChanged),
-                ),
-              ),
-              Obx(
-                () => ListTile(
-                  title: Text('Date-Latest to Oldest '),
-                  trailing: Radio<Date>(
-                      value: Date.latestToOldest,
-                      groupValue: date.value,
-                      onChanged: onChanged),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

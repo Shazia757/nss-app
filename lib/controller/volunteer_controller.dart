@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
 class VolunteerController extends GetxController {
@@ -42,10 +43,11 @@ class VolunteerController extends GetxController {
         isUpdateButtonLoading.value = false;
         if (value?.status ?? false == true) {
           Get.back();
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               'Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          Get.snackbar('Error', value?.message ?? 'Failed to add volunteer.');
+          CustomWidgets.showSnackBar(
+              'Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -69,10 +71,10 @@ class VolunteerController extends GetxController {
         isUpdateButtonLoading.value = true;
         if (response?.status == true) {
           Get.back();
-          Get.snackbar('Success',
+          CustomWidgets.showSnackBar('Success',
               response?.message ?? 'Volunteer updated successfully.');
         } else {
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               'Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
@@ -87,10 +89,10 @@ class VolunteerController extends GetxController {
 
         if (response?.status == true) {
           Get.back();
-          Get.snackbar("Success",
+          CustomWidgets.showSnackBar("Success",
               response?.message ?? "Volunteer deleted successfully.");
         } else {
-          Get.snackbar(
+          CustomWidgets.showSnackBar(
               "Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
@@ -124,35 +126,35 @@ class VolunteerController extends GetxController {
 
   bool onSubmitVolValidation() {
     if (nameController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter volunteer name');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter volunteer name');
       return false;
     }
     if (emailController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter email');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter email');
       return false;
     }
     if (phoneController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please enter phone number');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter phone number');
       return false;
     }
     if (depController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add department');
+      CustomWidgets.showSnackBar('Invalid', 'Please add department');
       return false;
     }
     if (rollNoController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add roll number');
+      CustomWidgets.showSnackBar('Invalid', 'Please add roll number');
       return false;
     }
     if (admissionNoController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add admission number');
+      CustomWidgets.showSnackBar('Invalid', 'Please add admission number');
       return false;
     }
     if (dobController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add date of birth');
+      CustomWidgets.showSnackBar('Invalid', 'Please add date of birth');
       return false;
     }
     if (yearController.text.isEmpty) {
-      Get.snackbar('Invalid', 'Please add year of study');
+      CustomWidgets.showSnackBar('Invalid', 'Please add year of study');
       return false;
     }
     return true;
@@ -175,7 +177,7 @@ class VolunteerListController extends GetxController {
 
   void getData() {
     isLoading.value = true;
-    Api().listVolunteer().then(
+    Api().getVolunteers().then(
       (value) {
         usersList.assignAll(value?.data ?? []);
         searchList.assignAll(usersList);

@@ -32,7 +32,7 @@ class CustomWidgets {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Lottie.asset('assets/empty_list.json', height: 200),
+        Lottie.asset('assets/lotties/empty_list.json', height: 200),
         SizedBox(height: 20),
         Text(
           'No data available',
@@ -48,8 +48,30 @@ class CustomWidgets {
     ),
   );
 
+  SearchBar searchBar(
+      {BoxConstraints? constraints,
+      Widget? leading,
+      TextEditingController? controller,
+      String? hintText,
+      void Function(String)? onChanged,
+      bool visible = true,
+      void Function()? onPressedCancel}) {
+    return SearchBar(
+        constraints: constraints,
+        leading: Icon(Icons.search),
+        controller: controller,
+        hintText: hintText,
+        onChanged: onChanged,
+        trailing: [
+          Visibility(
+            visible: visible,
+            child:
+                IconButton(onPressed: onPressedCancel, icon: Icon(Icons.close)),
+          )
+        ]);
+  }
+
   static Padding searchableDropDown<T>({
-    EdgeInsetsGeometry padding = EdgeInsets.zero,
     required TextEditingController controller,
     required StringValueOf<T> stringValueOf,
     required void Function(T) onSelected,
@@ -58,35 +80,50 @@ class CustomWidgets {
     TextInputType? keyboardType,
     required String label,
     bool show = true,
+    EdgeInsets margin = const EdgeInsets.symmetric(vertical: 5),
+    double elevation = 2,
+    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 10),
   }) {
     return Padding(
-      padding: padding,
-      child: Visibility(
-        visible: show,
-        child: TypeAheadField<T>(
-          debounceDuration: const Duration(milliseconds: 500),
-          builder: (context, controller, focusNode) {
-            return TextField(
-              keyboardType: keyboardType,
-              controller: controller,
-              focusNode: focusNode,
-              onChanged: (value) {
-                if (onChanged != null) {
-                  onChanged(value);
-                }
+      padding: EdgeInsets.all(0),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: margin,
+        elevation: elevation,
+        child: Padding(
+          padding: padding,
+          child: Visibility(
+            visible: show,
+            child: TypeAheadField<T>(
+              debounceDuration: const Duration(milliseconds: 500),
+              builder: (context, controller, focusNode) {
+                return TextField(
+                  keyboardType: keyboardType,
+                  controller: controller,
+                  focusNode: focusNode,
+                  onChanged: (value) {
+                    if (onChanged != null) {
+                      onChanged(value);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    labelText: label,
+                    border: InputBorder.none,
+                  ),
+                );
               },
-              decoration: textFieldDecoration(label: label),
-            );
-          },
-          suggestionsCallback: (search) => selectionList
-              .where((element) => stringValueOf(element).toLowerCase().contains(
-                    search.trim().toLowerCase(),
-                  ))
-              .toList(),
-          itemBuilder: (context, itemData) =>
-              ListTile(title: Text(stringValueOf(itemData))),
-          controller: controller,
-          onSelected: (value) => onSelected(value),
+              suggestionsCallback: (search) => selectionList
+                  .where((element) =>
+                      stringValueOf(element).toLowerCase().contains(
+                            search.trim().toLowerCase(),
+                          ))
+                  .toList(),
+              itemBuilder: (context, itemData) =>
+                  ListTile(title: Text(stringValueOf(itemData))),
+              controller: controller,
+              onSelected: (value) => onSelected(value),
+            ),
+          ),
         ),
       ),
     );
@@ -148,6 +185,7 @@ class CustomWidgets {
     Widget? suffix,
     Color? color,
     int maxlines = 1,
+    String? hintText,
   }) {
     return Card(
       color: color,
@@ -166,6 +204,7 @@ class CustomWidgets {
           keyboardType: keyboardType,
           maxLines: maxlines,
           decoration: InputDecoration(
+            hintText: hintText,
             errorText: errorText,
             labelText: label,
             border: InputBorder.none,
@@ -266,7 +305,7 @@ class CustomWidgets {
   static void showSnackBar(
     String title,
     String message, {
-    Widget? icon = const Icon(Icons.abc),
+    Widget? icon = const Icon(Icons.error),
   }) {
     Get.showSnackbar(GetSnackBar(
       title: title,
@@ -275,17 +314,53 @@ class CustomWidgets {
       icon: icon,
       message: message,
       snackPosition: SnackPosition.BOTTOM,
-      borderRadius: 20,
+      borderRadius: 5,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       snackStyle: SnackStyle.GROUNDED,
       barBlur: 30,
+      backgroundGradient: LinearGradient(colors: [Colors.red, Colors.white]),
     ));
+  }
+
+  Expanded menuBuilder({
+    required List<Widget> menuChildren,
+    required String label,
+    required IconData icon,
+  }) {
+    return Expanded(
+      child: MenuAnchor(
+        menuChildren: menuChildren,
+        builder: (context, controller, child) {
+          return InkWell(
+            onTap: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: Colors.grey.shade900,
+                ),
+                Text(label)
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   void showConfirmationDialog(
       {required String title,
-      required String message,
+      String? message,
+      Widget? content,
       required VoidCallback onConfirm}) {
     showDialog(
       context: Get.context!,
@@ -294,13 +369,12 @@ class CustomWidgets {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Text(title),
-          content: Text(message),
+          content: (message != null) ? Text(message) : content,
           actions: [
             TextButton(onPressed: () => Get.back(), child: Text("Cancel")),
             TextButton(
               onPressed: () {
                 onConfirm();
-                Get.back();
               },
               child: Text("Confirm", style: TextStyle(color: Colors.red)),
             ),
@@ -316,7 +390,7 @@ String formatKey(String key) {
       RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
   formattedKey =
       formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
-  formattedKey = formattedKey;
+  //formattedKey = formattedKey.replaceAll("from", "replace");
   return formattedKey;
 }
 

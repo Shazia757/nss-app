@@ -6,6 +6,7 @@ import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/authentication/login_screen.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/home_screen.dart';
 
 class AccountController extends GetxController {
@@ -15,10 +16,15 @@ class AccountController extends GetxController {
   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController admissionNoController = TextEditingController();
+  final TextEditingController reasonController = TextEditingController();
+
+
   RxBool isObscure = true.obs;
   RxBool isOldPassObscure = true.obs;
   RxBool isNewPassObscure = true.obs;
   RxBool isConfirmPassObscure = true.obs;
+  RxString reason = 'No longer needed'.obs;
+  
 
   final api = Api();
 
@@ -43,7 +49,7 @@ class AccountController extends GetxController {
 
     if (userName.isEmpty || password.isEmpty) {
       errorMessage.value = 'Please fill all fields!';
-      Get.snackbar('Error', 'Please fill all fields!');
+      CustomWidgets.showSnackBar('Error', 'Please fill all fields!');
       return;
     }
     isLoading.value = true;
@@ -52,11 +58,12 @@ class AccountController extends GetxController {
       (response) async {
         if (response?.status == true && response?.data.admissionNo != null) {
           await LocalStorage().writeUser(response?.data ?? Users());
-          Get.snackbar('Welcome', '${response?.data.name}');
+          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}',
+              icon: Icon(Icons.login));
           Get.offAll(() => HomeScreen());
         } else {
           errorMessage.value = response?.message ?? 'Failed to login!';
-          Get.snackbar('Error', errorMessage.value);
+          CustomWidgets.showSnackBar('Error', errorMessage.value);
         }
         isLoading.value = false;
       },
@@ -65,9 +72,9 @@ class AccountController extends GetxController {
 
   Future<void> resetPassword(String id) async {
     if ((newPassController.text.trim().isEmpty)) {
-      Get.snackbar('Invalid', 'Please enter password.');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter password.');
     } else if (confirmPassController.text.trim().isEmpty) {
-      Get.snackbar('Invalid', 'Confirm password is empty.');
+      CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
     } else {
       if (newPassController.text == confirmPassController.text) {
         isLoading.value = true;
@@ -82,26 +89,27 @@ class AccountController extends GetxController {
               newPassController.clear();
               confirmPassController.clear();
               Get.back();
-              Get.snackbar(
+              CustomWidgets.showSnackBar(
                   'Success', value?.message ?? 'Password Changed Successfully');
             } else {
-              Get.snackbar('Error', value?.message ?? 'Password not changed.');
+              CustomWidgets.showSnackBar(
+                  'Error', value?.message ?? 'Password not changed.');
             }
           },
         );
       } else {
-        Get.snackbar('Invalid', 'Passwords do not match');
+        CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
       }
     }
   }
 
   Future<void> changePassword(String id) async {
     if ((oldpasswordController.text.trim().isEmpty)) {
-      Get.snackbar('Invalid', 'Please enter old password.');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter old password.');
     } else if ((newPassController.text.trim().isEmpty)) {
-      Get.snackbar('Invalid', 'Please enter new password.');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter new password.');
     } else if (confirmPassController.text.trim().isEmpty) {
-      Get.snackbar('Invalid', 'Confirm password is empty.');
+      CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
     } else {
       if (newPassController.text == confirmPassController.text) {
         isLoading.value = true;
@@ -114,14 +122,16 @@ class AccountController extends GetxController {
             isLoading.value = false;
             if (value?.status == true) {
               Get.to(() => LoginScreen());
-              Get.snackbar('Success', value?.message ?? 'Password Changed.');
+              CustomWidgets.showSnackBar(
+                  'Success', value?.message ?? 'Password Changed.');
             } else {
-              Get.snackbar('Error', value?.message ?? 'Password not changed.');
+              CustomWidgets.showSnackBar(
+                  'Error', value?.message ?? 'Password not changed.');
             }
           },
         );
       } else {
-        Get.snackbar('Invalid', 'Passwords do not match');
+        CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
       }
     }
   }
