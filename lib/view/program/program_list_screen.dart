@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:nss/controller/program_controller.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/programs_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/program/add_program_screen.dart';
 
@@ -73,7 +72,16 @@ class ProgramsScreen extends StatelessWidget {
               ),
             );
           } else if (c.programsList.isEmpty) {
-            return CustomWidgets.noDataWidget;
+            return RefreshIndicator(
+                onRefresh: () async => c.onInit(),
+                child: Center(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      CustomWidgets.noDataWidget,
+                    ],
+                  ),
+                ));
           }
           return RefreshIndicator.adaptive(
               onRefresh: () async => c.onInit(),
@@ -84,9 +92,7 @@ class ProgramsScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          width: 10,
-                        ),
+                        SizedBox(width: 10),
                         Expanded(
                           child: CustomWidgets().searchBar(
                             constraints: BoxConstraints.tight(Size(350, 50)),
@@ -98,28 +104,6 @@ class ProgramsScreen extends StatelessWidget {
                             onPressedCancel: () => c.onSearchTextChanged(''),
                           ),
                         ),
-                        // PopupMenuButton(
-                        //   tooltip: "Sort by",
-                        //   initialValue: c.date.value,
-                        //   onSelected: (value) {
-                        //     c.date.value = value;
-                        //     c.sortByDate();
-                        //   },
-                        //   itemBuilder: (context) => [
-                        //     PopupMenuItem(
-                        //       value: 'oldest',
-                        //       child: Text("Oldest"),
-                        //     ),
-                        //     PopupMenuItem(
-                        //       value: 'latest',
-                        //       child: Text("Latest"),
-                        //     )
-                        //   ],
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(8.0),
-                        //     child: Icon(Icons.swap_vert),
-                        //   ),
-                        // ),
                         SizedBox(
                           width: 5,
                         ),
@@ -134,77 +118,83 @@ class ProgramsScreen extends StatelessWidget {
                               ? "N/A"
                               : DateFormat.yMMMd()
                                   .format(c.searchList[index].date!);
-                          return Card.outlined(
-                            elevation: 2,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          date,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                        Text(
-                                          "${c.searchList[index].duration.toString()} hours",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, bottom: 8),
-                                    child: Text(
-                                      c.searchList[index].name ?? "",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, bottom: 8),
-                                    child: Text(
-                                        c.searchList[index].description ?? ""),
-                                  ),
-                                  Visibility(
-                                    visible: (LocalStorage().readUser().role !=
-                                        'vol'),
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: TextButton.icon(
-                                        onPressed: () {
-                                          Get.to(() => AddProgramScreen(
-                                                  isUpdate: true,
-                                                  program: c.searchList[index]))
-                                              ?.then(
-                                            (value) {
-                                              Get.back();
-                                            },
-                                          );
-                                        },
-                                        label: Text('Edit'),
-                                        icon: Icon(Icons.edit),
-                                        style: TextButton.styleFrom(
-                                            padding: EdgeInsets.zero),
+                          return InkWell(
+                            child: Card.outlined(
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            date,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall,
+                                          ),
+                                          Text(
+                                            "${c.searchList[index].duration.toString()} hours",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall,
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, bottom: 8),
+                                      child: Text(
+                                        c.searchList[index].name ?? "",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, bottom: 8),
+                                      child: Text(
+                                        c.searchList[index].description ?? "",
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible:
+                                          (LocalStorage().readUser().role !=
+                                              'vol'),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton.icon(
+                                          onPressed: () {
+                                            Get.to(() => AddProgramScreen(
+                                                isUpdate: true,
+                                                program:
+                                                    c.searchList[index]))?.then(
+                                              (value) {
+                                                Get.back();
+                                              },
+                                            );
+                                          },
+                                          label: Text('Edit'),
+                                          icon: Icon(Icons.edit),
+                                          style: TextButton.styleFrom(
+                                              padding: EdgeInsets.zero),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );
