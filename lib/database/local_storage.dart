@@ -13,6 +13,15 @@ class LocalStorage {
     }
   }
 
+  static bool get isAdmin {
+    final data = GetStorage().read('user');
+    if (data['role'] != 'vol') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Users readUser() {
     try {
       final data = _box.read('user');

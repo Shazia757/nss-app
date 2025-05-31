@@ -5,6 +5,7 @@ import 'package:nss/controller/attendance_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 
 class ManageAttendanceScreen extends StatelessWidget {
   const ManageAttendanceScreen({super.key});
@@ -38,7 +39,7 @@ class ManageAttendanceScreen extends StatelessWidget {
               ),
             );
           } else if (c.usersList.isEmpty) {
-           return CustomWidgets.noDataWidget;
+           return NoDataPage();
           }
 
           return RefreshIndicator.adaptive(

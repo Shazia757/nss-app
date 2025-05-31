@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nss/view/home_screen.dart';
 import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
@@ -28,25 +27,6 @@ class CustomWidgets {
     );
   }
 
-  static Center noDataWidget = Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Lottie.asset('assets/lotties/empty_list.json', height: 200),
-        SizedBox(height: 20),
-        Text(
-          'No data available',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        Text(
-          'There’s nothing to show here at the moment.',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
 
   SearchBar searchBar(
       {BoxConstraints? constraints,

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 import '../../controller/attendance_controller.dart';
 
 class ViewAttendanceScreen extends StatelessWidget {
@@ -33,7 +34,7 @@ class ViewAttendanceScreen extends StatelessWidget {
           } else if (c.attendanceList.isEmpty) {
             return SizedBox(
               height: double.maxFinite,
-              child: CustomWidgets.noDataWidget,
+              child: NoDataPage(),
             );
           }
           return ListView(

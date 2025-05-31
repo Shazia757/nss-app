@@ -1,13 +1,19 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:nss/controller/program_controller.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/model/programs_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/loading.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/program/add_program_screen.dart';
 
 class ProgramsScreen extends StatelessWidget {
-  const ProgramsScreen({super.key});
+  final Program? program;
+  const ProgramsScreen({super.key, this.program});
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +72,7 @@ class ProgramsScreen extends StatelessWidget {
       body: Obx(
         () {
           if (c.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            );
+            return LoadingScreen();
           } else if (c.programsList.isEmpty) {
             return RefreshIndicator(
                 onRefresh: () async => c.onInit(),
@@ -78,7 +80,7 @@ class ProgramsScreen extends StatelessWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      CustomWidgets.noDataWidget,
+                      NoDataPage(),
                     ],
                   ),
                 ));
@@ -114,16 +116,30 @@ class ProgramsScreen extends StatelessWidget {
                     child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          RxBool isExpanded = false.obs;
                           final date = (c.searchList[index].date == null)
                               ? "N/A"
                               : DateFormat.yMMMd()
                                   .format(c.searchList[index].date!);
                           return InkWell(
+                            onTap: LocalStorage.isAdmin
+                                ? () {
+                                    Get.to(() => AddProgramScreen(
+                                        isUpdate: true,
+                                        program: c.searchList[index]))?.then(
+                                      (value) {
+                                        Get.back();
+                                      },
+                                    );
+                                  }
+                                : null,
                             child: Card.outlined(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               elevation: 2,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
+                                padding: const EdgeInsets.only(
+                                    left: 15.0, right: 15, bottom: 15),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -163,36 +179,75 @@ class ProgramsScreen extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left: 8.0, bottom: 8),
-                                      child: Text(
-                                        c.searchList[index].description ?? "",
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: Obx(() => Wrap(
+                                            children: [
+                                              Text(
+                                                c.searchList[index]
+                                                        .description ??
+                                                    "",
+                                                maxLines: (isExpanded.value)
+                                                    ? null
+                                                    : 3,
+                                                overflow: (isExpanded.value)
+                                                    ? TextOverflow.visible
+                                                    : TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    color:
+                                                        Colors.grey.shade800),
+                                              ),
+                                              if (((c
+                                                          .searchList[index]
+                                                          .description
+                                                          ?.length ??
+                                                      0) >
+                                                  200))
+                                                TextButton(
+                                                  onPressed: () {
+                                                    isExpanded.value =
+                                                        !isExpanded.value;
+                                                  },
+                                                  style: TextButton.styleFrom(
+                                                    padding: EdgeInsets.zero,
+                                                  ),
+                                                  child: Text(
+                                                    isExpanded.value
+                                                        ? 'show less'
+                                                        : 'show more',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                    ),
+                                                  ),
+                                                )
+                                            ],
+                                          )),
                                     ),
-                                    Visibility(
-                                      visible:
-                                          (LocalStorage().readUser().role !=
-                                              'vol'),
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            Get.to(() => AddProgramScreen(
-                                                isUpdate: true,
-                                                program:
-                                                    c.searchList[index]))?.then(
-                                              (value) {
-                                                Get.back();
-                                              },
-                                            );
-                                          },
-                                          label: Text('Edit'),
-                                          icon: Icon(Icons.edit),
-                                          style: TextButton.styleFrom(
-                                              padding: EdgeInsets.zero),
-                                        ),
-                                      ),
-                                    )
+                                    // Visibility(
+                                    //   visible:
+                                    //       (LocalStorage().readUser().role !=
+                                    //           'vol'),
+                                    //   child: Align(
+                                    //     alignment: Alignment.bottomRight,
+                                    //     child: IconButton(
+                                    //       onPressed: () {
+                                    //         Get.to(() => AddProgramScreen(
+                                    //             isUpdate: true,
+                                    //             program:
+                                    //                 c.searchList[index]))?.then(
+                                    //           (value) {
+                                    //             Get.back();
+                                    //           },
+                                    //         );
+                                    //       },
+                                    //       icon: Icon(
+                                    //         Icons.edit,
+                                    //         color: Theme.of(context)
+                                    //             .colorScheme
+                                    //             .primary,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // )
                                   ],
                                 ),
                               ),

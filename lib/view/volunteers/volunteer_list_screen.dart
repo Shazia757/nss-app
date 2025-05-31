@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
 import '../../controller/volunteer_controller.dart';
@@ -36,7 +37,7 @@ class VolunteersListScreen extends StatelessWidget {
               ),
             );
           } else if (c.usersList.isEmpty) {
-            return CustomWidgets.noDataWidget;
+            return NoDataPage();
           }
 
           return RefreshIndicator.adaptive(

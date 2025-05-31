@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 
 import '../../controller/issues_controller.dart';
 import '../../model/issues_model.dart';
@@ -93,7 +94,7 @@ class ScreenUserIssues extends StatelessWidget {
                   child: c.isLoading.isTrue
                       ? Center(child: CircularProgressIndicator())
                       : c.modifiedOpenedList.isEmpty
-                          ? CustomWidgets.noDataWidget
+                          ? NoDataPage()
                           : ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) => listTileView(
