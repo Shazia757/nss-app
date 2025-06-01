@@ -21,10 +21,8 @@ class ProgramsScreen extends StatelessWidget {
           child: Obx(() => (!c.isLoading.value)
               ? AppBar(
                   title: Text("Programs"),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onPrimaryContainer,
-                  foregroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                  foregroundColor: Theme.of(context).colorScheme.primaryContainer,
                   actions: [
                     MenuAnchor(
                       menuChildren: [
@@ -50,8 +48,7 @@ class ProgramsScreen extends StatelessWidget {
                           ),
                           label: Text(
                             'Sort',
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary),
+                            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           onPressed: () {
                             if (controller.isOpen) {
@@ -119,105 +116,70 @@ class ProgramsScreen extends StatelessWidget {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           RxBool isExpanded = false.obs;
-                          final date = (c.searchList[index].date == null)
-                              ? "N/A"
-                              : DateFormat.yMMMd()
-                                  .format(c.searchList[index].date!);
+                          final date = (c.searchList[index].date == null) ? "N/A" : DateFormat.yMMMd().format(c.searchList[index].date!);
                           return InkWell(
                             onTap: LocalStorage.isAdmin
                                 ? () {
                                     Get.to(() => AddProgramScreen(
-                                        isUpdate: true,
-                                        program: c.searchList[index]))?.then(
-                                      (value) {
-                                        Get.back();
-                                      },
-                                    );
+                                          isUpdate: true,
+                                          program: c.searchList[index],
+                                        ));
                                   }
                                 : null,
                             child: Card.outlined(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
+                              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                               elevation: 2,
                               child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15.0, right: 15, bottom: 15),
+                                padding: const EdgeInsets.only(left: 15.0, right: 15, bottom: 15),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 15.0),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             date,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall,
+                                            style: Theme.of(context).textTheme.bodySmall,
                                           ),
                                           Text(
                                             "${c.searchList[index].duration.toString()} hours",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall,
+                                            style: Theme.of(context).textTheme.bodySmall,
                                           )
                                         ],
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, bottom: 8),
+                                      padding: const EdgeInsets.only(left: 8.0, bottom: 8),
                                       child: Text(
                                         c.searchList[index].name ?? "",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
+                                        style: Theme.of(context).textTheme.titleMedium,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, bottom: 8),
+                                      padding: const EdgeInsets.only(left: 8.0, bottom: 8),
                                       child: Obx(() => Wrap(
                                             children: [
                                               Text(
-                                                c.searchList[index]
-                                                        .description ??
-                                                    "",
-                                                maxLines: (isExpanded.value)
-                                                    ? null
-                                                    : 3,
-                                                overflow: (isExpanded.value)
-                                                    ? TextOverflow.visible
-                                                    : TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color:
-                                                        Colors.grey.shade800),
+                                                c.searchList[index].description ?? "",
+                                                maxLines: (isExpanded.value) ? null : 3,
+                                                overflow: (isExpanded.value) ? TextOverflow.visible : TextOverflow.ellipsis,
+                                                style: TextStyle(color: Colors.grey.shade800),
                                               ),
-                                              if (((c
-                                                          .searchList[index]
-                                                          .description
-                                                          ?.length ??
-                                                      0) >
-                                                  200))
+                                              if (((c.searchList[index].description?.length ?? 0) > 200))
                                                 TextButton(
                                                   onPressed: () {
-                                                    isExpanded.value =
-                                                        !isExpanded.value;
+                                                    isExpanded.value = !isExpanded.value;
                                                   },
                                                   style: TextButton.styleFrom(
                                                     padding: EdgeInsets.zero,
                                                   ),
                                                   child: Text(
-                                                    isExpanded.value
-                                                        ? 'show less'
-                                                        : 'show more',
+                                                    isExpanded.value ? 'show less' : 'show more',
                                                     style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w100,
+                                                      fontWeight: FontWeight.w100,
                                                     ),
                                                   ),
                                                 )

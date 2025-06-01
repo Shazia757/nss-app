@@ -17,14 +17,11 @@ class ScreenAdminIssues extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Issues",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text("Issues", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
-        ],
+        actions: [IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))],
       ),
       bottomNavigationBar: CustomNavBar(currentIndex: 1),
       body: SafeArea(
@@ -36,8 +33,7 @@ class ScreenAdminIssues extends StatelessWidget {
               TabBar(
                 controller: c.adminTabController,
                 labelColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                unselectedLabelColor:
-                    Theme.of(context).colorScheme.onPrimaryContainer,
+                unselectedLabelColor: Theme.of(context).colorScheme.onPrimaryContainer,
                 onTap: (value) => c.isResolved.value = (value == 1),
                 tabs: [
                   Tab(text: "Opened"),
@@ -116,19 +112,14 @@ class ScreenAdminIssues extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(
-                  child: Text("Secretary"),
-                  onPressed: () => c.filterByRole('sec')),
+              MenuItemButton(child: Text("Secretary"), onPressed: () => c.filterByRole('sec')),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(
-                    child: Text("Program Officer"),
-                    onPressed: () => c.filterByRole('po')),
+                child: MenuItemButton(child: Text("Program Officer"), onPressed: () => c.filterByRole('po')),
               ),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(
-                    child: Text("All"), onPressed: () => c.filterByRole('all')),
+                child: MenuItemButton(child: Text("All"), onPressed: () => c.filterByRole('all')),
               ),
             ], label: "\tAssigned to", icon: Icons.filter_alt_rounded),
             SizedBox(
@@ -137,12 +128,8 @@ class ScreenAdminIssues extends StatelessWidget {
               child: VerticalDivider(indent: 5, endIndent: 2),
             ),
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(
-                  child: Text("Oldest"),
-                  onPressed: () => c.sortByOldestDate(true)),
-              MenuItemButton(
-                  child: Text("Latest"),
-                  onPressed: () => c.sortByOldestDate(false)),
+              MenuItemButton(child: Text("Oldest"), onPressed: () => c.sortByOldestDate(true)),
+              MenuItemButton(child: Text("Latest"), onPressed: () => c.sortByOldestDate(false)),
             ], label: "\t\tSort by date", icon: Icons.sort),
             Visibility(
               visible: c.isResolved.isTrue,
@@ -157,9 +144,7 @@ class ScreenAdminIssues extends StatelessWidget {
               child: CustomWidgets().menuBuilder(
                   menuChildren: c.adminList
                       .map(
-                        (e) => MenuItemButton(
-                            child: Text(e?.name ?? "N/A"),
-                            onPressed: () => c.resolvedBy(e?.admissionNo)),
+                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e?.admissionNo)),
                       )
                       .toList(),
                   label: "\t\tResolved by ",
@@ -173,23 +158,19 @@ class ScreenAdminIssues extends StatelessWidget {
     );
   }
 
-  Card issueListTile(
-      {required Issues data, required bool isOpen, required int count}) {
+  Card issueListTile({required Issues data, required bool isOpen, required int count}) {
     final to = (data.to == 'po') ? 'Program Officer' : 'Secretary';
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       elevation: 3,
-      shadowColor: isOpen
-          ? const Color.fromARGB(98, 159, 16, 6)
-          : const Color.fromARGB(71, 76, 175, 79),
+      shadowColor: isOpen ? const Color.fromARGB(98, 159, 16, 6) : const Color.fromARGB(71, 76, 175, 79),
       child: ListTile(
         contentPadding: EdgeInsets.all(16),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor:
-              isOpen ? const Color.fromARGB(255, 159, 16, 6) : Colors.green,
+          backgroundColor: isOpen ? const Color.fromARGB(255, 159, 16, 6) : Colors.green,
           child: Text(
             "$count",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -226,16 +207,7 @@ class ScreenAdminIssues extends StatelessWidget {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(isOpen
-                            ? DateFormat.yMMMd()
-                                .format(data.createdDate ?? DateTime.now())
-                            : DateFormat.yMMMd()
-                                .format(data.updatedDate ?? DateTime.now())),
-                        Text('${c.usersName}'),
-                        Text('${data.createdBy}'),
-                        Text('${c.department}')
-                      ],
+                      children: [Text(isOpen ? DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()) : DateFormat.yMMMd().format(data.updatedDate ?? DateTime.now())), Text('${c.usersName}'), Text('${data.createdBy}'), Text('${c.department}')],
                     ),
                   ],
                 ),
@@ -247,20 +219,17 @@ class ScreenAdminIssues extends StatelessWidget {
             actions: [
               isOpen
                   ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff5f5791)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xff5f5791)),
                       onPressed: () {
                         c.resolveIssue(data.id);
                         Get.back();
                       },
-                      child: Text("Resolve",
-                          style: TextStyle(color: Colors.white)),
+                      child: Text("Resolve", style: TextStyle(color: Colors.white)),
                     )
                   : SizedBox(),
               TextButton(
                 onPressed: () => Get.back(),
-                child:
-                    Text("Cancel", style: TextStyle(color: Color(0xff5f5791))),
+                child: Text("Cancel", style: TextStyle(color: Color(0xff5f5791))),
               ),
             ],
           );

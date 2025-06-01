@@ -17,13 +17,11 @@ class AccountController extends GetxController {
   TextEditingController admissionNoController = TextEditingController();
   final TextEditingController reasonController = TextEditingController();
 
-
   RxBool isObscure = true.obs;
   RxBool isOldPassObscure = true.obs;
   RxBool isNewPassObscure = true.obs;
   RxBool isConfirmPassObscure = true.obs;
   RxString reason = 'No longer needed'.obs;
-  
 
   final api = Api();
 
@@ -57,8 +55,7 @@ class AccountController extends GetxController {
       (response) async {
         if (response?.status == true && response?.data.admissionNo != null) {
           await LocalStorage().writeUser(response?.data ?? Users());
-          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}',
-              icon: Icon(Icons.login));
+          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}', icon: Icon(Icons.login));
           Get.offAll(() => HomeScreen());
         } else {
           errorMessage.value = response?.message ?? 'Failed to login!';
@@ -77,10 +74,7 @@ class AccountController extends GetxController {
     } else {
       if (newPassController.text == confirmPassController.text) {
         isLoading.value = true;
-        api.resetPassword({
-          'admission_number': id,
-          'new_password': confirmPassController.text
-        }).then(
+        api.resetPassword({'admission_number': id, 'new_password': confirmPassController.text}).then(
           (value) {
             isLoading.value = false;
             if (value?.status ?? false) {
@@ -88,11 +82,9 @@ class AccountController extends GetxController {
               newPassController.clear();
               confirmPassController.clear();
               Get.back();
-              CustomWidgets.showSnackBar(
-                  'Success', value?.message ?? 'Password Changed Successfully');
+              CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed Successfully');
             } else {
-              CustomWidgets.showSnackBar(
-                  'Error', value?.message ?? 'Password not changed.');
+              CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
             }
           },
         );
@@ -112,26 +104,46 @@ class AccountController extends GetxController {
     } else {
       if (newPassController.text == confirmPassController.text) {
         isLoading.value = true;
-        api.changePassword({
-          'admission_number': id,
-          'old_password': oldpasswordController.text,
-          'new_password': confirmPassController.text
-        }).then(
+        api.changePassword({'admission_number': id, 'old_password': oldpasswordController.text, 'new_password': confirmPassController.text}).then(
           (value) {
             isLoading.value = false;
             if (value?.status == true) {
               Get.to(() => LoginScreen());
-              CustomWidgets.showSnackBar(
-                  'Success', value?.message ?? 'Password Changed.');
+              CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
             } else {
-              CustomWidgets.showSnackBar(
-                  'Error', value?.message ?? 'Password not changed.');
+              CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
             }
           },
         );
       } else {
         CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
       }
+    }
+  }
+
+  void deleteAccount() {
+    if (reasonController.text.trim().length >= 20) {
+      isLoading.value = true;
+      final data = {
+        'subject': 'Account delete request',
+        'description': reasonController.text,
+        'assigned_to': 'sec',
+        'created_by': (LocalStorage().readUser().admissionNo).toString(),
+        'updated_by': (LocalStorage().readUser().admissionNo).toString(),
+      };
+      Api().addIssue(data).then(
+        (value) {
+          isLoading.value = false;
+          if (value?.status ?? false) {
+            CustomWidgets.showToast("Delete request sent successfully");
+            Get.offAll(() => LoginScreen());
+          } else {
+            CustomWidgets.showToast("Failed to send delete request");
+          }
+        },
+      );
+    } else {
+      CustomWidgets.showSnackBar('Invalid', 'Please specify reason to delete account.(Min 20 characters)');
     }
   }
 
