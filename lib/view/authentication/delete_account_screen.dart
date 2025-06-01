@@ -22,7 +22,10 @@ class DeleteAccountScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Please specify reason to delete this account:",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 17),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontSize: 17),
             ),
           ),
           SizedBox(
@@ -40,27 +43,20 @@ class DeleteAccountScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              onPressed: () => CustomWidgets().showConfirmationDialog(
-                title: "Do you want to delete?",
-                content: Text(
-                  "This will send request to the admin to delete your account.After approving, all your data will be lost and cannot login again.",
-                  style: TextStyle(color: const Color.fromARGB(255, 158, 13, 3)),
-                ),
-                onConfirm: () => c.deleteAccount(),
-              ),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Theme.of(context).colorScheme.error,
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              icon: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-              label: Text("Delete Account", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
+            child: CustomWidgets().buildActionButton(
+                context: context,
+                onPressed: () => CustomWidgets().showConfirmationDialog(
+                      title: "Do you want to delete?",
+                      content: Text(
+                        "This will send request to the admin to delete your account.After approving, all your data will be lost and cannot login again.",
+                      ),
+                      onConfirm: () => (c.isLoading.value)
+                          ? CircularProgressIndicator()
+                          : c.deleteAccount(),
+                    ),
+                text: "Delete Account",
+                icon: Icons.delete,
+                color: const Color.fromARGB(255, 158, 13, 3)),
           )
         ],
       ),
