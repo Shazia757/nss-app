@@ -46,64 +46,60 @@ class ScreenAdminIssues extends StatelessWidget {
               ),
               Expanded(
                 child: TabBarView(controller: c.adminTabController, children: [
-                  Expanded(
-                    child: Obx(() {
-                      if (c.isLoading.value) {
-                        return LoadingScreen();
-                      } else if (c.modifiedOpenedList.isEmpty) {
-                        return NoDataPage();
-                      }
-                      return Column(
-                        children: [
-                          Obx(() => filterAndSort()),
-                          Expanded(
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.all(10),
-                              itemBuilder: (context, index) {
-                                return issueListTile(
-                                  count: index + 1,
-                                  data: c.modifiedOpenedList[index],
-                                  isOpen: true,
-                                );
-                              },
-                              separatorBuilder: (_, __) => SizedBox(height: 12),
-                              itemCount: c.modifiedOpenedList.length,
-                            ),
+                  Obx(() {
+                    if (c.isLoading.value) {
+                      return Expanded(child: LoadingScreen());
+                    } else if (c.modifiedOpenedList.isEmpty) {
+                      return Expanded(child: NoDataPage());
+                    }
+                    return Column(
+                      children: [
+                        Obx(() => filterAndSort()),
+                        Expanded(
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(10),
+                            itemBuilder: (context, index) {
+                              return issueListTile(
+                                count: index + 1,
+                                data: c.modifiedOpenedList[index],
+                                isOpen: true,
+                              );
+                            },
+                            separatorBuilder: (_, __) => SizedBox(height: 12),
+                            itemCount: c.modifiedOpenedList.length,
                           ),
-                        ],
-                      );
-                    }),
-                  ),
+                        ),
+                      ],
+                    );
+                  }),
                   // ---------------------- 2nd view ----------------------
-                  Expanded(
-                    child: Obx(() {
-                      if (c.isLoading.value) {
-                        return LoadingScreen();
-                      } else if (c.modifiedClosedList.isEmpty) {
-                        return NoDataPage();
-                      }
-                      return Column(
-                        children: [
-                          Obx(() => filterAndSort()),
-                          Expanded(
-                            child: ListView.separated(
-                              padding: EdgeInsets.all(10),
-                              itemBuilder: (context, index) {
-                                return issueListTile(
-                                  count: index + 1,
-                                  data: c.modifiedClosedList[index],
-                                  isOpen: false,
-                                );
-                              },
-                              separatorBuilder: (_, __) => SizedBox(height: 12),
-                              itemCount: c.modifiedClosedList.length,
-                            ),
+                  Obx(() {
+                    if (c.isLoading.value) {
+                      return Expanded(child: LoadingScreen());
+                    } else if (c.modifiedClosedList.isEmpty) {
+                      return Expanded(child: NoDataPage());
+                    }
+                    return Column(
+                      children: [
+                        Obx(() => filterAndSort()),
+                        Expanded(
+                          child: ListView.separated(
+                            padding: EdgeInsets.all(10),
+                            itemBuilder: (context, index) {
+                              return issueListTile(
+                                count: index + 1,
+                                data: c.modifiedClosedList[index],
+                                isOpen: false,
+                              );
+                            },
+                            separatorBuilder: (_, __) => SizedBox(height: 12),
+                            itemCount: c.modifiedClosedList.length,
                           ),
-                        ],
-                      );
-                    }),
-                  )
+                        ),
+                      ],
+                    );
+                  })
                 ]),
               )
             ],
