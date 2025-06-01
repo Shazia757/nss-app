@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:nss/view/home_screen.dart';
 import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 typedef StringValueOf<T> = String Function(T item);
 
@@ -21,34 +22,18 @@ class CustomWidgets {
       prefix: prefix,
       suffix: suffix,
       border: const OutlineInputBorder(),
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
       errorText: errorText,
     );
   }
 
-
-  SearchBar searchBar(
-      {BoxConstraints? constraints,
-      Widget? leading,
-      TextEditingController? controller,
-      String? hintText,
-      void Function(String)? onChanged,
-      bool visible = true,
-      void Function()? onPressedCancel}) {
-    return SearchBar(
-        constraints: constraints,
-        leading: Icon(Icons.search),
-        controller: controller,
-        hintText: hintText,
-        onChanged: onChanged,
-        trailing: [
-          Visibility(
-            visible: visible,
-            child:
-                IconButton(onPressed: onPressedCancel, icon: Icon(Icons.close)),
-          )
-        ]);
+  SearchBar searchBar({BoxConstraints? constraints, Widget? leading, TextEditingController? controller, String? hintText, void Function(String)? onChanged, bool visible = true, void Function()? onPressedCancel}) {
+    return SearchBar(constraints: constraints, leading: Icon(Icons.search), controller: controller, hintText: hintText, onChanged: onChanged, trailing: [
+      Visibility(
+        visible: visible,
+        child: IconButton(onPressed: onPressedCancel, icon: Icon(Icons.close)),
+      )
+    ]);
   }
 
   static Padding searchableDropDown<T>({
@@ -93,13 +78,11 @@ class CustomWidgets {
                 );
               },
               suggestionsCallback: (search) => selectionList
-                  .where((element) =>
-                      stringValueOf(element).toLowerCase().contains(
-                            search.trim().toLowerCase(),
-                          ))
+                  .where((element) => stringValueOf(element).toLowerCase().contains(
+                        search.trim().toLowerCase(),
+                      ))
                   .toList(),
-              itemBuilder: (context, itemData) =>
-                  ListTile(title: Text(stringValueOf(itemData))),
+              itemBuilder: (context, itemData) => ListTile(title: Text(stringValueOf(itemData))),
               controller: controller,
               onSelected: (value) => onSelected(value),
             ),
@@ -273,9 +256,7 @@ class CustomWidgets {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(Get.context!).colorScheme.primary)),
+          Text(label, style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Theme.of(Get.context!).colorScheme.primary)),
           Text(amount, style: Theme.of(Get.context!).textTheme.labelMedium),
         ],
       ),
@@ -285,22 +266,63 @@ class CustomWidgets {
   static void showSnackBar(
     String title,
     String message, {
-    Widget? icon = const Icon(Icons.error),
+    Widget? icon = const Icon(Icons.info_outline, color: Colors.white),
+    Color backgroundColor = Colors.black87,
+    Color textColor = Colors.white,
   }) {
     Get.showSnackbar(GetSnackBar(
-      title: title,
+      titleText: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: textColor,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: TextStyle(
+          fontSize: 14,
+          color: textColor.withOpacity(0.9),
+        ),
+      ),
       isDismissible: true,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(seconds: 3),
       icon: icon,
-      message: message,
       snackPosition: SnackPosition.BOTTOM,
-      borderRadius: 5,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      snackStyle: SnackStyle.GROUNDED,
-      barBlur: 30,
-      backgroundGradient: LinearGradient(colors: [Colors.red, Colors.white]),
+      borderRadius: 12,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      snackStyle: SnackStyle.FLOATING,
+      barBlur: 15,
+      backgroundColor: backgroundColor,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10,
+          offset: Offset(0, 4),
+        )
+      ],
     ));
+  }
+
+  static void showToast(
+    String message, {
+    ToastGravity gravity = ToastGravity.BOTTOM,
+    Color backgroundColor = Colors.black87,
+    Color textColor = Colors.white,
+    double fontSize = 14.0,
+    int toastLength = 3, // in seconds
+  }) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: gravity,
+      backgroundColor: backgroundColor,
+      textColor: textColor,
+      fontSize: fontSize,
+      timeInSecForIosWeb: toastLength,
+    );
   }
 
   Expanded menuBuilder({
@@ -337,17 +359,12 @@ class CustomWidgets {
     );
   }
 
-  void showConfirmationDialog(
-      {required String title,
-      String? message,
-      Widget? content,
-      required VoidCallback onConfirm}) {
+  void showConfirmationDialog({required String title, String? message, Widget? content, required VoidCallback onConfirm}) {
     showDialog(
       context: Get.context!,
       builder: (context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Text(title),
           content: (message != null) ? Text(message) : content,
           actions: [
@@ -366,10 +383,8 @@ class CustomWidgets {
 }
 
 String formatKey(String key) {
-  String formattedKey = key.replaceAllMapped(
-      RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
-  formattedKey =
-      formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
+  String formattedKey = key.replaceAllMapped(RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
+  formattedKey = formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
   //formattedKey = formattedKey.replaceAll("from", "replace");
   return formattedKey;
 }
@@ -399,9 +414,6 @@ class CustomNavBar extends StatelessWidget {
   }
 
   BottomNavigationBarItem navBarItem(String label, {required Widget icon}) {
-    return BottomNavigationBarItem(
-        icon: icon,
-        label: label,
-        backgroundColor: Color.fromARGB(255, 25, 6, 71));
+    return BottomNavigationBarItem(icon: icon, label: label, backgroundColor: Color.fromARGB(255, 25, 6, 71));
   }
 }
