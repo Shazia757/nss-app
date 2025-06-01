@@ -46,6 +46,7 @@ dependencies:
   fluttertoast: ^8.2.12
 
 dev_dependencies:
+  flutter_launcher_icons: 
   flutter_test:
     sdk: flutter
 
@@ -73,6 +74,13 @@ flutter:
     - assets/lotties/
     - assets/images/
     - assets/logos/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/logos/logo.png"
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
