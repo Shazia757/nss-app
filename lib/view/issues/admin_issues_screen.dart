@@ -48,9 +48,9 @@ class ScreenAdminIssues extends StatelessWidget {
                 child: TabBarView(controller: c.adminTabController, children: [
                   Obx(() {
                     if (c.isLoading.value) {
-                      return Expanded(child: LoadingScreen());
+                      return LoadingScreen();
                     } else if (c.modifiedOpenedList.isEmpty) {
-                      return Expanded(child: NoDataPage());
+                      return NoDataPage();
                     }
                     return Column(
                       children: [
