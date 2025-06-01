@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
         return isDesktop
             ? Row(
                 children: [
-                  Image.asset("assets/logo.png", height: 80),
+                  Image.asset("assets/logos/logo.png", height: 80),
                   SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class HomeScreen extends StatelessWidget {
               )
             : Column(
                 children: [
-                  Image.asset("assets/logo.png", height: 80),
+                  Image.asset("assets/logos/logo.png", height: 80),
                   SizedBox(height: 10),
                   Text(
                     "NSS Farook College",

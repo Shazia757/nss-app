@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 import '../../controller/attendance_controller.dart';
 
@@ -16,21 +17,25 @@ class ViewAttendanceScreen extends StatelessWidget {
     AttendanceController c = Get.put(AttendanceController());
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('View Attendance'),
-          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-          actions: [
-            IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
-          ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Obx(() => (!c.isLoading.value)
+              ? AppBar(
+                  title: const Text('View Attendance'),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.onPrimaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                  actions: [
+                    IconButton(
+                        onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
+                  ],
+                )
+              : SizedBox()),
         ),
         body: Obx(() {
           if (c.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            );
+            return LoadingScreen();
           } else if (c.attendanceList.isEmpty) {
             return SizedBox(
               height: double.maxFinite,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
 
@@ -21,21 +22,24 @@ class VolunteersListScreen extends StatelessWidget {
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(
-          title: Text("Volunteers List"),
-          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-          actions: [
-            IconButton(onPressed: () => c.getData(), icon: Icon(Icons.refresh))
-          ]),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Obx(() => (!c.isLoading.value)
+            ? AppBar(
+                title: Text("Volunteers List"),
+                backgroundColor:
+                    Theme.of(context).colorScheme.onPrimaryContainer,
+                foregroundColor: Theme.of(context).colorScheme.primaryContainer,
+                actions: [
+                    IconButton(
+                        onPressed: () => c.getData(), icon: Icon(Icons.refresh))
+                  ])
+            : SizedBox()),
+      ),
       body: SafeArea(child: Obx(
         () {
           if (c.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            );
+            return LoadingScreen();
           } else if (c.usersList.isEmpty) {
             return NoDataPage();
           }

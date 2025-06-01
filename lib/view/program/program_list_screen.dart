@@ -1,74 +1,76 @@
-import 'dart:math';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:nss/controller/program_controller.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/programs_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/program/add_program_screen.dart';
 
 class ProgramsScreen extends StatelessWidget {
-  final Program? program;
-  const ProgramsScreen({super.key, this.program});
+  const ProgramsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     ProgramListController c = Get.put(ProgramListController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Programs"),
-        backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          MenuAnchor(
-            menuChildren: [
-              MenuItemButton(
-                child: Text("Oldest"),
-                onPressed: () {
-                  c.date.value = 'oldest';
-                  c.sortByDate();
-                },
-              ),
-              MenuItemButton(
-                child: Text("Latest"),
-                onPressed: () {
-                  c.date.value = 'latest';
-                  c.sortByDate();
-                },
-              ),
-            ],
-            builder: (context, controller, child) {
-              return TextButton.icon(
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                ),
-                label: Text(
-                  'Sort',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                ),
-                onPressed: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                icon: Icon(
-                  Icons.swap_vert,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            },
-          ),
-          // IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh)),
-        ],
-      ),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Obx(() => (!c.isLoading.value)
+              ? AppBar(
+                  title: Text("Programs"),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.onPrimaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                  actions: [
+                    MenuAnchor(
+                      menuChildren: [
+                        MenuItemButton(
+                          child: Text("Oldest"),
+                          onPressed: () {
+                            c.date.value = 'oldest';
+                            c.sortByDate();
+                          },
+                        ),
+                        MenuItemButton(
+                          child: Text("Latest"),
+                          onPressed: () {
+                            c.date.value = 'latest';
+                            c.sortByDate();
+                          },
+                        ),
+                      ],
+                      builder: (context, controller, child) {
+                        return TextButton.icon(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          label: Text(
+                            'Sort',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                          ),
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          icon: Icon(
+                            Icons.swap_vert,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        );
+                      },
+                    ),
+                    // IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh)),
+                  ],
+                )
+              : SizedBox())),
       body: Obx(
         () {
           if (c.isLoading.value) {

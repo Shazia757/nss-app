@@ -119,20 +119,17 @@ class ChangePasswordScreen extends StatelessWidget {
                     Obx(
                       () => c.isLoading.value
                           ? CircularProgressIndicator()
-                          : FilledButton(
-                              style: FilledButton.styleFrom(
-                                fixedSize: const Size(double.maxFinite, 48),
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryFixed,
-                              ),
+                          : CustomWidgets().buildActionButton(
+                              context: context,
+                              text:
+                                  "${isChangepassword ? "Change" : "Reset"} Password",
+                              color:
+                                  Theme.of(context).colorScheme.onPrimaryFixed,
                               onPressed: () {
                                 isChangepassword
                                     ? c.changePassword(userId)
                                     : c.resetPassword(userId);
                               },
-                              child: Text(
-                                  "${isChangepassword ? "Change" : "Reset"} Password"),
                             ),
                     ),
                   ],

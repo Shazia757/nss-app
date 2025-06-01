@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
@@ -68,7 +69,7 @@ class VolunteerController extends GetxController {
       'year': yearController.text
     }).then(
       (response) {
-        isUpdateButtonLoading.value = true;
+        isUpdateButtonLoading.value = false;
         if (response?.status == true) {
           Get.back();
           CustomWidgets.showSnackBar('Success',
@@ -82,10 +83,10 @@ class VolunteerController extends GetxController {
   }
 
   void deleteVolunteer() async {
-    isDeleteButtonLoading.value = false;
+    isDeleteButtonLoading.value = true;
     api.deleteVolunteer(admissionNoController.text).then(
       (response) {
-        isDeleteButtonLoading.value = true;
+        isDeleteButtonLoading.value = false;
 
         if (response?.status == true) {
           Get.back();
@@ -126,7 +127,7 @@ class VolunteerController extends GetxController {
 
   bool onSubmitVolValidation() {
     if (nameController.text.isEmpty) {
-      CustomWidgets.showSnackBar('Invalid', 'Please enter volunteer name');
+      CustomWidgets.showSnackBar('Invalid', 'Please enter name');
       return false;
     }
     if (emailController.text.isEmpty) {

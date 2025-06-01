@@ -15,14 +15,14 @@ class LoginScreen extends StatelessWidget {
             decoration: BoxDecoration(
                 color: theme.colorScheme.onPrimary,
                 image: DecorationImage(
-                  image: AssetImage('assets/login-bg.png'),
+                  image: AssetImage('assets/images/login-bg.png'),
                   fit: BoxFit.cover,
                 )),
             child: ListView(children: [
               const SizedBox(height: 100),
               CircleAvatar(
                 radius: 50,
-                child: Image.asset("assets/logo.png", height: 100),
+                child: Image.asset("assets/logos/logo.png", height: 100),
               ),
               SizedBox(height: 10),
               Text(
@@ -76,14 +76,11 @@ class LoginScreen extends StatelessWidget {
                         Obx(
                           () => c.isLoading.value
                               ? CircularProgressIndicator()
-                              : FilledButton(
-                                  style: FilledButton.styleFrom(
-                                    fixedSize: const Size(double.maxFinite, 48),
-                                    backgroundColor:
-                                        theme.colorScheme.onPrimaryFixed,
-                                  ),
+                              : CustomWidgets().buildActionButton(
+                                  context: context,
+                                  text: 'Login',
+                                  color: theme.colorScheme.onPrimaryFixed,
                                   onPressed: () => c.login(),
-                                  child: const Text("Login"),
                                 ),
                         ),
                       ]))),

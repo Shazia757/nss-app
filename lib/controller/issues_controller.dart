@@ -16,6 +16,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
 
   RxString submittedTo = 'sec'.obs;
   RxBool isLoading = true.obs;
+  RxBool isReportLoading = true.obs;
   String? usersName = '';
   String? department = '';
 
@@ -115,7 +116,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void getUserDetails(String? admnNo) {
-    Api().volunteerDetails(admnNo??'').then(
+    Api().volunteerDetails(admnNo ?? '').then(
       (value) {
         usersName = (value?.volunteerDetails?.name);
         department = (value?.volunteerDetails?.department);

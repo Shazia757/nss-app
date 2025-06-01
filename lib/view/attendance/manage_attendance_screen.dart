@@ -5,6 +5,7 @@ import 'package:nss/controller/attendance_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 
 class ManageAttendanceScreen extends StatelessWidget {
@@ -22,24 +23,36 @@ class ManageAttendanceScreen extends StatelessWidget {
                 )
               : SizedBox()
           : SizedBox()),
-      appBar: AppBar(
-        title: Text("Manage Attendance"),
-        backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Obx(() => (!c.isLoading.value)
+            ? AppBar(
+                title: Text("Manage Attendance"),
+                backgroundColor:
+                    Theme.of(context).colorScheme.onPrimaryContainer,
+                foregroundColor: Theme.of(context).colorScheme.primaryContainer,
+                actions: [
+                  IconButton(
+                      onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
+                ],
+              )
+            : SizedBox()),
       ),
       body: SafeArea(child: Obx(
         () {
           if (c.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            );
+            return LoadingScreen();
           } else if (c.usersList.isEmpty) {
-           return NoDataPage();
+            return RefreshIndicator(
+                onRefresh: () async => c.onInit(),
+                child: Center(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      NoDataPage(),
+                    ],
+                  ),
+                ));
           }
 
           return RefreshIndicator.adaptive(
@@ -165,49 +178,6 @@ class ManageAttendanceScreen extends StatelessWidget {
               ? Center(child: CircularProgressIndicator())
               : FilledButton(
                   onPressed: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return AlertDialog(
-                    //         actions: [
-                    //           TextButton(
-                    //               onPressed: () => Get.back(),
-                    //               child: Text("Cancel")),
-                    //           TextButton(
-                    //             onPressed: () {
-                    //               c.onSubmitAttendance();
-                    //               Get.back();
-                    //             },
-                    //             child: Text("Confirm",
-                    //                 style: TextStyle(color: Colors.red)),
-                    //           ),
-                    //         ],
-                    //         shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(12)),
-                    //         title: Text(
-                    //             'Are you sure you want to add attendance for the following volunteers?'),
-                    //         content: Expanded(
-                    //           child: ListView.separated(
-                    //             shrinkWrap: true,
-                    //             itemCount: c.selectedVolList.length,
-                    //             itemBuilder: (context, index) {
-                    //               return ListTile(
-                    //                 leading: Text(
-                    //                     (c.selectedVolList[index].admissionNo)
-                    //                         .toString()),
-                    //                 title: Text(
-                    //                     c.selectedVolList[index].name ?? ''),
-                    //                 subtitle: Text(
-                    //                     c.selectedVolList[index].department ??
-                    //                         ''),
-                    //               );
-                    //             },
-                    //             separatorBuilder: (context, index) =>
-                    //                 Divider(),
-                    //           ),
-                    //         ));
-                    //   },
-                    // );
                     if (c.onSubmitAttendanceValidation()) {
                       CustomWidgets().showConfirmationDialog(
                           title: "Submit Attendance",

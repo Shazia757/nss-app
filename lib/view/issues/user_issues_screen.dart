@@ -131,84 +131,80 @@ class ScreenUserIssues extends StatelessWidget {
       padding: EdgeInsets.all(10),
       children: [
         // Text('  Report To:', style: Theme.of(context).textTheme.labelLarge),
-        Row(
-          children: [
-            Expanded(
-              child: Obx(() => InkWell(
-                    onTap: () {
-                      c.submittedTo.value = 'sec';
-                    },
-                    child: Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: (c.submittedTo.value == 'sec')
-                            ? (Theme.of(context).colorScheme.primaryContainer)
-                            : null,
-                        border: Border.all(
-                            color: (c.submittedTo.value == 'sec')
-                                ? (Theme.of(context).colorScheme.primary)
-                                : Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(10),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Obx(() => InkWell(
+                      onTap: () {
+                        c.submittedTo.value = 'sec';
+                      },
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: (c.submittedTo.value == 'sec')
+                              ? (Theme.of(context).colorScheme.primaryContainer)
+                              : null,
+                          border: Border.all(
+                              color: (c.submittedTo.value == 'sec')
+                                  ? (Theme.of(context).colorScheme.primary)
+                                  : Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text('To Secretary'),
                       ),
-                      alignment: Alignment.center,
-                      child: Text('To Secretary'),
-                    ),
-                  )),
-            ),
-            SizedBox(width: 5),
-            Expanded(
-              child: Obx(() => InkWell(
-                    onTap: () {
-                      c.submittedTo.value = 'po';
-                    },
-                    child: Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: (c.submittedTo.value == 'po')
-                            ? (Theme.of(context).colorScheme.primaryContainer)
-                            : null,
-                        border: Border.all(
-                            color: (c.submittedTo.value == 'po')
-                                ? (Theme.of(context).colorScheme.primary)
-                                : Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(10),
+                    )),
+              ),
+              SizedBox(width: 5),
+              Expanded(
+                child: Obx(() => InkWell(
+                      onTap: () {
+                        c.submittedTo.value = 'po';
+                      },
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: (c.submittedTo.value == 'po')
+                              ? (Theme.of(context).colorScheme.primaryContainer)
+                              : null,
+                          border: Border.all(
+                              color: (c.submittedTo.value == 'po')
+                                  ? (Theme.of(context).colorScheme.primary)
+                                  : Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text('To Program Officer'),
                       ),
-                      alignment: Alignment.center,
-                      child: Text('To Program Officer'),
-                    ),
-                  )),
-            ),
-          ],
+                    )),
+              ),
+            ],
+          ),
         ),
         CustomWidgets().textField(
             controller: c.subjectController,
             label: "Subject",
-            margin: EdgeInsets.symmetric(vertical: 10)),
+            margin: EdgeInsets.symmetric(vertical: 15)),
         CustomWidgets().textField(
-          controller: c.desController,
-          maxlines: 12,
-          label: "Description",
+            controller: c.desController,
+            maxlines: 8,
+            label: "Description",
+            margin: EdgeInsets.only(bottom: 20)),
+        CustomWidgets().buildActionButton(
+          context: context,
+          onPressed: () {
+            CustomWidgets().showConfirmationDialog(
+                title: "Report Issue",
+                message: "Are you sure you want to report the issue?",
+                onConfirm: () {
+                  c.reportIssue();
+                });
+          },
+          text: "Report",
+          color: Theme.of(context).colorScheme.error,
         ),
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Obx(() => c.isLoading.value
-                ? Center(child: CircularProgressIndicator())
-                : FilledButton(
-                    onPressed: () {
-                      if (c.onSubmitIssueValidation()) {
-                        CustomWidgets().showConfirmationDialog(
-                            title: "Report Issue",
-                            message:
-                                "Are you sure you want to report the issue?",
-                            onConfirm: () {
-                              c.reportIssue();
-                            });
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                        backgroundColor: Colors.red[900]),
-                    child: Text("Report"),
-                  ))),
       ],
     );
   }

@@ -165,7 +165,7 @@ class VolunteerAddScreen extends StatelessWidget {
                     : AbsorbPointer(
                         absorbing: c.isUpdateButtonLoading.value ||
                             c.isDeleteButtonLoading.value,
-                        child: _buildActionButton(
+                        child: CustomWidgets().buildActionButton(
                             context: context,
                             text:
                                 "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
@@ -203,7 +203,7 @@ class VolunteerAddScreen extends StatelessWidget {
                     : AbsorbPointer(
                         absorbing: c.isDeleteButtonLoading.value ||
                             c.isUpdateButtonLoading.value,
-                        child: _buildActionButton(
+                        child: CustomWidgets().buildActionButton(
                           context: context,
                           text: "Delete Volunteer",
                           icon: Icons.delete,
@@ -220,7 +220,7 @@ class VolunteerAddScreen extends StatelessWidget {
               ),
             SizedBox(height: 15),
             if (isProfilePage)
-              _buildActionButton(
+              CustomWidgets().buildActionButton(
                 context: context,
                 text: "Change Password",
                 icon: Icons.password,
@@ -232,7 +232,7 @@ class VolunteerAddScreen extends StatelessWidget {
                 },
               )
             else if (isUpdateScreen == true)
-              _buildActionButton(
+              CustomWidgets().buildActionButton(
                   context: context,
                   text: "Reset Password",
                   icon: Icons.password,
@@ -246,7 +246,7 @@ class VolunteerAddScreen extends StatelessWidget {
               height: 15,
             ),
             if (isProfilePage)
-              _buildActionButton(
+              CustomWidgets().buildActionButton(
                   context: context,
                   text: "Delete Account",
                   icon: Icons.delete,
@@ -289,26 +289,26 @@ class VolunteerAddScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(
-      {required BuildContext context,
-      required String text,
-      required IconData icon,
-      required Color color,
-      required VoidCallback onPressed}) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: color,
-        minimumSize: Size(double.infinity, 48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      icon: Icon(
-        icon,
-        color: Colors.white,
-      ),
-      label: Text(text,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-    );
-  }
+  // Widget _buildActionButton(
+  //     {required BuildContext context,
+  //     required String text,
+  //     required IconData icon,
+  //     required Color color,
+  //     required VoidCallback onPressed}) {
+  //   return ElevatedButton.icon(
+  //     onPressed: onPressed,
+  //     style: ElevatedButton.styleFrom(
+  //       foregroundColor: Colors.white,
+  //       backgroundColor: color,
+  //       minimumSize: Size(double.infinity, 48),
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //     ),
+  //     icon: Icon(
+  //       icon,
+  //       color: Colors.white,
+  //     ),
+  //     label: Text(text,
+  //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //   );
+  // }
 }

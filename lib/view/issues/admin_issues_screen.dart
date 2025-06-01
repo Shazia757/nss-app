@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
+import 'package:nss/view/common_pages/loading.dart';
+import 'package:nss/view/common_pages/no_data.dart';
 
 import '../../controller/issues_controller.dart';
 import '../../model/issues_model.dart';
@@ -42,59 +44,65 @@ class ScreenAdminIssues extends StatelessWidget {
                   Tab(text: "Resolved"),
                 ],
               ),
-              Obx(() => filterAndSort()),
               Expanded(
                 child: TabBarView(controller: c.adminTabController, children: [
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Obx(() {
-                          if (c.isLoading.value) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (c.modifiedOpenedList.isEmpty) {
-                            return Center(child: Text("No issues reported"));
-                          }
-                          return ListView.separated(
-                            padding: EdgeInsets.all(10),
-                            itemBuilder: (context, index) {
-                              return issueListTile(
-                                count: index + 1,
-                                data: c.modifiedOpenedList[index],
-                                isOpen: true,
-                              );
-                            },
-                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.modifiedOpenedList.length,
-                          );
-                        }),
-                      ),
-                    ],
+                  Expanded(
+                    child: Obx(() {
+                      if (c.isLoading.value) {
+                        return LoadingScreen();
+                      } else if (c.modifiedOpenedList.isEmpty) {
+                        return NoDataPage();
+                      }
+                      return Column(
+                        children: [
+                          Obx(() => filterAndSort()),
+                          Expanded(
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.all(10),
+                              itemBuilder: (context, index) {
+                                return issueListTile(
+                                  count: index + 1,
+                                  data: c.modifiedOpenedList[index],
+                                  isOpen: true,
+                                );
+                              },
+                              separatorBuilder: (_, __) => SizedBox(height: 12),
+                              itemCount: c.modifiedOpenedList.length,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
                   ),
                   // ---------------------- 2nd view ----------------------
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Obx(() {
-                          if (c.isLoading.value) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (c.modifiedClosedList.isEmpty) {
-                            return Center(child: Text("No issues resolved"));
-                          }
-                          return ListView.separated(
-                            padding: EdgeInsets.all(10),
-                            itemBuilder: (context, index) {
-                              return issueListTile(
-                                count: index + 1,
-                                data: c.modifiedClosedList[index],
-                                isOpen: false,
-                              );
-                            },
-                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.modifiedClosedList.length,
-                          );
-                        }),
-                      ),
-                    ],
+                  Expanded(
+                    child: Obx(() {
+                      if (c.isLoading.value) {
+                        return LoadingScreen();
+                      } else if (c.modifiedClosedList.isEmpty) {
+                        return NoDataPage();
+                      }
+                      return Column(
+                        children: [
+                          Obx(() => filterAndSort()),
+                          Expanded(
+                            child: ListView.separated(
+                              padding: EdgeInsets.all(10),
+                              itemBuilder: (context, index) {
+                                return issueListTile(
+                                  count: index + 1,
+                                  data: c.modifiedClosedList[index],
+                                  isOpen: false,
+                                );
+                              },
+                              separatorBuilder: (_, __) => SizedBox(height: 12),
+                              itemCount: c.modifiedClosedList.length,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
                   )
                 ]),
               )
