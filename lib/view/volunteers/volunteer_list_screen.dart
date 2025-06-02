@@ -15,12 +15,20 @@ class VolunteersListScreen extends StatelessWidget {
     VolunteerListController c = Get.put(VolunteerListController());
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
-              ?.then((value) => c.onInit());
+      floatingActionButton: Obx(
+        () {
+          if ((c.isLoading.isFalse)) {
+            return FloatingActionButton(
+              onPressed: () {
+                Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
+                    ?.then((value) => c.onInit());
+              },
+              child: Icon(Icons.add),
+            );
+          } else {
+            return SizedBox();
+          }
         },
-        child: Icon(Icons.add),
       ),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),

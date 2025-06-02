@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/controller/account_controller.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
@@ -13,10 +12,7 @@ class ChangePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AccountController c = Get.put(AccountController());
-    if (!isChangepassword) {
-      c.admissionNoController.text =
-          (LocalStorage().readUser().admissionNo).toString();
-    }
+   
     return Scaffold(
       appBar: AppBar(
         title: Text("${isChangepassword ? "Change" : "Reset"} Password"),
@@ -36,7 +32,7 @@ class ChangePasswordScreen extends StatelessWidget {
                   children: [
                     !isChangepassword
                         ? Text(
-                            c.admissionNoController.text,
+                            userId,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: Theme.of(context)

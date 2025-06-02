@@ -180,8 +180,10 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
       (value) {
         if (value?.status ?? false) {
           Get.back();
+          Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Issue resolved successfully.");
+          onInit();
         } else {
           CustomWidgets.showSnackBar(
               'Error', value?.message ?? 'Failed to resolve issue.');

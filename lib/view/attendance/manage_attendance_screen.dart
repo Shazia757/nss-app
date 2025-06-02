@@ -43,16 +43,7 @@ class ManageAttendanceScreen extends StatelessWidget {
           if (c.isLoading.value) {
             return LoadingScreen();
           } else if (c.usersList.isEmpty) {
-            return RefreshIndicator(
-                onRefresh: () async => c.onInit(),
-                child: Center(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      NoDataPage(),
-                    ],
-                  ),
-                ));
+            return NoDataPage();
           }
 
           return RefreshIndicator.adaptive(
@@ -84,7 +75,8 @@ class ManageAttendanceScreen extends StatelessWidget {
                             ),
                             secondary: InkWell(
                               onTap: () => Get.to(() => ViewAttendanceScreen(
-                                  id: LocalStorage().readUser().admissionNo!)),
+                                  isViewAttendance: false,
+                                  id: c.searchList[index].admissionNo ?? '')),
                               child: CircleAvatar(
                                 radius: 40,
                                 child:

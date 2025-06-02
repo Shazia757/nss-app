@@ -16,14 +16,14 @@ class AttendanceController extends GetxController {
   RxList<Volunteer> usersList = <Volunteer>[].obs;
   RxList<Volunteer> searchList = <Volunteer>[].obs;
   RxList<Volunteer> selectedVolList = <Volunteer>[].obs;
-  String? id;
-  Attendance? attendance;
   RxList<Attendance> attendanceList = <Attendance>[].obs;
   RxList<String> programsList = <String>[].obs;
   RxInt sortColumnIndex = 0.obs;
   RxBool isAscending = true.obs;
   String programName = '';
   RxBool isLoading = true.obs;
+  RxBool isAttendanceLoading = false.obs;
+
   RxBool isProgramLoading = true.obs;
   RxInt totalHours = 0.obs;
   RxInt totalPrograms = 0.obs;
@@ -33,7 +33,7 @@ class AttendanceController extends GetxController {
   void onInit() {
     getUsers();
     getPrograms();
-    getAttendance(LocalStorage().readUser().admissionNo!);
+
     super.onInit();
   }
 
@@ -60,12 +60,16 @@ class AttendanceController extends GetxController {
   }
 
   void getAttendance(String id) async {
-    isLoading.value = true;
+    isAttendanceLoading.value = true;
     Api().getAttendance(id).then(
       (value) {
         attendanceList.assignAll(value?.attendance ?? []);
-        log(value.toString());
+        attendanceList.sort((a, b) => b.date!.compareTo(a.date!));
+
+        log(attendanceList.toString());
         isLoading.value = false;
+        isAttendanceLoading.value = false;
+
         totalHours.value = attendanceList.fold(
             0, (sum, element) => (sum += element.hours ?? 0));
         totalPrograms.value = attendanceList.length;

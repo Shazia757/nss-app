@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
@@ -9,13 +8,18 @@ import 'package:nss/view/common_pages/no_data.dart';
 import '../../controller/attendance_controller.dart';
 
 class ViewAttendanceScreen extends StatelessWidget {
-  const ViewAttendanceScreen({super.key, required this.id, this.attendance});
+  const ViewAttendanceScreen({
+    super.key,
+    required this.id,
+    required this.isViewAttendance,
+  });
+  final bool isViewAttendance;
   final String id;
-  final Attendance? attendance;
+
   @override
   Widget build(BuildContext context) {
     AttendanceController c = Get.put(AttendanceController());
-
+    c.getAttendance(id);
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
@@ -28,13 +32,14 @@ class ViewAttendanceScreen extends StatelessWidget {
                       Theme.of(context).colorScheme.primaryContainer,
                   actions: [
                     IconButton(
-                        onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
+                        onPressed: () => c.getAttendance(id),
+                        icon: Icon(Icons.refresh))
                   ],
                 )
               : SizedBox()),
         ),
         body: Obx(() {
-          if (c.isLoading.value) {
+          if (c.isAttendanceLoading.isTrue) {
             return LoadingScreen();
           } else if (c.attendanceList.isEmpty) {
             return SizedBox(
@@ -48,18 +53,11 @@ class ViewAttendanceScreen extends StatelessWidget {
               DataTable(
                 columnSpacing: 15,
                 columns: [
-                  DataColumn(
-                      label: _buildTableCell(
-                    'Date',
-                    isHeader: true,
-                  )),
+                  DataColumn(label: _buildTableCell('Date', isHeader: true)),
                   DataColumn(label: _buildTableCell('Name', isHeader: true)),
                   DataColumn(label: _buildTableCell('Hours', isHeader: true)),
-                  if (LocalStorage().readUser().role != 'vol')
-                    DataColumn(
-                        label: (LocalStorage().readUser().role != 'vol')
-                            ? _buildTableCell('Remove', isHeader: true)
-                            : SizedBox())
+                  if (!isViewAttendance)
+                    DataColumn(label: _buildTableCell('Remove', isHeader: true))
                 ],
                 border: TableBorder.all(
                     style: BorderStyle.none,
@@ -72,9 +70,9 @@ class ViewAttendanceScreen extends StatelessWidget {
                             ? DateFormat.yMMMd().format(data.date!)
                             : "N/A",
                       )),
-                      DataCell(Expanded(child: Text(data.name ?? ''))),
+                      DataCell(Text(data.name ?? '')),
                       DataCell(Text(data.hours.toString())),
-                      if (LocalStorage().readUser().role != 'vol')
+                      if (!isViewAttendance)
                         DataCell(
                           IconButton(
                             icon: c.isLoading.isTrue

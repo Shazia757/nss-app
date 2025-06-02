@@ -14,7 +14,7 @@ class ProgramListController extends GetxController {
   RxList<Program> searchList = <Program>[].obs;
   RxBool isLoading = true.obs;
   TextEditingController searchController = TextEditingController();
-  RxString date='oldest'.obs;
+  RxString date = 'oldest'.obs;
 
   @override
   void onInit() {
@@ -64,8 +64,6 @@ class AddProgramController extends GetxController {
   var isUpdateButtonLoading = false.obs;
   var isDeleteButtonLoading = false.obs;
   DateTime? date;
-
-  
 
   addProgram() {
     isUpdateButtonLoading.value = true;
@@ -123,7 +121,7 @@ class AddProgramController extends GetxController {
           isDeleteButtonLoading.value = false;
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program deleted successfully.");
-          Get.to(() => ProgramsScreen());
+          Get.back();
         } else {
           CustomWidgets.showSnackBar(
               "Error", value?.message ?? 'Failed to delete program.');

@@ -48,56 +48,56 @@ class ScreenAdminIssues extends StatelessWidget {
               Expanded(
                 child: TabBarView(controller: c.adminTabController, children: [
                   Obx(() {
-                    if (c.isLoading.value) {
-                      return LoadingScreen();
-                    } else if (c.modifiedOpenedList.isEmpty) {
-                      return NoDataPage();
-                    }
                     return Column(
                       children: [
                         Obx(() => filterAndSort()),
-                        Expanded(
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.all(10),
-                            itemBuilder: (context, index) {
-                              return issueListTile(
-                                count: index + 1,
-                                data: c.modifiedOpenedList[index],
-                                isOpen: true,
-                              );
-                            },
-                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.modifiedOpenedList.length,
-                          ),
-                        ),
+                        (c.isLoading.value)
+                            ? LoadingScreen()
+                            : (c.modifiedOpenedList.isEmpty)
+                                ? NoDataPage()
+                                : Expanded(
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.all(10),
+                                      itemBuilder: (context, index) {
+                                        return issueListTile(
+                                          count: index + 1,
+                                          data: c.modifiedOpenedList[index],
+                                          isOpen: true,
+                                        );
+                                      },
+                                      separatorBuilder: (_, __) =>
+                                          SizedBox(height: 12),
+                                      itemCount: c.modifiedOpenedList.length,
+                                    ),
+                                  ),
                       ],
                     );
                   }),
                   // ---------------------- 2nd view ----------------------
                   Obx(() {
-                    if (c.isLoading.value) {
-                      return Expanded(child: LoadingScreen());
-                    } else if (c.modifiedClosedList.isEmpty) {
-                      return Expanded(child: NoDataPage());
-                    }
                     return Column(
                       children: [
                         Obx(() => filterAndSort()),
-                        Expanded(
-                          child: ListView.separated(
-                            padding: EdgeInsets.all(10),
-                            itemBuilder: (context, index) {
-                              return issueListTile(
-                                count: index + 1,
-                                data: c.modifiedClosedList[index],
-                                isOpen: false,
-                              );
-                            },
-                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemCount: c.modifiedClosedList.length,
-                          ),
-                        ),
+                        (c.isLoading.value)
+                            ? LoadingScreen()
+                            : (c.modifiedClosedList.isEmpty)
+                                ? NoDataPage()
+                                : Expanded(
+                                    child: ListView.separated(
+                                      padding: EdgeInsets.all(10),
+                                      itemBuilder: (context, index) {
+                                        return issueListTile(
+                                          count: index + 1,
+                                          data: c.modifiedClosedList[index],
+                                          isOpen: false,
+                                        );
+                                      },
+                                      separatorBuilder: (_, __) =>
+                                          SizedBox(height: 12),
+                                      itemCount: c.modifiedClosedList.length,
+                                    ),
+                                  ),
                       ],
                     );
                   })
@@ -264,8 +264,14 @@ class ScreenAdminIssues extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff5f5791)),
                           onPressed: () {
-                            c.resolveIssue(data.id);
-                            Get.back();
+                            CustomWidgets().showConfirmationDialog(
+                                title: "Resolve Issue",
+                                content: Text(
+                                  "Are you sure you have resolved the issue?",
+                                ),
+                                onConfirm: () => (c.isLoading.value)
+                                    ? CircularProgressIndicator()
+                                    : c.resolveIssue(data.id));
                           },
                           child: Text("Resolve",
                               style: TextStyle(color: Colors.white)),

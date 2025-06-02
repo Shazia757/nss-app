@@ -41,8 +41,8 @@ class AddProgramScreen extends StatelessWidget {
                 Expanded(
                     child: GetBuilder(
                   id: 'date',
-                  builder: (AddProgramController c) =>
-                      CustomWidgets().customDatePickerTextField(
+                  builder: (AddProgramController c) => CustomWidgets()
+                      .customDatePickerTextField(
                           decoration: InputDecoration(
                             labelText: 'Date',
                             border: InputBorder.none,
@@ -51,8 +51,9 @@ class AddProgramScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 2, right: 8.0),
                           context: context,
                           controller: c.dateController,
-                          firstDate: DateTime(2023),
-                          lastDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(Duration(days: 365)),
+                          lastDate: DateTime.now().add(Duration(days: 365)),
                           label: "Date",
                           selectedDate: (p0) {
                             c.date = p0;

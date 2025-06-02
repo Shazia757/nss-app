@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
                         CustomWidgets().textField(
                             color: Colors.grey.shade100,
                             controller: c.userNameController,
-                            label: "Admission No / E-Mail",
+                            label: "Admission No",
                             errorText: c.errorMessage.value.isNotEmpty
                                 ? c.errorMessage.value
                                 : null,

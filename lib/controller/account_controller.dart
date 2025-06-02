@@ -14,7 +14,6 @@ class AccountController extends GetxController {
   TextEditingController oldpasswordController = TextEditingController();
   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
-  TextEditingController admissionNoController = TextEditingController();
   final TextEditingController reasonController = TextEditingController();
 
   RxBool isObscure = true.obs;

@@ -187,6 +187,7 @@ class HomeScreen extends StatelessWidget {
             Icons.event,
             context,
             () => Get.to(() => ViewAttendanceScreen(
+                isViewAttendance: true,
                 id: LocalStorage().readUser().admissionNo!)),
             [
               Colors.teal.shade900,
@@ -237,8 +238,12 @@ class HomeScreen extends StatelessWidget {
             "View Attendance",
             Icons.event,
             context,
-            () => Get.to(() => ViewAttendanceScreen(
-                id: LocalStorage().readUser().admissionNo!)),
+            () {
+              
+              Get.to(() => ViewAttendanceScreen(
+                isViewAttendance: true,
+                id: LocalStorage().readUser().admissionNo!));
+            },
             [
               Colors.teal.shade900,
               Colors.teal.shade600,
