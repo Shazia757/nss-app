@@ -195,18 +195,21 @@ class ScreenUserIssues extends StatelessWidget {
             maxlines: 8,
             label: "Description",
             margin: EdgeInsets.only(bottom: 20)),
+
         Obx(
-          () => c.isLoading.value
+          () => c.isReportLoading.value
               ? Center(child: CircularProgressIndicator())
               : CustomWidgets().buildActionButton(
                   context: context,
                   onPressed: () {
-                    CustomWidgets().showConfirmationDialog(
-                        title: "Report Issue",
-                        message: "Are you sure you want to report the issue?",
-                        onConfirm: () {
-                          c.reportIssue();
-                        });
+                    if (c.onSubmitIssueValidation()) {
+                      CustomWidgets().showConfirmationDialog(
+                          title: "Report Issue",
+                          message: "Are you sure you want to report the issue?",
+                          onConfirm: () {
+                            c.reportIssue();
+                          });
+                    }
                   },
                   text: "Report",
                   color: Theme.of(context).colorScheme.error,

@@ -15,8 +15,8 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   final TextEditingController resolvedByController = TextEditingController();
 
   RxString submittedTo = 'sec'.obs;
-  RxBool isLoading = true.obs;
-  RxBool isReportLoading = true.obs;
+  RxBool isLoading = false.obs;
+  RxBool isReportLoading = false.obs;
 
   RxList<Volunteer?> adminList = <Volunteer?>[].obs;
   late TabController tabController;
@@ -151,7 +151,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void reportIssue() {
-    isLoading.value = true;
+    isReportLoading.value = true;
     Api().addIssue({
       'subject': subjectController.text,
       'description': desController.text,
@@ -160,7 +160,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
       'updated_by': (LocalStorage().readUser().admissionNo).toString()
     }).then(
       (value) {
-        isLoading.value = false;
+        isReportLoading.value = false;
         if (value?.status ?? false) {
           subjectController.clear();
           desController.clear();
