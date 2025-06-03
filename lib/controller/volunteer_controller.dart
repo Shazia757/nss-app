@@ -34,7 +34,7 @@ class VolunteerController extends GetxController {
             phoneNo: phoneController.text,
             dob: dob,
             department: depController.text,
-            role: role.value,
+            role: 'vol',
             rollNo: rollNoController.text,
             year: yearController.text))
         .then(

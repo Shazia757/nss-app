@@ -110,7 +110,7 @@ class ScreenUserIssues extends StatelessWidget {
                     child: c.isLoading.isTrue
                         ? CircularProgressIndicator()
                         : c.modifiedClosedList.isEmpty
-                            ? Text('No resolved issues.')
+                            ? NoDataPage()
                             : ListView.builder(
                                 padding: EdgeInsets.all(10),
                                 itemBuilder: (context, index) {
