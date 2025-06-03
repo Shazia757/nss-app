@@ -120,9 +120,10 @@ class AddProgramController extends GetxController {
       (value) {
         if (value?.status == true) {
           isDeleteButtonLoading.value = false;
+          Get.back();
+          Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program deleted successfully.");
-          Get.back();
         } else {
           CustomWidgets.showSnackBar(
               "Error", value?.message ?? 'Failed to delete program.');
