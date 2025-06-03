@@ -60,9 +60,9 @@ class LoginScreen extends StatelessWidget {
                                 label: "Password",
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 suffix: GestureDetector(
-                                  onTapDown: (_) => c.showPassword(),
-                                  onTapUp: (_) => c.hidePassword(),
-                                  onTapCancel: c.hidePassword,
+                                  onTap: () => (c.isObscure.value)
+                                      ? c.showPassword()
+                                      : c.hidePassword(),
                                   child: Icon(
                                     c.isObscure.value
                                         ? Icons.visibility_off

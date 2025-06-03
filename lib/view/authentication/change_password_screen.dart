@@ -12,7 +12,7 @@ class ChangePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AccountController c = Get.put(AccountController());
-   
+
     return Scaffold(
       appBar: AppBar(
         title: Text("${isChangepassword ? "Change" : "Reset"} Password"),
@@ -50,9 +50,9 @@ class ChangePasswordScreen extends StatelessWidget {
                             hideText: c.isOldPassObscure.value,
                             label: "Old Password",
                             suffix: GestureDetector(
-                              onTapDown: (_) => c.showOldPassword(),
-                              onTapUp: (_) => c.hideOldPassword(),
-                              onTapCancel: c.hideOldPassword,
+                              onTap: () => (c.isObscure.value)
+                                  ? c.showPassword()
+                                  : c.hidePassword(),
                               child: Icon(
                                 c.isObscure.value
                                     ? Icons.visibility_off

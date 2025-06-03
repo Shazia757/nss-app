@@ -22,6 +22,7 @@ class VolunteerController extends GetxController {
   DateTime? dob;
   final api = Api();
   RxString role = 'vol'.obs;
+  RxBool isSec=false.obs;
 
   void addVolunteer() async {
     isUpdateButtonLoading.value = true;
@@ -34,7 +35,7 @@ class VolunteerController extends GetxController {
             phoneNo: phoneController.text,
             dob: dob,
             department: depController.text,
-            role: 'vol',
+            role: role.value,
             rollNo: rollNoController.text,
             year: yearController.text))
         .then(
