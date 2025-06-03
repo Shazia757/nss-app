@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/authentication/login_screen.dart';
+import 'package:nss/view/common_pages/no_connection_page.dart';
 import 'package:nss/view/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {

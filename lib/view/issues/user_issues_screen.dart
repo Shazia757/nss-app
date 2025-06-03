@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nss/api.dart';
 
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -97,9 +98,10 @@ class ScreenUserIssues extends StatelessWidget {
                           ? NoDataPage()
                           : ListView.builder(
                               shrinkWrap: true,
-                              itemBuilder: (context, index) => listTileView(
-                                  c.modifiedOpenedList[index],
-                                  count: "${index + 1}"),
+                              itemBuilder: (context, index) => issueListTile(
+                                  data: c.modifiedOpenedList[index],
+                                  isOpen: true,
+                                  count: index + 1),
                               itemCount: c.modifiedOpenedList.length,
                             )),
               RefreshIndicator.adaptive(
@@ -112,9 +114,10 @@ class ScreenUserIssues extends StatelessWidget {
                             : ListView.builder(
                                 padding: EdgeInsets.all(10),
                                 itemBuilder: (context, index) {
-                                  return listTileView(
-                                      c.modifiedClosedList[index],
-                                      count: "${index + 1}");
+                                  return issueListTile(
+                                      data: c.modifiedClosedList[index],
+                                      isOpen: false,
+                                      count: index + 1);
                                 },
                                 itemCount: c.modifiedClosedList.length,
                               ),
@@ -192,56 +195,65 @@ class ScreenUserIssues extends StatelessWidget {
             maxlines: 8,
             label: "Description",
             margin: EdgeInsets.only(bottom: 20)),
-        CustomWidgets().buildActionButton(
-          context: context,
-          onPressed: () {
-            CustomWidgets().showConfirmationDialog(
-                title: "Report Issue",
-                message: "Are you sure you want to report the issue?",
-                onConfirm: () {
-                  c.reportIssue();
-                });
-          },
-          text: "Report",
-          color: Theme.of(context).colorScheme.error,
+        Obx(
+          () => c.isLoading.value
+              ? Center(child: CircularProgressIndicator())
+              : CustomWidgets().buildActionButton(
+                  context: context,
+                  onPressed: () {
+                    CustomWidgets().showConfirmationDialog(
+                        title: "Report Issue",
+                        message: "Are you sure you want to report the issue?",
+                        onConfirm: () {
+                          c.reportIssue();
+                        });
+                  },
+                  text: "Report",
+                  color: Theme.of(context).colorScheme.error,
+                ),
         ),
       ],
     );
   }
 
-  Widget listTileView(Issues data, {required String count}) {
+  Card issueListTile(
+      {required Issues data, required bool isOpen, required int count}) {
+    final to = (data.to == 'po') ? 'Program Officer' : 'Secretary';
+    RxBool isDataLoading = false.obs;
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      shadowColor: isOpen
+          ? const Color.fromARGB(98, 159, 16, 6)
+          : const Color.fromARGB(71, 76, 175, 79),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: EdgeInsets.all(16),
+        leading: Obx(() => isDataLoading.isTrue
+            ? CircularProgressIndicator()
+            : CircleAvatar(
+                radius: 24,
+                backgroundColor: isOpen
+                    ? const Color.fromARGB(255, 159, 16, 6)
+                    : Colors.green,
+                child: Text(
+                  "$count",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              )),
         title: Text(
           data.subject ?? "N/A",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 4),
-            Text(
-              "To: ${data.to}",
-              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-            ),
-          ],
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text("To: $to", style: TextStyle(color: Colors.grey[700])),
         ),
-        leading: CircleAvatar(
-          radius: 20,
-          child: Text(
-            count,
-          ),
+        trailing: Text(
+          DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
         ),
-        trailing: data.createdDate != null
-            ? Text(
-                DateFormat.yMMMd().format(data.createdDate!),
-                style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-              )
-            : Text(''),
         onTap: () {
           Get.defaultDialog(
             title: data.subject ?? "N/A",

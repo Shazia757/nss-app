@@ -164,6 +164,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         if (value?.status ?? false) {
           subjectController.clear();
           desController.clear();
+          Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Issue reported successfully");
         } else {
