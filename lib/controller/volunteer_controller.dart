@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
@@ -22,7 +21,6 @@ class VolunteerController extends GetxController {
 
   DateTime? dob;
   final api = Api();
-
   RxString role = 'vol'.obs;
 
   void addVolunteer() async {
@@ -42,7 +40,8 @@ class VolunteerController extends GetxController {
         .then(
       (value) {
         isUpdateButtonLoading.value = false;
-        if (value?.status ?? false == true) {
+        if (value?.status ?? false) {
+          Get.back();
           Get.back();
           CustomWidgets.showSnackBar(
               'Success', value?.message ?? 'Volunteer added successfully.');
@@ -72,6 +71,7 @@ class VolunteerController extends GetxController {
         isUpdateButtonLoading.value = false;
         if (response?.status == true) {
           Get.back();
+          Get.back();
           CustomWidgets.showSnackBar('Success',
               response?.message ?? 'Volunteer updated successfully.');
         } else {
@@ -89,6 +89,7 @@ class VolunteerController extends GetxController {
         isDeleteButtonLoading.value = false;
 
         if (response?.status == true) {
+          Get.back();
           Get.back();
           CustomWidgets.showSnackBar("Success",
               response?.message ?? "Volunteer deleted successfully.");
