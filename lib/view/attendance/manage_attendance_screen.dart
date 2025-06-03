@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nss/controller/attendance_controller.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/attendance/view_attendance_screen.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
@@ -77,10 +76,21 @@ class ManageAttendanceScreen extends StatelessWidget {
                               onTap: () => Get.to(() => ViewAttendanceScreen(
                                   isViewAttendance: false,
                                   id: c.searchList[index].admissionNo ?? '')),
-                              child: CircleAvatar(
-                                radius: 40,
-                                child:
-                                    Text(c.searchList[index].admissionNo ?? ''),
+                              child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: Card(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18)),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                        c.searchList[index].admissionNo ?? ''),
+                                  ),
+                                ),
                               ),
                             ),
                             title: Text(c.searchList[index].name ?? ''),

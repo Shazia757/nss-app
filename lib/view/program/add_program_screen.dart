@@ -104,9 +104,7 @@ class AddProgramScreen extends StatelessWidget {
                                     title: "Add Program",
                                     message:
                                         "Are you sure you want to add the program?",
-                                    onConfirm: () {
-                                      c.addProgram();
-                                    })
+                                    onConfirm: () => c.addProgram())
                             : () {},
                         text: isUpdate ? "Update" : "Add",
                       ),

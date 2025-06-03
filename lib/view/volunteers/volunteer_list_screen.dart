@@ -73,8 +73,21 @@ class VolunteersListScreen extends StatelessWidget {
                     itemCount: c.searchList.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        leading:
-                            Text((c.searchList[index].admissionNo).toString()),
+                        leading: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: Card(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18)),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child:
+                                  Text(c.searchList[index].admissionNo ?? ''),
+                            ),
+                          ),
+                        ),
                         title: Text(c.searchList[index].name ?? ''),
                         subtitle: Text(c.searchList[index].department ?? ''),
                         trailing: IconButton(

@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
-import 'package:nss/view/program/program_list_screen.dart';
 import '../model/programs_model.dart';
 
 class ProgramListController extends GetxController {
@@ -79,6 +78,7 @@ class AddProgramController extends GetxController {
         isUpdateButtonLoading.value = false;
         if (value?.status == true) {
           Get.back();
+          Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program added successfully");
         } else {
@@ -102,6 +102,7 @@ class AddProgramController extends GetxController {
       (value) {
         isUpdateButtonLoading.value = false;
         if (value?.status == true) {
+          Get.back();
           Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Program updated successfully.");

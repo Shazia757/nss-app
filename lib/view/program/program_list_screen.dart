@@ -273,21 +273,21 @@ class ProgramsScreen extends StatelessWidget {
               ));
         },
       ),
-      floatingActionButton: Visibility(
-        visible: ((LocalStorage().readUser().role != 'vol') &&
-            (c.isLoading.isFalse)),
-        child: FloatingActionButton(
-          shape: CircleBorder(),
-          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          onPressed: () {
-            Get.to(() => AddProgramScreen(isUpdate: false));
-          },
-          child: Icon(
-            Icons.add,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-        ),
-      ),
+      floatingActionButton: Obx(() => Visibility(
+            visible: ((LocalStorage().readUser().role != 'vol') &&
+                (c.isLoading.isFalse)),
+            child: FloatingActionButton(
+              shape: CircleBorder(),
+              backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+              onPressed: () {
+                Get.to(() => AddProgramScreen(isUpdate: false));
+              },
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          )),
     );
   }
 }
