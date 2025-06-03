@@ -28,7 +28,8 @@ class SettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 4,
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -39,7 +40,10 @@ class SettingsScreen extends StatelessWidget {
                     backgroundColor: theme.colorScheme.primary,
                     child: Text(
                       (user.name ?? "N")[0].toUpperCase(),
-                      style: const TextStyle(fontSize: 36, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 36,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -47,10 +51,14 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(user.name ?? "N/A", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        Text(user.name ?? "N/A",
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
-                        Text("Admission No: ${user.admissionNo ?? "N/A"}", style: theme.textTheme.bodySmall),
-                        Text("Department: ${user.department ?? "N/A"}", style: theme.textTheme.bodySmall),
+                        Text("Admission No: ${user.admissionNo ?? "N/A"}",
+                            style: theme.textTheme.bodySmall),
+                        Text("Department: ${user.department ?? "N/A"}",
+                            style: theme.textTheme.bodySmall),
                       ],
                     ),
                   ),
@@ -101,15 +109,22 @@ class SettingsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildLegalLink(context, title: 'Privacy Policy', baseUrl: "nssapi.bvocfarookcollege.com", path: '/pricay_policy'),
-              _buildLegalLink(context, title: 'Terms & Conditions', baseUrl: "nssapi.bvocfarookcollege.com", path: "/terms_and_conditions"),
+              _buildLegalLink(context,
+                  title: 'Privacy Policy',
+                  baseUrl: "nssapi.bvocfarookcollege.com",
+                  path: '/pricay_policy'),
+              _buildLegalLink(context,
+                  title: 'Terms & Conditions',
+                  baseUrl: "nssapi.bvocfarookcollege.com",
+                  path: "/terms_and_conditions"),
             ],
           ),
           const SizedBox(height: 30),
           Center(
             child: Text(
-              'Version 1.0.0',
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+              'Version 0.0.1',
+              style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
             ),
           ),
         ],
@@ -117,7 +132,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLegalLink(BuildContext context, {required String title, required String baseUrl, String path = ''}) {
+  Widget _buildLegalLink(BuildContext context,
+      {required String title, required String baseUrl, String path = ''}) {
     return InkWell(
       onTap: () async {
         try {
@@ -127,12 +143,15 @@ class SettingsScreen extends StatelessWidget {
           ));
         } catch (e) {
           log(e.toString());
-          Get.snackbar("Error", "Unable to open link", snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar("Error", "Unable to open link",
+              snackPosition: SnackPosition.BOTTOM);
         }
       },
       child: Text(
         title,
-        style: TextStyle(decoration: TextDecoration.underline, color: Theme.of(context).colorScheme.primary),
+        style: TextStyle(
+            decoration: TextDecoration.underline,
+            color: Theme.of(context).colorScheme.primary),
         textAlign: TextAlign.center,
       ),
     );
