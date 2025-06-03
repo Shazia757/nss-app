@@ -84,7 +84,7 @@ class ManageAttendanceScreen extends StatelessWidget {
                                       .colorScheme
                                       .primaryContainer,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18)),
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Align(
                                     alignment: Alignment.center,
                                     child: Text(
