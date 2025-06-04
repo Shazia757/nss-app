@@ -22,6 +22,7 @@ class VolunteerController extends GetxController {
   DateTime? dob;
   final api = Api();
   RxString role = 'vol'.obs;
+
   RxBool isSec=false.obs;
 
   void addVolunteer() async {

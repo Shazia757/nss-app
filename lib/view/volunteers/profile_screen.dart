@@ -15,6 +15,7 @@ class VolunteerAddScreen extends StatelessWidget {
   const VolunteerAddScreen({super.key, this.isUpdateScreen, this.user});
   final bool? isUpdateScreen;
   final Users? user;
+
   @override
   Widget build(BuildContext context) {
     final isProfilePage = (isUpdateScreen == null);
@@ -27,6 +28,12 @@ class VolunteerAddScreen extends StatelessWidget {
     }
 
     if (isProfilePage) c.setUpdateData(LocalStorage().readUser());
+
+    if (c.role.value == 'vol') {
+      c.isSec.value = false;
+    } else {
+      c.isSec.value = true;
+    }
 
     return Scaffold(
       bottomNavigationBar: isProfilePage ? CustomNavBar(currentIndex: 2) : null,
@@ -142,25 +149,17 @@ class VolunteerAddScreen extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
-                      (!isUpdateScreen!)
-                          ? Obx(() => Switch(
-                              value: c.isSec.value,
-                              onChanged: (value) {
-                                c.isSec.value = value;
-                                if (c.isSec.value) {
-                                  c.role.value = 'sec';
-                                }
-                                log(c.role.value);
-                              }))
-                          : Obx(() => Switch(
-                              value: c.role.value == (c.role.value = 'sec'),
-                              onChanged: (value) {
-                                if (value) {
-                                  c.role.value = 'sec';
-                                } else {
-                                  c.role.value = 'vol';
-                                }
-                              }))
+                      Obx(() => Switch(
+                          value: c.isSec.value,
+                          onChanged: (value) {
+                            c.isSec.value = value;
+                            if (c.isSec.value) {
+                              c.role.value = 'sec';
+                            } else {
+                              c.role.value = 'vol';
+                            }
+                            log(c.role.value);
+                          }))
                     ],
                   )
                 : SizedBox(),
