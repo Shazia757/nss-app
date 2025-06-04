@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                   LocalStorage().clearAll();
                   Get.offAll(() => LoginScreen());
                 },
-              ),
+                data: Text("Confirm", style: TextStyle(color: Colors.red))),
           ),
           CustomWidgets().buildActionButton(
             context: context,

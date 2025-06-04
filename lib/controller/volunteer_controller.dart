@@ -23,7 +23,7 @@ class VolunteerController extends GetxController {
   final api = Api();
   RxString role = 'vol'.obs;
 
-  RxBool isSec=false.obs;
+  RxBool isSec = false.obs;
 
   void addVolunteer() async {
     isUpdateButtonLoading.value = true;
@@ -100,7 +100,7 @@ class VolunteerController extends GetxController {
               "Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
-    );
+    ).then((value) => onInit());
   }
 
   void setUpdateData(Users user) {
@@ -196,7 +196,7 @@ class VolunteerListController extends GetxController {
         Get.to(VolunteerAddScreen(
           isUpdateScreen: true,
           user: value!.volunteerDetails,
-        ));
+        ))?.then((value) => onInit());
       },
     );
   }

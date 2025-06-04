@@ -48,7 +48,7 @@ class VolunteersListScreen extends StatelessWidget {
           if (c.isLoading.value) {
             return LoadingScreen();
           } else if (c.usersList.isEmpty) {
-            return NoDataPage();
+            return NoDataPage(title: 'No Volunteers found');
           }
 
           return RefreshIndicator.adaptive(
@@ -71,31 +71,36 @@ class VolunteersListScreen extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: c.searchList.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: Card(
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child:
-                                  Text(c.searchList[index].admissionNo ?? ''),
-                            ),
-                          ),
-                        ),
-                        title: Text(c.searchList[index].name ?? ''),
-                        subtitle: Text(c.searchList[index].department ?? ''),
-                        trailing: IconButton(
-                            onPressed: () => c.updateVolunteer(
-                                (c.searchList[index].admissionNo).toString()),
-                            icon: Icon(
-                              Icons.edit_note_outlined,
-                            )),
-                      );
+                      return InkWell(
+                          onTap: () => c.updateVolunteer(
+                              (c.searchList[index].admissionNo).toString()),
+                          child: ListTile(
+                              leading: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: Card(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                        c.searchList[index].admissionNo ?? ''),
+                                  ),
+                                ),
+                              ),
+                              title: Text(c.searchList[index].name ?? ''),
+                              subtitle:
+                                  Text(c.searchList[index].department ?? ''),
+                              trailing: IconButton(
+                                  onPressed: () => c.updateVolunteer(
+                                      (c.searchList[index].admissionNo)
+                                          .toString()),
+                                  icon: Icon(
+                                    Icons.edit_note_outlined,
+                                  ))));
                     },
                     separatorBuilder: (context, index) => Divider(),
                   ),

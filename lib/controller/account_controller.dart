@@ -54,7 +54,11 @@ class AccountController extends GetxController {
       (response) async {
         if (response?.status == true && response?.data.admissionNo != null) {
           await LocalStorage().writeUser(response?.data ?? Users());
-          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}', icon: Icon(Icons.login));
+          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}',
+              icon: Icon(
+                Icons.login,
+                color: Colors.white,
+              ));
           Get.offAll(() => HomeScreen());
         } else {
           errorMessage.value = response?.message ?? 'Failed to login!';
@@ -65,59 +69,78 @@ class AccountController extends GetxController {
     );
   }
 
-  Future<void> resetPassword(String id) async {
-    if ((newPassController.text.trim().isEmpty)) {
-      CustomWidgets.showSnackBar('Invalid', 'Please enter password.');
+  bool onChangePassValidation() {
+    if ((oldpasswordController.text.trim().isEmpty)) {
+      CustomWidgets.showSnackBar('Invalid', 'Please enter old password.');
+      Get.back();
+      return false;
+    } else if ((newPassController.text.trim().isEmpty)) {
+      CustomWidgets.showSnackBar('Invalid', 'Please enter new password.');
+      Get.back();
+      return false;
     } else if (confirmPassController.text.trim().isEmpty) {
       CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
-    } else {
-      if (newPassController.text == confirmPassController.text) {
-        isLoading.value = true;
-        api.resetPassword({'admission_number': id, 'new_password': confirmPassController.text}).then(
-          (value) {
-            isLoading.value = false;
-            if (value?.status ?? false) {
-              passwordController.clear();
-              newPassController.clear();
-              confirmPassController.clear();
-              Get.back();
-              CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed Successfully');
-            } else {
-              CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
-            }
-          },
-        );
-      } else {
-        CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
-      }
+      Get.back();
+      return false;
+    } else if (newPassController.text != confirmPassController.text) {
+      CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
+      Get.back();
+      return false;
     }
+    return true;
+  }
+
+  bool onResetPassValidation() {
+    if ((newPassController.text.trim().isEmpty)) {
+      CustomWidgets.showSnackBar('Invalid', 'Please enter new password.');
+      return false;
+    } else if (confirmPassController.text.trim().isEmpty) {
+      CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
+      return false;
+    } else if (newPassController.text != confirmPassController.text) {
+      CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
+      return false;
+    }
+    return true;
   }
 
   Future<void> changePassword(String id) async {
-    if ((oldpasswordController.text.trim().isEmpty)) {
-      CustomWidgets.showSnackBar('Invalid', 'Please enter old password.');
-    } else if ((newPassController.text.trim().isEmpty)) {
-      CustomWidgets.showSnackBar('Invalid', 'Please enter new password.');
-    } else if (confirmPassController.text.trim().isEmpty) {
-      CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
-    } else {
-      if (newPassController.text == confirmPassController.text) {
-        isLoading.value = true;
-        api.changePassword({'admission_number': id, 'old_password': oldpasswordController.text, 'new_password': confirmPassController.text}).then(
-          (value) {
-            isLoading.value = false;
-            if (value?.status == true) {
-              Get.to(() => LoginScreen());
-              CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
-            } else {
-              CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
-            }
-          },
-        );
+    isLoading.value = true;
+    api.changePassword({
+      'admission_number': id,
+      'old_password': oldpasswordController.text,
+      'new_password': confirmPassController.text
+    }).then((value) {
+      isLoading.value = false;
+      if (value?.status == true) {
+        Get.to(() => LoginScreen());
+        CustomWidgets.showSnackBar(
+            'Success', value?.message ?? 'Password Changed.');
       } else {
-        CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
+        Get.back();
+        CustomWidgets.showSnackBar(
+            'Error', value?.message ?? 'Password not changed.');
       }
-    }
+    });
+  }
+
+  Future<void> resetPassword(String id) async {
+    isLoading.value = true;
+    api.resetPassword({
+      'admission_number': id,
+      'new_password': confirmPassController.text
+    }).then((value) {
+      isLoading.value = false;
+      if (value?.status == true) {
+        Get.back();
+        CustomWidgets.showSnackBar(
+            'Success', value?.message ?? 'Password Changed.');
+      } else {
+        Get.back();
+        CustomWidgets.showSnackBar(
+            'Error', value?.message ?? 'Password not changed.');
+      }
+    });
   }
 
   void deleteAccount() {
@@ -142,7 +165,8 @@ class AccountController extends GetxController {
         },
       );
     } else {
-      CustomWidgets.showSnackBar('Invalid', 'Please specify reason to delete account.(Min 20 characters)');
+      CustomWidgets.showSnackBar('Invalid',
+          'Please specify reason to delete account.(Min 20 characters)');
     }
   }
 
@@ -157,5 +181,4 @@ class AccountController extends GetxController {
 
   void showConfirmPassword() => isConfirmPassObscure.value = false;
   void hideConfirmPassword() => isConfirmPassObscure.value = true;
-
 }

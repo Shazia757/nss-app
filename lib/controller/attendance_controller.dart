@@ -130,7 +130,6 @@ class AttendanceController extends GetxController {
   deleteAttendance(int id) {
     Api().deleteAttendance(id).then(
       (value) {
-        log(value?.message ?? "Program deleted successfully.");
         if (value?.status == true) {
           Get.back();
           CustomWidgets.showSnackBar(
@@ -140,7 +139,7 @@ class AttendanceController extends GetxController {
               "Error", value?.message ?? 'Failed to delete attendance.');
         }
       },
-    );
+    ).then((value) => onInit());
   }
 
   // void sort(int columnIndex, bool ascending) {

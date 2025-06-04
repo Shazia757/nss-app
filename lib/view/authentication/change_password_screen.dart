@@ -20,7 +20,7 @@ class ChangePasswordScreen extends StatelessWidget {
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             Card(
               margin: const EdgeInsets.only(
@@ -50,11 +50,11 @@ class ChangePasswordScreen extends StatelessWidget {
                             hideText: c.isOldPassObscure.value,
                             label: "Old Password",
                             suffix: GestureDetector(
-                              onTap: () => (c.isObscure.value)
-                                  ? c.showPassword()
-                                  : c.hidePassword(),
+                              onTap: () => (c.isOldPassObscure.value)
+                                  ? c.showOldPassword()
+                                  : c.hideOldPassword(),
                               child: Icon(
-                                c.isObscure.value
+                                c.isOldPassObscure.value
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 color: Colors.grey,
@@ -75,11 +75,11 @@ class ChangePasswordScreen extends StatelessWidget {
                           hideText: c.isNewPassObscure.value,
                           label: "New Password",
                           suffix: GestureDetector(
-                            onTapDown: (_) => c.showNewPassword(),
-                            onTapUp: (_) => c.hideNewPassword(),
-                            onTapCancel: c.hideNewPassword,
+                            onTap: () => c.isNewPassObscure.value
+                                ? c.showNewPassword()
+                                : c.hideNewPassword(),
                             child: Icon(
-                              c.isObscure.value
+                              c.isNewPassObscure.value
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                               color: Colors.grey,
@@ -98,11 +98,11 @@ class ChangePasswordScreen extends StatelessWidget {
                           label: "Confirm new Password",
                           margin: EdgeInsets.symmetric(vertical: 0),
                           suffix: GestureDetector(
-                            onTapDown: (_) => c.showConfirmPassword(),
-                            onTapUp: (_) => c.hideConfirmPassword(),
-                            onTapCancel: c.hideConfirmPassword,
+                            onTap: () => (c.isConfirmPassObscure.value)
+                                ? c.showConfirmPassword()
+                                : c.hideConfirmPassword(),
                             child: Icon(
-                              c.isObscure.value
+                              c.isConfirmPassObscure.value
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                               color: Colors.grey,
@@ -112,20 +112,43 @@ class ChangePasswordScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Obx(
-                      () => c.isLoading.value
-                          ? CircularProgressIndicator()
-                          : CustomWidgets().buildActionButton(
-                              context: context,
-                              text:
-                                  "${isChangepassword ? "Change" : "Reset"} Password",
-                              color:
-                                  Theme.of(context).colorScheme.onPrimaryFixed,
-                              onPressed: () => isChangepassword
-                                  ? c.changePassword(userId)
-                                  : c.resetPassword(userId),
-                            ),
-                    ),
+                    isChangepassword
+                        ? CustomWidgets().buildActionButton(
+                            context: context,
+                            text: "Change Password",
+                            color: Theme.of(context).colorScheme.onPrimaryFixed,
+                            onPressed: () {
+                              if (c.onChangePassValidation()) {
+                                CustomWidgets().showConfirmationDialog(
+                                    title: "Change Password",
+                                    message:
+                                        "Are you sure you want to change your password?",
+                                    onConfirm: () => c.changePassword(userId),
+                                    data: Obx(
+                                      () => (c.isLoading.value)
+                                          ? CircularProgressIndicator()
+                                          : Text('Confirm'),
+                                    ));
+                              }
+                            })
+                        : CustomWidgets().buildActionButton(
+                            context: context,
+                            text: "Reset Password",
+                            color: Theme.of(context).colorScheme.onPrimaryFixed,
+                            onPressed: () {
+                              if (c.onResetPassValidation()) {
+                                CustomWidgets().showConfirmationDialog(
+                                    title: "Reset Password",
+                                    message:
+                                        "Are you sure you want to reset your password?",
+                                    onConfirm: () => c.resetPassword(userId),
+                                    data: Obx(
+                                      () => (c.isLoading.value)
+                                          ? CircularProgressIndicator()
+                                          : Text('Confirm'),
+                                    ));
+                              }
+                            }),
                   ],
                 ),
               ),

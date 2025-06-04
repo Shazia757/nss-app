@@ -44,7 +44,7 @@ class ViewAttendanceScreen extends StatelessWidget {
           } else if (c.attendanceList.isEmpty) {
             return SizedBox(
               height: double.maxFinite,
-              child: NoDataPage(),
+              child: NoDataPage(title: 'Attendance not found'),
             );
           }
           return ListView(
@@ -82,15 +82,16 @@ class ViewAttendanceScreen extends StatelessWidget {
                       if (!isViewAttendance)
                         DataCell(
                           IconButton(
-                            icon: c.isLoading.isTrue
-                                ? Center(child: CircularProgressIndicator())
-                                : Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => CustomWidgets()
-                                .showConfirmationDialog(
-                                    title: "Delete Attendance",
-                                    message:
-                                        "Are you sure you want to delete attendance for the program?",
-                                    onConfirm: () => c.deleteAttendance(rowData.id ?? 0)),
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => CustomWidgets().showConfirmationDialog(
+                                title: "Delete Attendance",
+                                message:
+                                    "Are you sure you want to delete attendance for the program?",
+                                onConfirm: () =>
+                                    c.deleteAttendance(rowData.id ?? 0),
+                                data: c.isLoading.isTrue
+                                    ? Center(child: CircularProgressIndicator())
+                                    : Text('Confirm')),
                           ),
                         ),
                     ],

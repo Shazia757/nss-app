@@ -42,7 +42,7 @@ class ManageAttendanceScreen extends StatelessWidget {
           if (c.isLoading.value) {
             return LoadingScreen();
           } else if (c.usersList.isEmpty) {
-            return NoDataPage();
+            return NoDataPage(title: 'Users not found');
           }
 
           return RefreshIndicator.adaptive(
@@ -176,12 +176,10 @@ class ManageAttendanceScreen extends StatelessWidget {
               ],
             ),
           ),
-          Obx(() => c.isLoading.value
-              ? Center(child: CircularProgressIndicator())
-              : FilledButton(
-                  onPressed: () {
-                    if (c.onSubmitAttendanceValidation()) {
-                      CustomWidgets().showConfirmationDialog(
+          Obx(() => FilledButton(
+                onPressed: () {
+                  if (c.onSubmitAttendanceValidation()) {
+                    CustomWidgets().showConfirmationDialog(
                         title: "Submit Attendance",
                         content: SizedBox(
                           height: 200,
@@ -199,11 +197,15 @@ class ManageAttendanceScreen extends StatelessWidget {
                                   )),
                         ),
                         onConfirm: () => c.onSubmitAttendance(),
-                      );
-                    }
-                  },
-                  child: Text("Submit"),
-                )),
+                        data: Obx(
+                          ()=> c.isLoading.value
+                              ? CircularProgressIndicator()
+                              : Text('Confirm'),
+                        ));
+                  }
+                },
+                child: Text("Submit"),
+              )),
         ],
       ),
     );

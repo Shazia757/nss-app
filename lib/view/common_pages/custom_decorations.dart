@@ -377,7 +377,8 @@ class CustomWidgets {
       {required String title,
       String? message,
       Widget? content,
-      required VoidCallback onConfirm}) {
+      required VoidCallback onConfirm,
+      required Widget data}) {
     showDialog(
       context: Get.context!,
       builder: (context) {
@@ -390,7 +391,7 @@ class CustomWidgets {
             TextButton(onPressed: () => Get.back(), child: Text("Cancel")),
             TextButton(
               onPressed: () => onConfirm(),
-              child: Text("Confirm", style: TextStyle(color: Colors.red)),
+              child: data,
             ),
           ],
         );

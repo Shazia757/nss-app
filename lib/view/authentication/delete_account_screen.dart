@@ -46,14 +46,16 @@ class DeleteAccountScreen extends StatelessWidget {
             child: CustomWidgets().buildActionButton(
                 context: context,
                 onPressed: () => CustomWidgets().showConfirmationDialog(
-                      title: "Do you want to delete?",
-                      content: Text(
-                        "This will send request to the admin to delete your account.After approving, all your data will be lost and cannot login again.",
-                      ),
-                      onConfirm: () => (c.isLoading.value)
-                          ? CircularProgressIndicator()
-                          : c.deleteAccount(),
+                    title: "Do you want to delete?",
+                    content: Text(
+                      "This will send request to the admin to delete your account.After approving, all your data will be lost and cannot login again.",
                     ),
+                    onConfirm: () => c.deleteAccount(),
+                    data: Obx(
+                      ()=> (c.isLoading.value)
+                          ? CircularProgressIndicator()
+                          : Text('Confirm'),
+                    )),
                 text: "Delete Account",
                 icon: Icons.delete,
                 color: const Color.fromARGB(255, 158, 13, 3)),

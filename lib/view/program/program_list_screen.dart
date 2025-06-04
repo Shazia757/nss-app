@@ -79,7 +79,7 @@ class ProgramsScreen extends StatelessWidget {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        NoDataPage(),
+                        NoDataPage(title: 'No programs found'),
                       ],
                     ),
                   ));
@@ -124,7 +124,7 @@ class ProgramsScreen extends StatelessWidget {
                                   ? () => Get.to(() => AddProgramScreen(
                                         isUpdate: true,
                                         program: c.searchList[index],
-                                      ))
+                                      ))?.then((value) => c.onInit())
                                   : null,
                               child: Card.outlined(
                                 margin: EdgeInsets.symmetric(
@@ -230,7 +230,8 @@ class ProgramsScreen extends StatelessWidget {
             ? Obx(() => (c.isLoading.isFalse)
                 ? FloatingActionButton(
                     onPressed: () =>
-                        Get.to(() => AddProgramScreen(isUpdate: false)),
+                        Get.to(() => AddProgramScreen(isUpdate: false))
+                            ?.then((value) => c.onInit()),
                     child: Icon(Icons.add),
                   )
                 : SizedBox())

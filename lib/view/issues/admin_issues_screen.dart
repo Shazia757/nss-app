@@ -54,7 +54,7 @@ class ScreenAdminIssues extends StatelessWidget {
                         (c.isLoading.value)
                             ? LoadingScreen()
                             : (c.modifiedOpenedList.isEmpty)
-                                ? NoDataPage()
+                                ? NoDataPage(title: 'No issues reported')
                                 : Expanded(
                                     child: ListView.separated(
                                       shrinkWrap: true,
@@ -82,7 +82,7 @@ class ScreenAdminIssues extends StatelessWidget {
                         (c.isLoading.value)
                             ? LoadingScreen()
                             : (c.modifiedClosedList.isEmpty)
-                                ? NoDataPage()
+                                ? NoDataPage(title: 'No issues resolved')
                                 : Expanded(
                                     child: ListView.separated(
                                       padding: EdgeInsets.all(10),
@@ -263,15 +263,21 @@ class ScreenAdminIssues extends StatelessWidget {
                       ? ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff5f5791)),
-                          onPressed: () => CustomWidgets()
-                              .showConfirmationDialog(
+                          onPressed: () =>
+                              CustomWidgets().showConfirmationDialog(
                                   title: "Resolve Issue",
                                   content: Text(
                                     "Are you sure you have resolved the issue?",
                                   ),
-                                  onConfirm: () => (c.isLoading.value)
-                                      ? CircularProgressIndicator()
-                                      : c.resolveIssue(data.id)),
+                                  onConfirm: () => c.resolveIssue(data.id),
+                                  data: Obx(
+                                    () => (c.isLoading.value)
+                                        ? CircularProgressIndicator()
+                                        : Text(
+                                            "Confirm",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                  )),
                           child: Text("Resolve",
                               style: TextStyle(color: Colors.white)),
                         )

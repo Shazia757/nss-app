@@ -94,7 +94,7 @@ class ScreenUserIssues extends StatelessWidget {
                   child: c.isLoading.isTrue
                       ? Center(child: CircularProgressIndicator())
                       : c.modifiedOpenedList.isEmpty
-                          ? NoDataPage()
+                          ? NoDataPage(title: 'No issues reported')
                           : ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) => issueListTile(
@@ -109,7 +109,9 @@ class ScreenUserIssues extends StatelessWidget {
                     child: c.isLoading.isTrue
                         ? CircularProgressIndicator()
                         : c.modifiedClosedList.isEmpty
-                            ? NoDataPage()
+                            ? NoDataPage(
+                                title: 'No resolved issues',
+                              )
                             : ListView.builder(
                                 padding: EdgeInsets.all(10),
                                 itemBuilder: (context, index) {
@@ -189,22 +191,23 @@ class ScreenUserIssues extends StatelessWidget {
             maxlines: 8,
             label: "Description",
             margin: EdgeInsets.only(bottom: 20)),
-        Obx(
-          () => c.isReportLoading.value
-              ? Center(child: CircularProgressIndicator())
-              : CustomWidgets().buildActionButton(
-                  context: context,
-                  onPressed: () {
-                    if (c.onSubmitIssueValidation()) {
-                      CustomWidgets().showConfirmationDialog(
-                          title: "Report Issue",
-                          message: "Are you sure you want to report the issue?",
-                          onConfirm: () => c.reportIssue());
-                    }
-                  },
-                  text: "Report",
-                  color: Theme.of(context).colorScheme.error,
-                ),
+        CustomWidgets().buildActionButton(
+          context: context,
+          onPressed: () {
+            if (c.onSubmitIssueValidation()) {
+              CustomWidgets().showConfirmationDialog(
+                  title: "Report Issue",
+                  message: "Are you sure you want to report the issue?",
+                  onConfirm: () => c.reportIssue(),
+                  data: Obx(
+                    () => (c.isReportLoading.value)
+                        ? CircularProgressIndicator()
+                        : Text("Confirm", style: TextStyle(color: Colors.red)),
+                  ));
+            }
+          },
+          text: "Report",
+          color: Theme.of(context).colorScheme.error,
         ),
       ],
     );

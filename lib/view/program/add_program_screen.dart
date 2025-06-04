@@ -77,60 +77,69 @@ class AddProgramScreen extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Obx(
-              () => c.isUpdateButtonLoading.value
-                  ? Center(child: CircularProgressIndicator())
-                  : AbsorbPointer(
-                      absorbing: c.isUpdateButtonLoading.value ||
-                          c.isDeleteButtonLoading.value,
-                      child: CustomWidgets().buildActionButton(
-                        icon: Icons.add,
-                        color: Theme.of(context).primaryColor,
-                        context: context,
-                        onPressed: () => c.onSubmitProgramValidation()
-                            ? isUpdate
-                                ? CustomWidgets().showConfirmationDialog(
-                                    title: "Update Program",
-                                    message:
-                                        "Are you sure you want to update the program?",
-                                    onConfirm: () {
-                                      c.updateProgram(program!.id!);
-                                    })
-                                : CustomWidgets().showConfirmationDialog(
-                                    title: "Add Program",
-                                    message:
-                                        "Are you sure you want to add the program?",
-                                    onConfirm: () => c.addProgram())
-                            : () {},
-                        text: isUpdate ? "Update" : "Add",
-                      ),
-                    ),
+            AbsorbPointer(
+              absorbing: c.isUpdateButtonLoading.value ||
+                  c.isDeleteButtonLoading.value,
+              child: CustomWidgets().buildActionButton(
+                icon: Icons.add,
+                color: Theme.of(context).primaryColor,
+                context: context,
+                onPressed: () => c.onSubmitProgramValidation()
+                    ? isUpdate
+                        ? CustomWidgets().showConfirmationDialog(
+                            title: "Update Program",
+                            message:
+                                "Are you sure you want to update the program?",
+                            onConfirm: () {
+                              c.updateProgram(program!.id!);
+                            },
+                            data: Obx(
+                              () => c.isUpdateButtonLoading.value
+                                  ? CircularProgressIndicator()
+                                  : Text(
+                                      "Confirm",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                            ))
+                        : CustomWidgets().showConfirmationDialog(
+                            title: "Add Program",
+                            message:
+                                "Are you sure you want to add the program?",
+                            onConfirm: () => c.addProgram(),
+                            data: Obx(
+                              () => c.isUpdateButtonLoading.value
+                                  ? CircularProgressIndicator()
+                                  : Text("Confirm",
+                                      style: TextStyle(color: Colors.red)),
+                            ))
+                    : () {},
+                text: isUpdate ? "Update" : "Add",
+              ),
             ),
             SizedBox(
               height: 15,
             ),
             isUpdate
-                ? Obx(
-                () => c.isDeleteButtonLoading.value
-                    ? Center(child: CircularProgressIndicator())
-                    : AbsorbPointer(
-                        absorbing: c.isDeleteButtonLoading.value ||
-                            c.isUpdateButtonLoading.value,
-                        child: CustomWidgets().buildActionButton(
-                          context: context,
-                          text: "Delete Program",
-                          icon: Icons.delete,
-                          color: Theme.of(context).colorScheme.error,
-                          onPressed: () =>
-                              CustomWidgets().showConfirmationDialog(
+                ? AbsorbPointer(
+                    absorbing: c.isDeleteButtonLoading.value ||
+                        c.isUpdateButtonLoading.value,
+                    child: CustomWidgets().buildActionButton(
+                        context: context,
+                        text: "Delete Program",
+                        icon: Icons.delete,
+                        color: Theme.of(context).colorScheme.error,
+                        onPressed: () => CustomWidgets().showConfirmationDialog(
                             title: "Delete Program",
                             message:
                                 "Are you sure you want to delete this program?",
                             onConfirm: () => c.deleteProgram(program!.id!),
-                          ),
-                        ),
-                      ),
-              )
+                            data: Obx(
+                              () => c.isDeleteButtonLoading.value
+                                  ? CircularProgressIndicator()
+                                  : Text("Confirm",
+                                      style: TextStyle(color: Colors.red)),
+                            ))),
+                  )
                 : SizedBox(),
           ],
         ),

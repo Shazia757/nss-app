@@ -165,25 +165,26 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
               "Error", value?.message ?? 'Failed to report issue.');
         }
       },
-    );
+    ).then((value) => onInit());
   }
 
   void resolveIssue(int? id) {
+    isLoading.value = true;
     Api().resolveIssue(
         {'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
       (value) {
+        isLoading.value = false;
         if (value?.status ?? false) {
           Get.back();
           Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Issue resolved successfully.");
-          onInit();
         } else {
           CustomWidgets.showSnackBar(
               'Error', value?.message ?? 'Failed to resolve issue.');
         }
       },
-    );
+    ).then((value) => onInit());
   }
 
   bool onSubmitIssueValidation() {

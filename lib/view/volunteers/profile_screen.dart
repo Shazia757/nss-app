@@ -22,7 +22,7 @@ class VolunteerAddScreen extends StatelessWidget {
 
     if (isProfilePage) c.setUpdateData(LocalStorage().readUser());
 
-    (c.role.value == 'vol') ? c.isSec.value = false : c.isSec.value = true;
+    (c.role.value == 'vol') ? (c.isSec.value = false) : (c.isSec.value = true);
 
     return Scaffold(
       bottomNavigationBar: isProfilePage ? CustomNavBar(currentIndex: 2) : null,
@@ -139,7 +139,9 @@ class VolunteerAddScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       Obx(() => Switch(
-                          value: c.isSec.value,
+                          value: (isUpdateScreen == false)
+                              ? (c.isSec.value == false)
+                              : c.isSec.value,
                           onChanged: (value) {
                             c.isSec.value = value;
                             (c.isSec.value)
@@ -152,58 +154,68 @@ class VolunteerAddScreen extends StatelessWidget {
                   )
                 : SizedBox(),
             if (!isProfilePage) ...[
-              Obx(
-                () => c.isUpdateButtonLoading.value
-                    ? Center(child: CircularProgressIndicator())
-                    : AbsorbPointer(
-                        absorbing: c.isUpdateButtonLoading.value ||
-                            c.isDeleteButtonLoading.value,
-                        child: CustomWidgets().buildActionButton(
-                            context: context,
-                            text:
-                                "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
-                            icon: Icons.add,
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              if (c.onSubmitVolValidation()) {
-                                (isUpdateScreen ?? false)
-                                    ? CustomWidgets().showConfirmationDialog(
-                                        title: "Update Volunteer",
-                                        message:
-                                            "Are you sure you want to update the details?",
-                                        onConfirm: () => c.updateVolunteer())
-                                    : CustomWidgets().showConfirmationDialog(
-                                        title: "Add Volunteer",
-                                        message:
-                                            "Are you sure you want to add new volunteer?",
-                                        onConfirm: () => c.addVolunteer());
-                              }
-                            }),
-                      ),
+              AbsorbPointer(
+                absorbing: c.isUpdateButtonLoading.value ||
+                    c.isDeleteButtonLoading.value,
+                child: CustomWidgets().buildActionButton(
+                    context: context,
+                    text:
+                        "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
+                    icon: Icons.add,
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      if (c.onSubmitVolValidation()) {
+                        (isUpdateScreen ?? false)
+                            ? CustomWidgets().showConfirmationDialog(
+                                title: "Update Volunteer",
+                                message:
+                                    "Are you sure you want to update the details?",
+                                onConfirm: () => c.updateVolunteer(),
+                                data: Obx(
+                                  () => c.isUpdateButtonLoading.value
+                                      ? CircularProgressIndicator()
+                                      : Text("Confirm",
+                                          style: TextStyle(color: Colors.red)),
+                                ))
+                            : CustomWidgets().showConfirmationDialog(
+                                title: "Add Volunteer",
+                                message:
+                                    "Are you sure you want to add new volunteer?",
+                                onConfirm: () => c.addVolunteer(),
+                                data: Obx(
+                                  () => c.isUpdateButtonLoading.value
+                                      ? CircularProgressIndicator()
+                                      : Text("Confirm",
+                                          style: TextStyle(color: Colors.red)),
+                                ));
+                      }
+                    }),
               ),
               SizedBox(height: 15),
             ],
             if (isUpdateScreen ?? false)
-              Obx(
-                () => c.isDeleteButtonLoading.value
-                    ? Center(child: CircularProgressIndicator())
-                    : AbsorbPointer(
-                        absorbing: c.isDeleteButtonLoading.value ||
-                            c.isUpdateButtonLoading.value,
-                        child: CustomWidgets().buildActionButton(
-                          context: context,
-                          text: "Delete Volunteer",
-                          icon: Icons.delete,
-                          color: Theme.of(context).colorScheme.error,
-                          onPressed: () =>
-                              CustomWidgets().showConfirmationDialog(
-                            title: "Delete Volunteer",
-                            message:
-                                "Are you sure you want to delete this volunteer?",
-                            onConfirm: () => c.deleteVolunteer(),
-                          ),
-                        ),
-                      ),
+              AbsorbPointer(
+                absorbing: c.isDeleteButtonLoading.value ||
+                    c.isUpdateButtonLoading.value,
+                child: CustomWidgets().buildActionButton(
+                  context: context,
+                  text: "Delete Volunteer",
+                  icon: Icons.delete,
+                  color: Theme.of(context).colorScheme.error,
+                  onPressed: () => CustomWidgets().showConfirmationDialog(
+                      title: "Delete Volunteer",
+                      message:
+                          "Are you sure you want to delete this volunteer?",
+                      onConfirm: () {
+                        c.deleteVolunteer();
+                      },
+                      data: Obx(
+                        () => c.isDeleteButtonLoading.value
+                            ? CircularProgressIndicator()
+                            : Text("Confirm",
+                                style: TextStyle(color: Colors.red)),
+                      )),
+                ),
               ),
             SizedBox(height: 15),
             if (isUpdateScreen == true)
