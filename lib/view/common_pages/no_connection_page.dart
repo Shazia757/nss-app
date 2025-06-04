@@ -39,9 +39,7 @@ class NoInternetScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                Get.back();
-              },
+              onPressed: () => Get.back(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.error,
                 padding:

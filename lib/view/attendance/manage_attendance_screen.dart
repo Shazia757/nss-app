@@ -182,26 +182,24 @@ class ManageAttendanceScreen extends StatelessWidget {
                   onPressed: () {
                     if (c.onSubmitAttendanceValidation()) {
                       CustomWidgets().showConfirmationDialog(
-                          title: "Submit Attendance",
-                          content: SizedBox(
-                            height: 200,
-                            width: double.maxFinite,
-                            child: ListView.builder(
-                                itemCount: c.selectedVolList.length,
-                                itemBuilder: (context, i) => ListTile(
-                                      trailing: Text(
-                                          (c.selectedVolList[i].admissionNo)
-                                              .toString()),
-                                      title:
-                                          Text(c.selectedVolList[i].name ?? ''),
-                                      subtitle: Text(
-                                          c.selectedVolList[i].department ??
-                                              ''),
-                                    )),
-                          ),
-                          onConfirm: () {
-                            c.onSubmitAttendance();
-                          });
+                        title: "Submit Attendance",
+                        content: SizedBox(
+                          height: 200,
+                          width: double.maxFinite,
+                          child: ListView.builder(
+                              itemCount: c.selectedVolList.length,
+                              itemBuilder: (context, i) => ListTile(
+                                    trailing: Text(
+                                        (c.selectedVolList[i].admissionNo)
+                                            .toString()),
+                                    title:
+                                        Text(c.selectedVolList[i].name ?? ''),
+                                    subtitle: Text(
+                                        c.selectedVolList[i].department ?? ''),
+                                  )),
+                        ),
+                        onConfirm: () => c.onSubmitAttendance(),
+                      );
                     }
                   },
                   child: Text("Submit"),

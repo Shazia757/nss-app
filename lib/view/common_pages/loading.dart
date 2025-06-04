@@ -19,7 +19,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     _iconController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(); // Continuous rotation
+    )..repeat(); 
   }
 
   @override

@@ -21,14 +21,11 @@ class ProgramDetails extends StatelessWidget {
           Visibility(
             visible: LocalStorage().readUser().role != 'vol',
             child: TextButton.icon(
-              onPressed: () {
-                Get.to(() => AddProgramScreen(isUpdate: true, program: data))
-                    ?.then(
-                  (value) {
-                    Get.back();
-                  },
-                );
-              },
+              onPressed: () =>
+                  Get.to(() => AddProgramScreen(isUpdate: true, program: data))
+                      ?.then(
+                (value) => Get.back(),
+              ),
               label: Text(
                 "Edit",
                 style: TextStyle(

@@ -62,31 +62,35 @@ class ViewAttendanceScreen extends StatelessWidget {
                 border: TableBorder.all(
                     style: BorderStyle.none,
                     color: Theme.of(context).primaryColor),
-                rows: c.attendanceList.map((data) {
+                rows: c.attendanceList.asMap().entries.map((data) {
+                  final index = data.key;
+                  final rowData = data.value;
+                  final isEven = index % 2 == 0;
+
                   return DataRow(
+                    color: WidgetStatePropertyAll(isEven
+                        ? Colors.grey[200]
+                        : Theme.of(context).colorScheme.surface),
                     cells: [
                       DataCell(Text(
-                        data.date != null
-                            ? DateFormat.yMMMd().format(data.date!)
+                        data.value.date != null
+                            ? DateFormat.yMMMd().format(data.value.date!)
                             : "N/A",
                       )),
-                      DataCell(Text(data.name ?? '')),
-                      DataCell(Text(data.hours.toString())),
+                      DataCell(Text(rowData.name ?? '')),
+                      DataCell(Text(rowData.hours.toString())),
                       if (!isViewAttendance)
                         DataCell(
                           IconButton(
                             icon: c.isLoading.isTrue
                                 ? Center(child: CircularProgressIndicator())
                                 : Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              CustomWidgets().showConfirmationDialog(
-                                  title: "Delete Attendance",
-                                  message:
-                                      "Are you sure you want to delete attendance for the program?",
-                                  onConfirm: () {
-                                    c.deleteAttendance(data.id ?? 0);
-                                  });
-                            },
+                            onPressed: () => CustomWidgets()
+                                .showConfirmationDialog(
+                                    title: "Delete Attendance",
+                                    message:
+                                        "Are you sure you want to delete attendance for the program?",
+                                    onConfirm: () => c.deleteAttendance(rowData.id ?? 0)),
                           ),
                         ),
                     ],

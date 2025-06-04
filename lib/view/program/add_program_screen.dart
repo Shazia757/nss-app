@@ -13,11 +13,7 @@ class AddProgramScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     AddProgramController c = Get.put(AddProgramController());
 
-    if (isUpdate) {
-      c.setUpdateData(program!);
-    } else {
-      c.clearTextFields();
-    }
+    (isUpdate) ? c.setUpdateData(program!) : c.clearTextFields();
 
     return Scaffold(
       appBar: AppBar(
@@ -115,26 +111,26 @@ class AddProgramScreen extends StatelessWidget {
             ),
             isUpdate
                 ? Obx(
-                    () => c.isDeleteButtonLoading.value
-                        ? Center(child: CircularProgressIndicator())
-                        : AbsorbPointer(
-                            absorbing: c.isDeleteButtonLoading.value ||
-                                c.isUpdateButtonLoading.value,
-                            child: CustomWidgets().buildActionButton(
-                              context: context,
-                              text: "Delete Program",
-                              icon: Icons.delete,
-                              color: Theme.of(context).colorScheme.error,
-                              onPressed: () =>
-                                  CustomWidgets().showConfirmationDialog(
-                                title: "Delete Program",
-                                message:
-                                    "Are you sure you want to delete this program?",
-                                onConfirm: () => c.deleteProgram(program!.id!),
-                              ),
-                            ),
+                () => c.isDeleteButtonLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : AbsorbPointer(
+                        absorbing: c.isDeleteButtonLoading.value ||
+                            c.isUpdateButtonLoading.value,
+                        child: CustomWidgets().buildActionButton(
+                          context: context,
+                          text: "Delete Program",
+                          icon: Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                          onPressed: () =>
+                              CustomWidgets().showConfirmationDialog(
+                            title: "Delete Program",
+                            message:
+                                "Are you sure you want to delete this program?",
+                            onConfirm: () => c.deleteProgram(program!.id!),
                           ),
-                  )
+                        ),
+                      ),
+              )
                 : SizedBox(),
           ],
         ),

@@ -19,6 +19,7 @@ class HomeController extends GetxController {
     api.getUpcomingPrograms().then(
       (value) {
         upcomingPrograms.assignAll(value?.programs ?? []);
+        upcomingPrograms.sort((a, b) => b.date!.compareTo(a.date!));
         isLoading.value = false;
       },
     );

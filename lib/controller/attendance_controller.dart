@@ -43,6 +43,7 @@ class AttendanceController extends GetxController {
       (value) {
         usersList.assignAll(value?.data ?? []);
         searchList.assignAll(usersList);
+        searchList.sort((a, b) => a.name!.compareTo(b.name!));
         isLoading.value = false;
       },
     );

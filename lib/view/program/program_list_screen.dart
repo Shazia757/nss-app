@@ -54,13 +54,9 @@ class ProgramsScreen extends StatelessWidget {
                                   color:
                                       Theme.of(context).colorScheme.onPrimary),
                             ),
-                            onPressed: () {
-                              if (controller.isOpen) {
-                                controller.close();
-                              } else {
-                                controller.open();
-                              }
-                            },
+                            onPressed: () => (controller.isOpen)
+                                ? controller.close()
+                                : controller.open(),
                             icon: Icon(
                               Icons.swap_vert,
                               color: Theme.of(context).colorScheme.onPrimary,
@@ -110,9 +106,7 @@ class ProgramsScreen extends StatelessWidget {
                               onPressedCancel: () => c.onSearchTextChanged(''),
                             ),
                           ),
-                          SizedBox(
-                            width: 5,
-                          ),
+                          SizedBox(width: 5),
                         ],
                       ),
                     ),
@@ -127,12 +121,10 @@ class ProgramsScreen extends StatelessWidget {
                                     .format(c.searchList[index].date!);
                             return InkWell(
                               onTap: LocalStorage.isAdmin
-                                  ? () {
-                                      Get.to(() => AddProgramScreen(
-                                            isUpdate: true,
-                                            program: c.searchList[index],
-                                          ));
-                                    }
+                                  ? () => Get.to(() => AddProgramScreen(
+                                        isUpdate: true,
+                                        program: c.searchList[index],
+                                      ))
                                   : null,
                               child: Card.outlined(
                                 margin: EdgeInsets.symmetric(
@@ -204,52 +196,24 @@ class ProgramsScreen extends StatelessWidget {
                                                         0) >
                                                     200))
                                                   TextButton(
-                                                    onPressed: () {
-                                                      isExpanded.value =
-                                                          !isExpanded.value;
-                                                    },
+                                                    onPressed: () =>
+                                                        isExpanded.value =
+                                                            !isExpanded.value,
                                                     style: TextButton.styleFrom(
-                                                      padding: EdgeInsets.zero,
-                                                    ),
+                                                        padding:
+                                                            EdgeInsets.zero),
                                                     child: Text(
                                                       isExpanded.value
                                                           ? 'show less'
                                                           : 'show more',
                                                       style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w100,
-                                                      ),
+                                                          fontWeight:
+                                                              FontWeight.w100),
                                                     ),
                                                   )
                                               ],
                                             )),
                                       ),
-                                      // Visibility(
-                                      //   visible:
-                                      //       (LocalStorage().readUser().role !=
-                                      //           'vol'),
-                                      //   child: Align(
-                                      //     alignment: Alignment.bottomRight,
-                                      //     child: IconButton(
-                                      //       onPressed: () {
-                                      //         Get.to(() => AddProgramScreen(
-                                      //             isUpdate: true,
-                                      //             program:
-                                      //                 c.searchList[index]))?.then(
-                                      //           (value) {
-                                      //             Get.back();
-                                      //           },
-                                      //         );
-                                      //       },
-                                      //       icon: Icon(
-                                      //         Icons.edit,
-                                      //         color: Theme.of(context)
-                                      //             .colorScheme
-                                      //             .primary,
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // )
                                     ],
                                   ),
                                 ),
@@ -265,9 +229,8 @@ class ProgramsScreen extends StatelessWidget {
         floatingActionButton: (LocalStorage().readUser().role != 'vol')
             ? Obx(() => (c.isLoading.isFalse)
                 ? FloatingActionButton(
-                    onPressed: () {
-                      Get.to(() => AddProgramScreen(isUpdate: false));
-                    },
+                    onPressed: () =>
+                        Get.to(() => AddProgramScreen(isUpdate: false)),
                     child: Icon(Icons.add),
                   )
                 : SizedBox())

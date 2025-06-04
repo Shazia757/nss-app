@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/view/authentication/change_password_screen.dart';
@@ -8,8 +7,6 @@ import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/authentication/settings.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
-import 'package:nss/view/authentication/login_screen.dart';
-import 'package:nss/view/authentication/delete_account_screen.dart';
 
 class VolunteerAddScreen extends StatelessWidget {
   const VolunteerAddScreen({super.key, this.isUpdateScreen, this.user});
@@ -21,19 +18,11 @@ class VolunteerAddScreen extends StatelessWidget {
     final isProfilePage = (isUpdateScreen == null);
     VolunteerController c = Get.put(VolunteerController());
 
-    if (isUpdateScreen ?? false) {
-      c.setUpdateData(user!);
-    } else {
-      c.clearTextFields();
-    }
+    (isUpdateScreen ?? false) ? c.setUpdateData(user!) : c.clearTextFields();
 
     if (isProfilePage) c.setUpdateData(LocalStorage().readUser());
 
-    if (c.role.value == 'vol') {
-      c.isSec.value = false;
-    } else {
-      c.isSec.value = true;
-    }
+    (c.role.value == 'vol') ? c.isSec.value = false : c.isSec.value = true;
 
     return Scaffold(
       bottomNavigationBar: isProfilePage ? CustomNavBar(currentIndex: 2) : null,
@@ -153,11 +142,10 @@ class VolunteerAddScreen extends StatelessWidget {
                           value: c.isSec.value,
                           onChanged: (value) {
                             c.isSec.value = value;
-                            if (c.isSec.value) {
-                              c.role.value = 'sec';
-                            } else {
-                              c.role.value = 'vol';
-                            }
+                            (c.isSec.value)
+                                ? c.role.value = 'sec'
+                                : c.role.value = 'vol';
+
                             log(c.role.value);
                           }))
                     ],
@@ -178,23 +166,17 @@ class VolunteerAddScreen extends StatelessWidget {
                             color: Theme.of(context).primaryColor,
                             onPressed: () {
                               if (c.onSubmitVolValidation()) {
-                                if (isUpdateScreen ?? false) {
-                                  CustomWidgets().showConfirmationDialog(
-                                      title: "Update Volunteer",
-                                      message:
-                                          "Are you sure you want to update the details?",
-                                      onConfirm: () {
-                                        c.updateVolunteer();
-                                      });
-                                } else {
-                                  CustomWidgets().showConfirmationDialog(
-                                      title: "Add Volunteer",
-                                      message:
-                                          "Are you sure you want to add new volunteer?",
-                                      onConfirm: () {
-                                        c.addVolunteer();
-                                      });
-                                }
+                                (isUpdateScreen ?? false)
+                                    ? CustomWidgets().showConfirmationDialog(
+                                        title: "Update Volunteer",
+                                        message:
+                                            "Are you sure you want to update the details?",
+                                        onConfirm: () => c.updateVolunteer())
+                                    : CustomWidgets().showConfirmationDialog(
+                                        title: "Add Volunteer",
+                                        message:
+                                            "Are you sure you want to add new volunteer?",
+                                        onConfirm: () => c.addVolunteer());
                               }
                             }),
                       ),
@@ -230,37 +212,12 @@ class VolunteerAddScreen extends StatelessWidget {
                   text: "Reset Password",
                   icon: Icons.password,
                   color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Get.to(() => ChangePasswordScreen(
-                        isChangepassword: false,
-                        userId: c.admissionNoController.text));
-                  }),
+                  onPressed: () => Get.to(() => ChangePasswordScreen(
+                      isChangepassword: false,
+                      userId: c.admissionNoController.text))),
           ],
         ),
       ),
     );
   }
-
-  // Widget _buildActionButton(
-  //     {required BuildContext context,
-  //     required String text,
-  //     required IconData icon,
-  //     required Color color,
-  //     required VoidCallback onPressed}) {
-  //   return ElevatedButton.icon(
-  //     onPressed: onPressed,
-  //     style: ElevatedButton.styleFrom(
-  //       foregroundColor: Colors.white,
-  //       backgroundColor: color,
-  //       minimumSize: Size(double.infinity, 48),
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  //     ),
-  //     icon: Icon(
-  //       icon,
-  //       color: Colors.white,
-  //     ),
-  //     label: Text(text,
-  //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //   );
-  // }
 }

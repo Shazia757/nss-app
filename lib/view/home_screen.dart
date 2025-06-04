@@ -35,9 +35,8 @@ class HomeScreen extends StatelessWidget {
                   //  icon: Icon(Icons.bug_report_outlined),
                 ),
                 TextButton(
-                  child: Text("Profile"),
-
                   onPressed: () => Get.to(() => VolunteerAddScreen()),
+                  child: Text("Profile"),
                   //   icon: Icon(Icons.person_2_outlined),
                 ),
               ],

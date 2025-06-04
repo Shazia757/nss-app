@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +26,7 @@ class ProgramListController extends GetxController {
       (value) {
         programsList.assignAll(value?.programs ?? []);
         searchList.assignAll(programsList);
+        searchList.sort((a, b) => b.date!.compareTo(a.date!));
         isLoading.value = false;
       },
     );
@@ -36,6 +36,7 @@ class ProgramListController extends GetxController {
     if (searchText.isEmpty) {
       searchController.clear();
       searchList.assignAll(programsList);
+      searchList.sort((a, b) => b.date!.compareTo(a.date!));
     } else {
       final filtered = programsList.where((program) {
         final name = program.name?.toLowerCase() ?? '';
@@ -43,15 +44,14 @@ class ProgramListController extends GetxController {
       }).toList();
 
       searchList.assignAll(filtered);
+      searchList.sort((a, b) => b.date!.compareTo(a.date!));
     }
   }
 
   void sortByDate() {
-    if (date.value == 'oldest') {
-      searchList.sort((a, b) => a.date!.compareTo(b.date!));
-    } else {
-      searchList.sort((a, b) => b.date!.compareTo(a.date!));
-    }
+    (date.value == 'oldest')
+        ? searchList.sort((a, b) => a.date!.compareTo(b.date!))
+        : searchList.sort((a, b) => b.date!.compareTo(a.date!));
   }
 }
 

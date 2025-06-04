@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/database/local_storage.dart';
@@ -72,12 +71,10 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.password,
             text: "Change Password",
             color: theme.primaryColor,
-            onPressed: () {
-              Get.to(() => ChangePasswordScreen(
-                    isChangepassword: true,
-                    userId: user.admissionNo ?? "",
-                  ));
-            },
+            onPressed: () => Get.to(() => ChangePasswordScreen(
+                  isChangepassword: true,
+                  userId: user.admissionNo ?? "",
+                )),
           ),
           CustomWidgets().buildActionButton(
             context: context,
@@ -85,25 +82,21 @@ class SettingsScreen extends StatelessWidget {
             text: "Logout",
             color: theme.colorScheme.primary,
             padding: const EdgeInsets.symmetric(vertical: 8),
-            onPressed: () {
-              CustomWidgets().showConfirmationDialog(
+            onPressed: () => CustomWidgets().showConfirmationDialog(
                 title: 'Logout',
                 message: 'Are you sure you want to logout?',
                 onConfirm: () {
                   LocalStorage().clearAll();
                   Get.offAll(() => LoginScreen());
                 },
-              );
-            },
+              ),
           ),
           CustomWidgets().buildActionButton(
             context: context,
             icon: Icons.delete,
             text: "Delete Account",
             color: theme.colorScheme.error,
-            onPressed: () {
-              Get.to(() => DeleteAccountScreen());
-            },
+            onPressed: () => Get.to(() => DeleteAccountScreen()),
           ),
           const SizedBox(height: 40),
           Row(

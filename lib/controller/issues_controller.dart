@@ -69,24 +69,21 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void _sortOpenedList() {
-    if (sortByOldest.isTrue) {
-      modifiedOpenedList
-          .sort((a, b) => a.createdDate!.compareTo(b.createdDate!));
-    } else {
-      modifiedOpenedList
-          .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
-    }
+    (sortByOldest.isTrue)
+        ? modifiedOpenedList
+            .sort((a, b) => a.createdDate!.compareTo(b.createdDate!))
+        : modifiedOpenedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+
     log("OpenList ${modifiedOpenedList.toString()}");
   }
 
   void _sortClosedList() {
-    if (sortByOldest.isTrue) {
-      modifiedClosedList
-          .sort((a, b) => a.createdDate!.compareTo(b.createdDate!));
-    } else {
-      modifiedClosedList
-          .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
-    }
+    (sortByOldest.isTrue)
+        ? modifiedClosedList
+            .sort((a, b) => a.createdDate!.compareTo(b.createdDate!))
+        : modifiedClosedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
     log("Closed data : ${modifiedClosedList.toString()}");
   }
@@ -96,21 +93,17 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     tabController = TabController(length: 2, vsync: this);
     adminTabController = TabController(length: 2, vsync: this);
     getAdmins();
-    if (LocalStorage().readUser().role != 'vol') {
-      getAdminIssues();
-    } else {
-      getVolIssues();
-    }
+    (LocalStorage().readUser().role != 'vol')
+        ? getAdminIssues()
+        : getVolIssues();
 
     super.onInit();
   }
 
   getAdmins() {
     Api().getAdmins().then(
-      (value) {
-        adminList.assignAll(value?.data ?? []);
-      },
-    );
+          (value) => adminList.assignAll(value?.data ?? []),
+        );
   }
 
   getAdminIssues() {
@@ -205,20 +198,4 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     }
     return true;
   }
-
-  // void sortOpenedList(Date selectedDate) {
-  //   if (selectedDate == Date.oldestToLatest) {
-  //     openedList.sort((a, b) => a.updatedDate!.compareTo(b.updatedDate!));
-  //   } else {
-  //     openedList.sort((a, b) => b.updatedDate!.compareTo(a.updatedDate!));
-  //   }
-  // }
-
-  // void sortClosedList(Date selectedDate) {
-  //   if (selectedDate == Date.oldestToLatest) {
-  //     closedList.sort((a, b) => a.updatedDate!.compareTo(b.updatedDate!));
-  //   } else {
-  //     closedList.sort((a, b) => b.updatedDate!.compareTo(a.updatedDate!));
-  //   }
-  // }
 }

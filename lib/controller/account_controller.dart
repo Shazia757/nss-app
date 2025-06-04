@@ -158,7 +158,4 @@ class AccountController extends GetxController {
   void showConfirmPassword() => isConfirmPassObscure.value = false;
   void hideConfirmPassword() => isConfirmPassObscure.value = true;
 
-  void toggleObscure() {
-    isObscure.value = !isObscure.value;
-  }
 }

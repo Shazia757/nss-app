@@ -263,16 +263,15 @@ class ScreenAdminIssues extends StatelessWidget {
                       ? ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff5f5791)),
-                          onPressed: () {
-                            CustomWidgets().showConfirmationDialog(
-                                title: "Resolve Issue",
-                                content: Text(
-                                  "Are you sure you have resolved the issue?",
-                                ),
-                                onConfirm: () => (c.isLoading.value)
-                                    ? CircularProgressIndicator()
-                                    : c.resolveIssue(data.id));
-                          },
+                          onPressed: () => CustomWidgets()
+                              .showConfirmationDialog(
+                                  title: "Resolve Issue",
+                                  content: Text(
+                                    "Are you sure you have resolved the issue?",
+                                  ),
+                                  onConfirm: () => (c.isLoading.value)
+                                      ? CircularProgressIndicator()
+                                      : c.resolveIssue(data.id)),
                           child: Text("Resolve",
                               style: TextStyle(color: Colors.white)),
                         )

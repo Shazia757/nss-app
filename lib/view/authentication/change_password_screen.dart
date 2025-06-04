@@ -121,11 +121,9 @@ class ChangePasswordScreen extends StatelessWidget {
                                   "${isChangepassword ? "Change" : "Reset"} Password",
                               color:
                                   Theme.of(context).colorScheme.onPrimaryFixed,
-                              onPressed: () {
-                                isChangepassword
-                                    ? c.changePassword(userId)
-                                    : c.resetPassword(userId);
-                              },
+                              onPressed: () => isChangepassword
+                                  ? c.changePassword(userId)
+                                  : c.resetPassword(userId),
                             ),
                     ),
                   ],

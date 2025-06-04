@@ -19,10 +19,9 @@ class VolunteersListScreen extends StatelessWidget {
         () {
           if ((c.isLoading.isFalse)) {
             return FloatingActionButton(
-              onPressed: () {
-                Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
-                    ?.then((value) => c.onInit());
-              },
+              onPressed: () =>
+                  Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
+                      ?.then((value) => c.onInit()),
               child: Icon(Icons.add),
             );
           } else {
@@ -91,10 +90,8 @@ class VolunteersListScreen extends StatelessWidget {
                         title: Text(c.searchList[index].name ?? ''),
                         subtitle: Text(c.searchList[index].department ?? ''),
                         trailing: IconButton(
-                            onPressed: () {
-                              c.updateVolunteer(
-                                  (c.searchList[index].admissionNo).toString());
-                            },
+                            onPressed: () => c.updateVolunteer(
+                                (c.searchList[index].admissionNo).toString()),
                             icon: Icon(
                               Icons.edit_note_outlined,
                             )),

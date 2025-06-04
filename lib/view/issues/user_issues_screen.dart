@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nss/api.dart';
 
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -133,16 +132,13 @@ class ScreenUserIssues extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.all(10),
       children: [
-        // Text('  Report To:', style: Theme.of(context).textTheme.labelLarge),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
             children: [
               Expanded(
                 child: Obx(() => InkWell(
-                      onTap: () {
-                        c.submittedTo.value = 'sec';
-                      },
+                      onTap: () => c.submittedTo.value = 'sec',
                       child: Container(
                         height: 48,
                         decoration: BoxDecoration(
@@ -163,9 +159,7 @@ class ScreenUserIssues extends StatelessWidget {
               SizedBox(width: 5),
               Expanded(
                 child: Obx(() => InkWell(
-                      onTap: () {
-                        c.submittedTo.value = 'po';
-                      },
+                      onTap: () => c.submittedTo.value = 'po',
                       child: Container(
                         height: 48,
                         decoration: BoxDecoration(
@@ -195,7 +189,6 @@ class ScreenUserIssues extends StatelessWidget {
             maxlines: 8,
             label: "Description",
             margin: EdgeInsets.only(bottom: 20)),
-
         Obx(
           () => c.isReportLoading.value
               ? Center(child: CircularProgressIndicator())
@@ -206,9 +199,7 @@ class ScreenUserIssues extends StatelessWidget {
                       CustomWidgets().showConfirmationDialog(
                           title: "Report Issue",
                           message: "Are you sure you want to report the issue?",
-                          onConfirm: () {
-                            c.reportIssue();
-                          });
+                          onConfirm: () => c.reportIssue());
                     }
                   },
                   text: "Report",
@@ -257,19 +248,17 @@ class ScreenUserIssues extends StatelessWidget {
         trailing: Text(
           DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
         ),
-        onTap: () {
-          Get.defaultDialog(
-            title: data.subject ?? "N/A",
-            middleText: data.description ?? "N/A",
-            barrierDismissible: true,
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(),
-                child: Text("Close"),
-              ),
-            ],
-          );
-        },
+        onTap: () => Get.defaultDialog(
+          title: data.subject ?? "N/A",
+          middleText: data.description ?? "N/A",
+          barrierDismissible: true,
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text("Close"),
+            ),
+          ],
+        ),
       ),
     );
   }
