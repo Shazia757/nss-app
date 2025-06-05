@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nss/api.dart';
 
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -251,17 +252,62 @@ class ScreenUserIssues extends StatelessWidget {
         trailing: Text(
           DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
         ),
-        onTap: () => Get.defaultDialog(
-          title: data.subject ?? "N/A",
-          middleText: data.description ?? "N/A",
-          barrierDismissible: true,
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: Text("Close"),
-            ),
-          ],
-        ),
+        onTap: () {
+          isDataLoading.value = true;
+          Api().volunteerDetails(data.createdBy ?? '').then((value) {
+            isDataLoading.value = false;
+            (value?.status ?? false)
+                ? Get.defaultDialog(
+                    title: data.subject ?? "N/A",
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(isOpen ? 'Reported on:' : 'Resolved on:'),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(isOpen
+                                    ? DateFormat.yMMMd().format(
+                                        data.createdDate ?? DateTime.now())
+                                    : DateFormat.yMMMd().format(
+                                        data.updatedDate ?? DateTime.now())),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Text(data.description ?? "N/A"),
+                      ],
+                    ),
+                    backgroundColor: Colors.white,
+                    titleStyle:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Get.back(),
+                        child: Text("Cancel",
+                            style: TextStyle(color: Color(0xff5f5791))),
+                      ),
+                    ],
+                    // title: data.subject ?? "N/A",
+                    // middleText: data.description ?? "N/A",
+                    // barrierDismissible: true,
+                    // actions: [
+                    //   TextButton(
+                    //     onPressed: () => Get.back(),
+                    //     child: Text("Close"),
+                    //   ),
+                    // ],
+                  )
+                : CustomWidgets.showToast('Unable to load data');
+          });
+        },
       ),
     );
   }

@@ -217,10 +217,10 @@ class ScreenAdminIssues extends StatelessWidget {
           Api().volunteerDetails(data.createdBy ?? '').then(
             (value) {
               isDataLoading.value = false;
-              Get.defaultDialog(
-                title: data.subject ?? "N/A",
-                content: (value?.status ?? false)
-                    ? Column(
+              (value?.status ?? false)
+                  ? Get.defaultDialog(
+                      title: data.subject ?? "N/A",
+                      content: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -253,42 +253,44 @@ class ScreenAdminIssues extends StatelessWidget {
                           ),
                           Text(data.description ?? "N/A"),
                         ],
-                      )
-                    : Text('Unable to load data'),
-                backgroundColor: Colors.white,
-                titleStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                actions: [
-                  isOpen
-                      ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff5f5791)),
-                          onPressed: () =>
-                              CustomWidgets().showConfirmationDialog(
-                                  title: "Resolve Issue",
-                                  content: Text(
-                                    "Are you sure you have resolved the issue?",
-                                  ),
-                                  onConfirm: () => c.resolveIssue(data.id),
-                                  data: Obx(
-                                    () => (c.isLoading.value)
-                                        ? CircularProgressIndicator()
-                                        : Text(
-                                            "Confirm",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                  )),
-                          child: Text("Resolve",
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      : SizedBox(),
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text("Cancel",
-                        style: TextStyle(color: Color(0xff5f5791))),
-                  ),
-                ],
-              );
+                      ),
+                      backgroundColor: Colors.white,
+                      titleStyle:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      actions: [
+                        isOpen
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xff5f5791)),
+                                onPressed: () => CustomWidgets()
+                                    .showConfirmationDialog(
+                                        title: "Resolve Issue",
+                                        content: Text(
+                                          "Are you sure you have resolved the issue?",
+                                        ),
+                                        onConfirm: () =>
+                                            c.resolveIssue(data.id),
+                                        data: Obx(
+                                          () => (c.isLoading.value)
+                                              ? CircularProgressIndicator()
+                                              : Text(
+                                                  "Confirm",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                        )),
+                                child: Text("Resolve",
+                                    style: TextStyle(color: Colors.white)),
+                              )
+                            : SizedBox(),
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: Text("Cancel",
+                              style: TextStyle(color: Color(0xff5f5791))),
+                        ),
+                      ],
+                    )
+                  : CustomWidgets.showToast('Unable to load Data');
             },
           );
         },
