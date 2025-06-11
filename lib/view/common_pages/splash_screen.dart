@@ -16,9 +16,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Future.delayed(Duration(seconds: 3)).then(
       (value) {
-        (LocalStorage().readUser().admissionNo == null)
+        ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
             ? Get.offAll(() => LoginScreen())
-            : Get.offAll(() => HomeScreen());
+            : Get.offAll(
+                () => HomeScreen(),
+              );
       },
     );
     super.initState();
