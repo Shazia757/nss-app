@@ -17,7 +17,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   RxString submittedTo = 'sec'.obs;
   RxBool isLoading = false.obs;
   RxBool isReportLoading = false.obs;
-  RxString resolvedByName = ''.obs;
+  RxString resolvedByAdmID = ''.obs;
 
   RxList<Volunteer?> adminList = <Volunteer?>[].obs;
   late TabController tabController;
@@ -56,9 +56,9 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  void resolvedBy(Volunteer? p0) {
-    resolvedByName.value = p0?.name ?? '';
-    modifiedClosedList.assignAll(closedList.where((e) => e.updatedBy == p0?.admissionNo).toList());
+  void resolvedBy(String? admID) {
+    resolvedByAdmID.value = admID ?? '';
+    modifiedClosedList.assignAll(closedList.where((e) => e.updatedBy == admID).toList());
   }
 
   void sortByOldestDate(bool isOldest) {

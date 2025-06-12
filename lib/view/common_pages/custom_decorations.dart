@@ -22,33 +22,18 @@ class CustomWidgets {
       prefix: prefix,
       suffix: suffix,
       border: const OutlineInputBorder(),
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
       errorText: errorText,
     );
   }
 
-  SearchBar searchBar(
-      {BoxConstraints? constraints,
-      Widget? leading,
-      TextEditingController? controller,
-      String? hintText,
-      void Function(String)? onChanged,
-      bool visible = true,
-      void Function()? onPressedCancel}) {
-    return SearchBar(
-        constraints: constraints,
-        leading: Icon(Icons.search),
-        controller: controller,
-        hintText: hintText,
-        onChanged: onChanged,
-        trailing: [
-          Visibility(
-            visible: visible,
-            child:
-                IconButton(onPressed: onPressedCancel, icon: Icon(Icons.close)),
-          )
-        ]);
+  SearchBar searchBar({BoxConstraints? constraints, Widget? leading, TextEditingController? controller, String? hintText, void Function(String)? onChanged, bool visible = true, void Function()? onPressedCancel}) {
+    return SearchBar(constraints: constraints, leading: Icon(Icons.search), controller: controller, hintText: hintText, onChanged: onChanged, trailing: [
+      Visibility(
+        visible: visible,
+        child: IconButton(onPressed: onPressedCancel, icon: Icon(Icons.close)),
+      )
+    ]);
   }
 
   static Padding searchableDropDown<T>({
@@ -93,13 +78,11 @@ class CustomWidgets {
                 );
               },
               suggestionsCallback: (search) => selectionList
-                  .where((element) =>
-                      stringValueOf(element).toLowerCase().contains(
-                            search.trim().toLowerCase(),
-                          ))
+                  .where((element) => stringValueOf(element).toLowerCase().contains(
+                        search.trim().toLowerCase(),
+                      ))
                   .toList(),
-              itemBuilder: (context, itemData) =>
-                  ListTile(title: Text(stringValueOf(itemData))),
+              itemBuilder: (context, itemData) => ListTile(title: Text(stringValueOf(itemData))),
               controller: controller,
               onSelected: (value) => onSelected(value),
             ),
@@ -273,9 +256,7 @@ class CustomWidgets {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(Get.context!).colorScheme.primary)),
+          Text(label, style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Theme.of(Get.context!).colorScheme.primary)),
           Text(amount, style: Theme.of(Get.context!).textTheme.labelMedium),
         ],
       ),
@@ -344,18 +325,13 @@ class CustomWidgets {
     );
   }
 
-  Expanded menuBuilder({
-    required List<Widget> menuChildren,
-    required String label,
-    required IconData icon,
-  }) {
+  Expanded menuBuilder({required List<Widget> menuChildren, required String label, required IconData icon, TextStyle? style}) {
     return Expanded(
       child: MenuAnchor(
         menuChildren: menuChildren,
         builder: (context, controller, child) {
           return InkWell(
-            onTap: () =>
-                (controller.isOpen) ? controller.close() : controller.open(),
+            onTap: () => (controller.isOpen) ? controller.close() : controller.open(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -364,7 +340,7 @@ class CustomWidgets {
                   size: 18,
                   color: Colors.grey.shade900,
                 ),
-                Text(label)
+                Text(label, style: style)
               ],
             ),
           );
@@ -373,18 +349,12 @@ class CustomWidgets {
     );
   }
 
-  void showConfirmationDialog(
-      {required String title,
-      String? message,
-      Widget? content,
-      required VoidCallback onConfirm,
-      required Widget data}) {
+  void showConfirmationDialog({required String title, String? message, Widget? content, required VoidCallback onConfirm, required Widget data}) {
     showDialog(
       context: Get.context!,
       builder: (context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: Text(title),
           content: (message != null) ? Text(message) : content,
           actions: [
@@ -416,8 +386,7 @@ class CustomWidgets {
           foregroundColor: foregroundColor,
           backgroundColor: color,
           minimumSize: Size(double.infinity, 48),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         icon: Icon(icon, color: Colors.white),
         label: Text(text, style: TextStyle(fontSize: 16)),
@@ -427,10 +396,8 @@ class CustomWidgets {
 }
 
 String formatKey(String key) {
-  String formattedKey = key.replaceAllMapped(
-      RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
-  formattedKey =
-      formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
+  String formattedKey = key.replaceAllMapped(RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
+  formattedKey = formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
   //formattedKey = formattedKey.replaceAll("from", "replace");
   return formattedKey;
 }
@@ -460,9 +427,6 @@ class CustomNavBar extends StatelessWidget {
   }
 
   BottomNavigationBarItem navBarItem(String label, {required Widget icon}) {
-    return BottomNavigationBarItem(
-        icon: icon,
-        label: label,
-        backgroundColor: Color.fromARGB(255, 25, 6, 71));
+    return BottomNavigationBarItem(icon: icon, label: label, backgroundColor: Color.fromARGB(255, 25, 6, 71));
   }
 }

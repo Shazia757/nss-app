@@ -141,10 +141,10 @@ class ScreenAdminIssues extends StatelessWidget {
               child: CustomWidgets().menuBuilder(
                   menuChildren: c.adminList
                       .map(
-                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e)),
+                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e?.admissionNo)),
                       )
                       .toList(),
-                  label: " By ${c.resolvedByName.value} ",
+                  label: "  Resolved By",
                   icon: Icons.task_alt_outlined),
             ),
           ],

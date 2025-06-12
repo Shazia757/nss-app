@@ -310,13 +310,25 @@ class ScreenUserIssues extends StatelessWidget {
             Visibility(
               visible: c.isResolved.isTrue,
               child: CustomWidgets().menuBuilder(
-                  menuChildren: c.adminList
-                      .map(
-                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e)),
-                      )
-                      .toList(),
-                  label: " By ${c.resolvedByName.value} ",
-                  icon: Icons.task_alt_outlined),
+                menuChildren: c.adminList
+                    .map(
+                      (e) => MenuItemButton(
+                        child: Text(
+                          e?.name ?? "N/A",
+                          style: (c.resolvedByAdmID.value == e?.admissionNo)
+                              ? TextStyle(
+                                  color: Theme.of(Get.context!).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              : null,
+                        ),
+                        onPressed: () => c.resolvedBy(e?.admissionNo),
+                      ),
+                    )
+                    .toList(),
+                label: "  Resolved By",
+                icon: Icons.task_alt_outlined,
+              ),
             ),
           ],
         ),
