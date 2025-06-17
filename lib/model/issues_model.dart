@@ -43,11 +43,6 @@ class Issues {
       'updated_by': updatedBy,
     };
   }
-
-  @override
-  String toString() {
-    return '{$subject,$updatedDate}';
-  }
 }
 
 class IssueResponse {
@@ -56,19 +51,14 @@ class IssueResponse {
   List<Issues>? openIssues;
   List<Issues>? closedIssues;
 
-  IssueResponse(
-      {this.status, this.message, this.openIssues, this.closedIssues});
+  IssueResponse({this.status, this.message, this.openIssues, this.closedIssues});
 
   factory IssueResponse.fromJson(Map<String, dynamic> json) {
     return IssueResponse(
       status: json['status'] as bool?,
       message: json['message'] as String?,
-      openIssues: (json['open_issues'] as List<dynamic>?)
-          ?.map((e) => Issues.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      closedIssues: (json['closed_issues'] as List<dynamic>?)
-          ?.map((e) => Issues.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      openIssues: (json['open_issues'] as List<dynamic>?)?.map((e) => Issues.fromJson(e as Map<String, dynamic>)).toList(),
+      closedIssues: (json['closed_issues'] as List<dynamic>?)?.map((e) => Issues.fromJson(e as Map<String, dynamic>)).toList(),
     );
   }
 
