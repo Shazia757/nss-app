@@ -8,10 +8,11 @@ class Users {
   DateTime? updatedDate;
   String? department;
   String? role;
+  String? caste;
+  String? gender;
   String? rollNo;
   String? createdBy;
   String? updatedBy;
-
   String? year;
 
   Users(
@@ -27,23 +28,28 @@ class Users {
       this.rollNo,
       this.createdBy,
       this.updatedBy,
-      this.year});
+      this.year,
+      this.caste,
+      this.gender});
 
   factory Users.fromJson(Map<String, dynamic>? json) {
     return Users(
-        admissionNo: json?['admission_number'] as String?,
-        name: json?['name'] as String?,
-        email: json?['email'] as String?,
-        phoneNo: json?['phone_number'] as String?,
-        dob: DateTime.tryParse(json?['date_of_birth']),
-        createdDate: DateTime.tryParse(json?['created_date']),
-        updatedDate: DateTime.tryParse(json?['updated_date']),
-        department: json?['department'] as String?,
-        role: json?['role'] as String?,
-        rollNo: json?['roll_number'] as String?,
-        createdBy: json?['created_by'] as String?,
-        updatedBy: json?['updated_by'] as String?,
-        year: json?['year'] as String?);
+      admissionNo: json?['admission_number'] as String?,
+      name: json?['name'] as String?,
+      email: json?['email'] as String?,
+      phoneNo: json?['phone_number'] as String?,
+      dob: DateTime.tryParse(json?['date_of_birth']),
+      createdDate: DateTime.tryParse(json?['created_date']),
+      updatedDate: DateTime.tryParse(json?['updated_date']),
+      department: json?['department'] as String?,
+      role: json?['role'] as String?,
+      rollNo: json?['roll_number'] as String?,
+      createdBy: json?['created_by'] as String?,
+      updatedBy: json?['updated_by'] as String?,
+      year: json?['year'] as String?,
+      caste: json?['caste'] as String?,
+      gender: json?['gender'] as String?,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -60,7 +66,9 @@ class Users {
       'updated_by': updatedBy,
       'created_date': createdDate?.toString(),
       'updated_date': updatedDate?.toString(),
-      'year': year
+      'year': year,
+      'caste': caste,
+      'gender': gender,
     };
   }
 

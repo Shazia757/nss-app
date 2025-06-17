@@ -9,19 +9,28 @@ import 'package:nss/view/volunteers/profile_screen.dart';
 
 class VolunteerController extends GetxController {
   TextEditingController nameController = TextEditingController();
-  TextEditingController depController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController courseController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController rollNoController = TextEditingController();
   TextEditingController admissionNoController = TextEditingController();
   TextEditingController dobController = TextEditingController();
   TextEditingController yearController = TextEditingController();
+  TextEditingController casteController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
   var isUpdateButtonLoading = false.obs;
   var isDeleteButtonLoading = false.obs;
+  RxList<String?> bscPrgrmsList = <String>[].obs;
+  RxList<String?> baPrgrmsList = <String>[].obs;
+  RxList<String?> bVocPrgrmsList = <String>[].obs;
 
   DateTime? dob;
   final api = Api();
   RxString role = 'vol'.obs;
+  RxString caste = ''.obs;
+  RxString gender = ''.obs;
+  String department = '';
 
   RxBool isSec = false.obs;
 
@@ -29,21 +38,24 @@ class VolunteerController extends GetxController {
     isUpdateButtonLoading.value = true;
     api
         .addVolunteer(Users(
-            admissionNo: admissionNoController.text,
-            name: nameController.text,
-            email: emailController.text,
-            createdBy: LocalStorage().readUser().admissionNo,
-            phoneNo: phoneController.text,
-            dob: dob,
-            department: depController.text,
-            role: role.value,
-            rollNo: rollNoController.text,
-            year: yearController.text))
+      admissionNo: admissionNoController.text,
+      name: nameController.text,
+      email: emailController.text,
+      createdBy: LocalStorage().readUser().admissionNo,
+      phoneNo: phoneController.text,
+      dob: dob,
+      department: categoryController.text,
+      role: role.value,
+      rollNo: rollNoController.text,
+      year: yearController.text,
+      caste: casteController.text,
+      gender: genderController.text,
+    ))
         .then(
       (value) {
         isUpdateButtonLoading.value = false;
+        Get.back();
         if (value?.status ?? false) {
-          Get.back();
           Get.back();
           CustomWidgets.showSnackBar(
               'Success', value?.message ?? 'Volunteer added successfully.');
@@ -64,15 +76,17 @@ class VolunteerController extends GetxController {
       'updated_by': LocalStorage().readUser().admissionNo,
       'phone_number': phoneController.text,
       'date_of_birth': dob.toString(),
-      'department': depController.text,
+      'department': categoryController.text,
       'roll_number': rollNoController.text,
       'role': role.value,
-      'year': yearController.text
+      'year': yearController.text,
+      'caste': casteController.text,
+      'gender': genderController.text,
     }).then(
       (response) {
         isUpdateButtonLoading.value = false;
+        Get.back();
         if (response?.status == true) {
-          Get.back();
           Get.back();
           CustomWidgets.showSnackBar('Success',
               response?.message ?? 'Volunteer updated successfully.');
@@ -107,7 +121,7 @@ class VolunteerController extends GetxController {
     nameController.text = user.name ?? "";
     emailController.text = user.email ?? "";
     phoneController.text = user.phoneNo ?? "";
-    depController.text = user.department ?? "";
+    categoryController.text = user.department ?? "";
     rollNoController.text = user.rollNo?.toString() ?? "";
     admissionNoController.text = user.admissionNo ?? "";
     dobController.text =
@@ -115,17 +129,21 @@ class VolunteerController extends GetxController {
     dob = user.dob;
     role.value = user.role ?? 'vol';
     yearController.text = user.year ?? "";
+    casteController.text = user.caste ?? "";
+    genderController.text = user.gender ?? "";
   }
 
   void clearTextFields() {
     nameController.clear();
     emailController.clear();
     phoneController.clear();
-    depController.clear();
+    categoryController.clear();
     rollNoController.clear();
     admissionNoController.clear();
     dobController.clear();
     yearController.clear();
+    casteController.clear();
+    genderController.clear();
   }
 
   bool onSubmitVolValidation() {
@@ -141,7 +159,15 @@ class VolunteerController extends GetxController {
       CustomWidgets.showSnackBar('Invalid', 'Please enter phone number');
       return false;
     }
-    if (depController.text.isEmpty) {
+    if (casteController.text.isEmpty) {
+      CustomWidgets.showSnackBar('Invalid', 'Please select caste');
+      return false;
+    }
+    if (genderController.text.isEmpty) {
+      CustomWidgets.showSnackBar('Invalid', 'Please select gender');
+      return false;
+    }
+    if (categoryController.text.isEmpty) {
       CustomWidgets.showSnackBar('Invalid', 'Please add department');
       return false;
     }
@@ -193,10 +219,10 @@ class VolunteerListController extends GetxController {
   void updateVolunteer(String? admissionNo) {
     Api().volunteerDetails(admissionNo!).then(
       (value) {
-        Get.to(VolunteerAddScreen(
-          isUpdateScreen: true,
-          user: value!.volunteerDetails,
-        ))?.then((value) => onInit());
+        Get.to(() => VolunteerAddScreen(
+              isUpdateScreen: true,
+              user: value!.volunteerDetails,
+            ))?.then((value) => onInit());
       },
     );
   }
