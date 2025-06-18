@@ -71,47 +71,50 @@ class VolunteerAddScreen extends StatelessWidget {
               readOnly: isProfilePage,
             ),
             CustomWidgets().textField(controller: c.emailController, label: "Email", readOnly: isProfilePage, margin: EdgeInsets.symmetric(vertical: 10)),
-            Row(
-              children: [
-                Expanded(
-                  child: Card(
-                    margin: EdgeInsets.only(right: 5),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: c.caste.value, label: 'General'),
-                          DropdownMenuEntry(value: c.caste.value, label: 'OBC'),
-                          DropdownMenuEntry(value: c.caste.value, label: 'SC'),
-                          DropdownMenuEntry(value: c.caste.value, label: 'ST'),
-                        ],
-                        controller: c.casteController,
-                        onSelected: (po) => c.caste.value = po ?? '',
-                        label: Text('Caste'),
+            AbsorbPointer(
+              absorbing: isProfilePage,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      margin: EdgeInsets.only(right: 5),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: DropdownMenu(
+                          inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
+                          dropdownMenuEntries: [
+                            DropdownMenuEntry(value: c.caste.value, label: 'General'),
+                            DropdownMenuEntry(value: c.caste.value, label: 'OBC'),
+                            DropdownMenuEntry(value: c.caste.value, label: 'SC'),
+                            DropdownMenuEntry(value: c.caste.value, label: 'ST'),
+                          ],
+                          controller: c.casteController,
+                          onSelected: (po) => c.caste.value = po ?? '',
+                          label: Text('Caste'),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Card(
-                    margin: EdgeInsets.only(left: 5),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: c.gender.value, label: 'Male'),
-                          DropdownMenuEntry(value: c.gender.value, label: 'Female'),
-                        ],
-                        controller: c.genderController,
-                        onSelected: (po) => c.gender.value = po ?? '',
-                        label: Text('Gender'),
+                  Expanded(
+                    child: Card(
+                      margin: EdgeInsets.only(left: 5),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: DropdownMenu(
+                          inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
+                          dropdownMenuEntries: [
+                            DropdownMenuEntry(value: c.gender.value, label: 'Male'),
+                            DropdownMenuEntry(value: c.gender.value, label: 'Female'),
+                          ],
+                          controller: c.genderController,
+                          onSelected: (po) => c.gender.value = po ?? '',
+                          label: Text('Gender'),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             CustomWidgets().textField(controller: c.phoneController, label: "Phone", readOnly: isProfilePage),
             CustomWidgets().textField(controller: c.categoryController, label: "Department", readOnly: isProfilePage, margin: EdgeInsets.symmetric(vertical: 5)),
