@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/view/authentication/change_password_screen.dart';
@@ -18,11 +17,11 @@ class VolunteerAddScreen extends StatelessWidget {
     final isProfilePage = (isUpdateScreen == null);
     VolunteerController c = Get.put(VolunteerController());
 
-    (isUpdateScreen ?? false) ? c.setUpdateData(user!) : c.clearTextFields();
-
-    if (isProfilePage) c.setUpdateData(LocalStorage().readUser());
-
-    (c.role.value == 'vol') ? (c.isSec.value = false) : (c.isSec.value = true);
+    if (isUpdateScreen ?? true) {
+      c.setUpdateData(isProfilePage ? LocalStorage().readUser() : user!);
+    } else {
+      c.clearTextFields();
+    }
 
     return Scaffold(
       bottomNavigationBar: isProfilePage ? CustomNavBar(currentIndex: 2) : null,
@@ -71,25 +70,18 @@ class VolunteerAddScreen extends StatelessWidget {
               label: "Name",
               readOnly: isProfilePage,
             ),
-            CustomWidgets().textField(
-                controller: c.emailController,
-                label: "Email",
-                readOnly: isProfilePage,
-                margin: EdgeInsets.symmetric(vertical: 10)),
+            CustomWidgets().textField(controller: c.emailController, label: "Email", readOnly: isProfilePage, margin: EdgeInsets.symmetric(vertical: 10)),
             Row(
               children: [
                 Expanded(
                   child: Card(
+                    margin: EdgeInsets.only(right: 5),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(
-                            activeIndicatorBorder:
-                                BorderSide(style: BorderStyle.none),
-                            border: InputBorder.none),
+                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
                         dropdownMenuEntries: [
-                          DropdownMenuEntry(
-                              value: c.caste.value, label: 'General'),
+                          DropdownMenuEntry(value: c.caste.value, label: 'General'),
                           DropdownMenuEntry(value: c.caste.value, label: 'OBC'),
                           DropdownMenuEntry(value: c.caste.value, label: 'SC'),
                           DropdownMenuEntry(value: c.caste.value, label: 'ST'),
@@ -103,18 +95,14 @@ class VolunteerAddScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: Card(
+                    margin: EdgeInsets.only(left: 5),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(
-                            activeIndicatorBorder:
-                                BorderSide(style: BorderStyle.none),
-                            border: InputBorder.none),
+                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
                         dropdownMenuEntries: [
-                          DropdownMenuEntry(
-                              value: c.gender.value, label: 'Male'),
-                          DropdownMenuEntry(
-                              value: c.gender.value, label: 'Female'),
+                          DropdownMenuEntry(value: c.gender.value, label: 'Male'),
+                          DropdownMenuEntry(value: c.gender.value, label: 'Female'),
                         ],
                         controller: c.genderController,
                         onSelected: (po) => c.gender.value = po ?? '',
@@ -125,28 +113,20 @@ class VolunteerAddScreen extends StatelessWidget {
                 ),
               ],
             ),
-            CustomWidgets().textField(
-                controller: c.phoneController,
-                label: "Phone",
-                readOnly: isProfilePage),
-            Row(
+            CustomWidgets().textField(controller: c.phoneController, label: "Phone", readOnly: isProfilePage),
+            CustomWidgets().textField(controller: c.categoryController, label: "Department", readOnly: isProfilePage, margin: EdgeInsets.symmetric(vertical: 5)),
+
+            /*     Row(
               children: [
                 Expanded(
                   child: Card(
                     child: Padding(
                       padding: EdgeInsets.only(left: 15),
                       child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(
-                            activeIndicatorBorder:
-                                BorderSide(style: BorderStyle.none),
-                            border: InputBorder.none),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: 'ba', label: 'BA'),
-                          DropdownMenuEntry(value: 'bsc', label: 'BSc'),
-                          DropdownMenuEntry(value: 'bvoc', label: 'BVoc')
-                        ],
-                        controller: c.categoryController,
-                        label: Text('Category'),
+                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
+                        dropdownMenuEntries: [DropdownMenuEntry(value: 'ba', label: 'BA'), DropdownMenuEntry(value: 'bsc', label: 'BSc'), DropdownMenuEntry(value: 'bvoc', label: 'BVoc')],
+                        controller: c.programController,
+                        label: Text('Programs'),
                         onSelected: (value) {},
                       ),
                     ),
@@ -157,15 +137,8 @@ class VolunteerAddScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: DropdownMenu(
-                        inputDecorationTheme: InputDecorationTheme(
-                            activeIndicatorBorder:
-                                BorderSide(style: BorderStyle.none),
-                            border: InputBorder.none),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: '', label: ''),
-                          DropdownMenuEntry(value: '', label: ''),
-                          DropdownMenuEntry(value: '', label: '')
-                        ],
+                        inputDecorationTheme: InputDecorationTheme(activeIndicatorBorder: BorderSide(style: BorderStyle.none), border: InputBorder.none),
+                        dropdownMenuEntries: [DropdownMenuEntry(value: '', label: ''), DropdownMenuEntry(value: '', label: ''), DropdownMenuEntry(value: '', label: '')],
                         controller: c.courseController,
                         label: Text('Course'),
                         onSelected: (value) {},
@@ -175,39 +148,24 @@ class VolunteerAddScreen extends StatelessWidget {
                 ),
               ],
             ),
-            // CustomWidgets.searchableDropDown(
+            */ // CustomWidgets.searchableDropDown(
             //     controller: c.depController,
             //     stringValueOf: (item) => item,
             //     onSelected: (p0) {},
             //     selectionList: [],
             //     label: "Department"),
-            CustomWidgets().textField(
-                controller: c.yearController,
-                label: "Year of Study",
-                readOnly: isProfilePage,
-                keyboardType: TextInputType.number),
+            CustomWidgets().textField(controller: c.yearController, label: "Year of Study", readOnly: isProfilePage, keyboardType: TextInputType.number),
             Row(
               children: [
-                Expanded(
-                    child: CustomWidgets().textField(
-                        controller: c.rollNoController,
-                        label: "Roll No",
-                        readOnly: isProfilePage,
-                        keyboardType: TextInputType.number)),
+                Expanded(child: CustomWidgets().textField(controller: c.rollNoController, label: "Roll No", readOnly: isProfilePage, keyboardType: TextInputType.number)),
                 SizedBox(width: 10),
-                Expanded(
-                    child: CustomWidgets().textField(
-                        controller: c.admissionNoController,
-                        label: "Admission No",
-                        keyboardType: TextInputType.number,
-                        isEnabled: !(isUpdateScreen ?? false),
-                        readOnly: isProfilePage)),
+                Expanded(child: CustomWidgets().textField(controller: c.admissionNoController, label: "Admission No", keyboardType: TextInputType.number, isEnabled: !(isUpdateScreen ?? false), readOnly: isProfilePage)),
               ],
             ),
             Card(
+              margin: EdgeInsets.zero,
               elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: CustomWidgets().datePickerTextField(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   context: context,
@@ -225,38 +183,27 @@ class VolunteerAddScreen extends StatelessWidget {
                   )),
             ),
             SizedBox(height: 20),
-            ((!isProfilePage) && (LocalStorage().readUser().role == 'po'))
+            ((!isProfilePage) && (LocalStorage().readUser().role == 'po') && (c.role.value != 'po'))
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Promote As Secretary',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       Obx(() => Switch(
-                          value: (isUpdateScreen == false)
-                              ? (c.isSec.value == false)
-                              : c.isSec.value,
-                          onChanged: (value) {
-                            c.isSec.value = value;
-                            (c.isSec.value)
-                                ? c.role.value = 'sec'
-                                : c.role.value = 'vol';
-
-                            log(c.role.value);
-                          }))
+                            value: c.role.value == 'sec',
+                            onChanged: (value) => c.role.value = value ? 'sec' : 'vol',
+                          ))
                     ],
                   )
                 : SizedBox(),
             if (!isProfilePage) ...[
               AbsorbPointer(
-                absorbing: c.isUpdateButtonLoading.value ||
-                    c.isDeleteButtonLoading.value,
+                absorbing: c.isUpdateButtonLoading.value || c.isDeleteButtonLoading.value,
                 child: CustomWidgets().buildActionButton(
                     context: context,
-                    text:
-                        "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
+                    text: "${isUpdateScreen ?? false ? "Update" : "Add"} Volunteer",
                     icon: Icons.add,
                     color: Theme.of(context).primaryColor,
                     onPressed: () {
@@ -264,25 +211,17 @@ class VolunteerAddScreen extends StatelessWidget {
                         (isUpdateScreen ?? false)
                             ? CustomWidgets().showConfirmationDialog(
                                 title: "Update Volunteer",
-                                message:
-                                    "Are you sure you want to update the details?",
+                                message: "Are you sure you want to update the details?",
                                 onConfirm: () => c.updateVolunteer(),
                                 data: Obx(
-                                  () => c.isUpdateButtonLoading.value
-                                      ? CircularProgressIndicator()
-                                      : Text("Confirm",
-                                          style: TextStyle(color: Colors.red)),
+                                  () => c.isUpdateButtonLoading.value ? CircularProgressIndicator() : Text("Confirm", style: TextStyle(color: Colors.red)),
                                 ))
                             : CustomWidgets().showConfirmationDialog(
                                 title: "Add Volunteer",
-                                message:
-                                    "Are you sure you want to add new volunteer?",
+                                message: "Are you sure you want to add new volunteer?",
                                 onConfirm: () => c.addVolunteer(),
                                 data: Obx(
-                                  () => c.isUpdateButtonLoading.value
-                                      ? CircularProgressIndicator()
-                                      : Text("Confirm",
-                                          style: TextStyle(color: Colors.red)),
+                                  () => c.isUpdateButtonLoading.value ? CircularProgressIndicator() : Text("Confirm", style: TextStyle(color: Colors.red)),
                                 ));
                       }
                     }),
@@ -291,8 +230,7 @@ class VolunteerAddScreen extends StatelessWidget {
             ],
             if (isUpdateScreen ?? false)
               AbsorbPointer(
-                absorbing: c.isDeleteButtonLoading.value ||
-                    c.isUpdateButtonLoading.value,
+                absorbing: c.isDeleteButtonLoading.value || c.isUpdateButtonLoading.value,
                 child: CustomWidgets().buildActionButton(
                   context: context,
                   text: "Delete Volunteer",
@@ -300,29 +238,17 @@ class VolunteerAddScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error,
                   onPressed: () => CustomWidgets().showConfirmationDialog(
                       title: "Delete Volunteer",
-                      message:
-                          "Are you sure you want to delete this volunteer?",
+                      message: "Are you sure you want to delete this volunteer?",
                       onConfirm: () {
                         c.deleteVolunteer();
                       },
                       data: Obx(
-                        () => c.isDeleteButtonLoading.value
-                            ? CircularProgressIndicator()
-                            : Text("Confirm",
-                                style: TextStyle(color: Colors.red)),
+                        () => c.isDeleteButtonLoading.value ? CircularProgressIndicator() : Text("Confirm", style: TextStyle(color: Colors.red)),
                       )),
                 ),
               ),
             SizedBox(height: 15),
-            if (isUpdateScreen == true)
-              CustomWidgets().buildActionButton(
-                  context: context,
-                  text: "Reset Password",
-                  icon: Icons.password,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () => Get.to(() => ChangePasswordScreen(
-                      isChangepassword: false,
-                      userId: c.admissionNoController.text))),
+            if (isUpdateScreen == true) CustomWidgets().buildActionButton(context: context, text: "Reset Password", icon: Icons.password, color: Theme.of(context).primaryColor, onPressed: () => Get.to(() => ChangePasswordScreen(isChangepassword: false, userId: c.admissionNoController.text))),
           ],
         ),
       ),

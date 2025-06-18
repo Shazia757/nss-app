@@ -21,18 +21,12 @@ class VolunteerController extends GetxController {
   TextEditingController genderController = TextEditingController();
   var isUpdateButtonLoading = false.obs;
   var isDeleteButtonLoading = false.obs;
-  RxList<String?> bscPrgrmsList = <String>[].obs;
-  RxList<String?> baPrgrmsList = <String>[].obs;
-  RxList<String?> bVocPrgrmsList = <String>[].obs;
-
   DateTime? dob;
   final api = Api();
   RxString role = 'vol'.obs;
   RxString caste = ''.obs;
   RxString gender = ''.obs;
   String department = '';
-
-  RxBool isSec = false.obs;
 
   void addVolunteer() async {
     isUpdateButtonLoading.value = true;
@@ -57,11 +51,9 @@ class VolunteerController extends GetxController {
         Get.back();
         if (value?.status ?? false) {
           Get.back();
-          CustomWidgets.showSnackBar(
-              'Success', value?.message ?? 'Volunteer added successfully.');
+          CustomWidgets.showSnackBar('Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          CustomWidgets.showSnackBar(
-              'Error', value?.message ?? 'Failed to add volunteer.');
+          CustomWidgets.showSnackBar('Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -88,11 +80,9 @@ class VolunteerController extends GetxController {
         Get.back();
         if (response?.status == true) {
           Get.back();
-          CustomWidgets.showSnackBar('Success',
-              response?.message ?? 'Volunteer updated successfully.');
+          CustomWidgets.showSnackBar('Success', response?.message ?? 'Volunteer updated successfully.');
         } else {
-          CustomWidgets.showSnackBar(
-              'Error', response?.message ?? 'Failed to update volunteer.');
+          CustomWidgets.showSnackBar('Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
     );
@@ -107,11 +97,9 @@ class VolunteerController extends GetxController {
         if (response?.status == true) {
           Get.back();
           Get.back();
-          CustomWidgets.showSnackBar("Success",
-              response?.message ?? "Volunteer deleted successfully.");
+          CustomWidgets.showSnackBar("Success", response?.message ?? "Volunteer deleted successfully.");
         } else {
-          CustomWidgets.showSnackBar(
-              "Error", response?.message ?? "Failed to delete volunteer.");
+          CustomWidgets.showSnackBar("Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
     ).then((value) => onInit());
@@ -124,8 +112,7 @@ class VolunteerController extends GetxController {
     categoryController.text = user.department ?? "";
     rollNoController.text = user.rollNo?.toString() ?? "";
     admissionNoController.text = user.admissionNo ?? "";
-    dobController.text =
-        (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
+    dobController.text = (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
     role.value = user.role ?? 'vol';
     yearController.text = user.year ?? "";
@@ -144,6 +131,7 @@ class VolunteerController extends GetxController {
     yearController.clear();
     casteController.clear();
     genderController.clear();
+    role.value = 'vol';
   }
 
   bool onSubmitVolValidation() {
