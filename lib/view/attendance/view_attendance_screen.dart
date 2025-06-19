@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
@@ -55,7 +56,8 @@ class ViewAttendanceScreen extends StatelessWidget {
                 columns: [
                   DataColumn(label: _buildTableCell('Date', isHeader: true)),
                   DataColumn(label: _buildTableCell('Name', isHeader: true)),
-                  DataColumn(label: _buildTableCell('Hours', isHeader: true)),
+                  if (LocalStorage.isAdmin)
+                    DataColumn(label: _buildTableCell('Hours', isHeader: true)),
                   if (!isViewAttendance)
                     DataColumn(label: _buildTableCell('Remove', isHeader: true))
                 ],
@@ -78,7 +80,8 @@ class ViewAttendanceScreen extends StatelessWidget {
                             : "N/A",
                       )),
                       DataCell(Text(rowData.name ?? '')),
-                      DataCell(Text(rowData.hours.toString())),
+                      if (LocalStorage.isAdmin)
+                        DataCell(Text(rowData.hours.toString())),
                       if (!isViewAttendance)
                         DataCell(
                           IconButton(
@@ -98,37 +101,58 @@ class ViewAttendanceScreen extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              SizedBox(height: 100),
-              Obx(() => Center(
-                      child: Text(
-                    "   Total hours attended: ${c.totalHours}\nTotal programs attended: ${c.totalPrograms}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              Obx(() => Card(
+                    elevation: 4,
+                    color: Color.fromARGB(255, 231, 227, 255),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (LocalStorage.isAdmin)
+                            Column(
+                              children: [
+                                Text(
+                                  "Total Hours Attended",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[600]),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "${c.totalHours}",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          SizedBox(width: 10),
+                          Column(
+                            children: [
+                              Text(
+                                "Total Programs Attended",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[600]),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "${c.totalPrograms}",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  )))
+                  ))
             ],
           );
         }));
-  }
-
-  TableRow buildDataRow(
-      {required Attendance data, required AttendanceController c}) {
-    return TableRow(
-      children: [
-        _buildTableCell(
-          data.date != null ? DateFormat.yMMMd().format(data.date!) : "N/A",
-        ),
-        _buildTableCell(data.name ?? ''),
-        _buildTableCell(data.hours.toString()),
-        ElevatedButton(
-            onPressed: () => c.deleteAttendance(data.id!),
-            child: Icon(
-              Icons.remove_circle,
-              color: Colors.teal,
-            ))
-      ],
-    );
   }
 
   Widget _buildTableCell(String text, {bool isHeader = false}) {

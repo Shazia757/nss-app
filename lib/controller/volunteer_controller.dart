@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -51,9 +53,11 @@ class VolunteerController extends GetxController {
         Get.back();
         if (value?.status ?? false) {
           Get.back();
-          CustomWidgets.showSnackBar('Success', value?.message ?? 'Volunteer added successfully.');
+          CustomWidgets.showSnackBar(
+              'Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          CustomWidgets.showSnackBar('Error', value?.message ?? 'Failed to add volunteer.');
+          CustomWidgets.showSnackBar(
+              'Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -80,9 +84,11 @@ class VolunteerController extends GetxController {
         Get.back();
         if (response?.status == true) {
           Get.back();
-          CustomWidgets.showSnackBar('Success', response?.message ?? 'Volunteer updated successfully.');
+          CustomWidgets.showSnackBar('Success',
+              response?.message ?? 'Volunteer updated successfully.');
         } else {
-          CustomWidgets.showSnackBar('Error', response?.message ?? 'Failed to update volunteer.');
+          CustomWidgets.showSnackBar(
+              'Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
     );
@@ -97,9 +103,11 @@ class VolunteerController extends GetxController {
         if (response?.status == true) {
           Get.back();
           Get.back();
-          CustomWidgets.showSnackBar("Success", response?.message ?? "Volunteer deleted successfully.");
+          CustomWidgets.showSnackBar("Success",
+              response?.message ?? "Volunteer deleted successfully.");
         } else {
-          CustomWidgets.showSnackBar("Error", response?.message ?? "Failed to delete volunteer.");
+          CustomWidgets.showSnackBar(
+              "Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
     ).then((value) => onInit());
@@ -112,7 +120,8 @@ class VolunteerController extends GetxController {
     categoryController.text = user.department ?? "";
     rollNoController.text = user.rollNo?.toString() ?? "";
     admissionNoController.text = user.admissionNo ?? "";
-    dobController.text = (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
+    dobController.text =
+        (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
     role.value = user.role ?? 'vol';
     yearController.text = user.year ?? "";
@@ -197,7 +206,10 @@ class VolunteerListController extends GetxController {
     isLoading.value = true;
     Api().getVolunteers().then(
       (value) {
-        usersList.assignAll(value?.data ?? []);
+        final data =
+            value?.data?.where((element) => element.role != 'po').toList();
+        log(data.toString());
+        usersList.assignAll(data ?? []);
         searchList.assignAll(usersList);
         isLoading.value = false;
       },

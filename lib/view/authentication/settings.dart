@@ -58,6 +58,8 @@ class SettingsScreen extends StatelessWidget {
                             style: theme.textTheme.bodySmall),
                         Text("Department: ${user.department ?? "N/A"}",
                             style: theme.textTheme.bodySmall),
+                        Text("Role: ${user.role ?? "N/A"}",
+                            style: theme.textTheme.bodySmall),
                       ],
                     ),
                   ),

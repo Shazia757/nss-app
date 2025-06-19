@@ -41,7 +41,7 @@ const lightColorScheme = ColorScheme(
   onSecondaryFixedVariant: Color(0xff484459),
   tertiaryFixed: Color(0xffffd8e6),
   onTertiaryFixed: Color(0xff301120),
-  tertiaryFixedDim: Color(0xffedb8cd),
+  tertiaryFixedDim: Color.fromARGB(255, 255, 202, 212),
   onTertiaryFixedVariant: Color(0xff623b4c),
   surfaceDim: Color(0xffddd8e0),
   surfaceBright: Color(0xfffdf8ff),
