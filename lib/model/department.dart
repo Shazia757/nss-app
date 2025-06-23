@@ -12,11 +12,11 @@ class Department {
     this.category,
     this.name,
   });
-  factory Department.fromJson(Map<String, dynamic> data) {
+  factory Department.fromJson(Map<String, dynamic>? data) {
     return Department(
-      id: data['id'],
-      category: data['category'],
-      name: data['name'],
+      id: data?['id'],
+      category: data?['category'],
+      name: data?['name'],
     );
   }
   Map<String, dynamic> toJson() {

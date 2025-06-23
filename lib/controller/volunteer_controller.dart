@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/model/department.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
@@ -40,7 +41,11 @@ class VolunteerController extends GetxController {
       createdBy: LocalStorage().readUser().admissionNo,
       phoneNo: phoneController.text,
       dob: dob,
-      department: categoryController.text,
+      //TODO
+      /*    department: Department(
+        category: categoryController.text,
+        name: department,
+      ), */
       role: role.value,
       rollNo: rollNoController.text,
       year: yearController.text,
@@ -53,11 +58,9 @@ class VolunteerController extends GetxController {
         Get.back();
         if (value?.status ?? false) {
           Get.back();
-          CustomWidgets.showSnackBar(
-              'Success', value?.message ?? 'Volunteer added successfully.');
+          CustomWidgets.showSnackBar('Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          CustomWidgets.showSnackBar(
-              'Error', value?.message ?? 'Failed to add volunteer.');
+          CustomWidgets.showSnackBar('Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -84,11 +87,9 @@ class VolunteerController extends GetxController {
         Get.back();
         if (response?.status == true) {
           Get.back();
-          CustomWidgets.showSnackBar('Success',
-              response?.message ?? 'Volunteer updated successfully.');
+          CustomWidgets.showSnackBar('Success', response?.message ?? 'Volunteer updated successfully.');
         } else {
-          CustomWidgets.showSnackBar(
-              'Error', response?.message ?? 'Failed to update volunteer.');
+          CustomWidgets.showSnackBar('Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
     );
@@ -103,11 +104,9 @@ class VolunteerController extends GetxController {
         if (response?.status == true) {
           Get.back();
           Get.back();
-          CustomWidgets.showSnackBar("Success",
-              response?.message ?? "Volunteer deleted successfully.");
+          CustomWidgets.showSnackBar("Success", response?.message ?? "Volunteer deleted successfully.");
         } else {
-          CustomWidgets.showSnackBar(
-              "Error", response?.message ?? "Failed to delete volunteer.");
+          CustomWidgets.showSnackBar("Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
     ).then((value) => onInit());
@@ -117,11 +116,11 @@ class VolunteerController extends GetxController {
     nameController.text = user.name ?? "";
     emailController.text = user.email ?? "";
     phoneController.text = user.phoneNo ?? "";
-    categoryController.text = user.department ?? "";
+    //TODO: Set department properly
+    // categoryController.text = user.department?.name ?? "";
     rollNoController.text = user.rollNo?.toString() ?? "";
     admissionNoController.text = user.admissionNo ?? "";
-    dobController.text =
-        (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
+    dobController.text = (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
     role.value = user.role ?? 'vol';
     yearController.text = user.year ?? "";
@@ -206,8 +205,7 @@ class VolunteerListController extends GetxController {
     isLoading.value = true;
     Api().getVolunteers().then(
       (value) {
-        final data =
-            value?.data?.where((element) => element.role != 'po').toList();
+        final data = value?.data?.where((element) => element.role != 'po').toList();
         log(data.toString());
         usersList.assignAll(data ?? []);
         searchList.assignAll(usersList);
