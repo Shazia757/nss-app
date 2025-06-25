@@ -17,7 +17,22 @@ class Users {
   String? updatedBy;
   String? year;
 
-  Users({this.admissionNo, this.name, this.email, this.phoneNo, this.dob, this.createdDate, this.updatedDate, this.department, this.role, this.rollNo, this.createdBy, this.updatedBy, this.year, this.caste, this.gender});
+  Users(
+      {this.admissionNo,
+      this.name,
+      this.email,
+      this.phoneNo,
+      this.dob,
+      this.createdDate,
+      this.updatedDate,
+      this.department,
+      this.role,
+      this.rollNo,
+      this.createdBy,
+      this.updatedBy,
+      this.year,
+      this.caste,
+      this.gender});
 
   factory Users.fromJson(Map<String, dynamic>? json) {
     return Users(
@@ -28,7 +43,9 @@ class Users {
       dob: DateTime.tryParse(json?['date_of_birth']),
       createdDate: DateTime.tryParse(json?['created_date']),
       updatedDate: DateTime.tryParse(json?['updated_date']),
-      department: json?['department'] != null ? Department.fromJson(json?['department']) : null,
+      department: json?['department'] != null
+          ? Department.fromJson(json?['department'])
+          : null,
       role: json?['role'] as String?,
       rollNo: json?['roll_number'] as String?,
       createdBy: json?['created_by'] as String?,
@@ -76,7 +93,9 @@ class VolunteerList {
     return VolunteerList(
       status: json['status'] as bool?,
       message: json['message'] as String?,
-      data: (json['data'] as List<dynamic>?)?.map((e) => Volunteer.fromJson(e as Map<String, dynamic>)).toList(),
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => Volunteer.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -97,7 +116,10 @@ class VolunteerDetailResponse {
   VolunteerDetailResponse({this.status, this.message, this.volunteerDetails});
 
   factory VolunteerDetailResponse.fromJson(Map<String, dynamic> json) {
-    return VolunteerDetailResponse(status: json['status'] as bool?, message: json['message'] as String?, volunteerDetails: Users.fromJson(json['volunteer_details']));
+    return VolunteerDetailResponse(
+        status: json['status'] as bool?,
+        message: json['message'] as String?,
+        volunteerDetails: Users.fromJson(json['volunteer_details']));
   }
 
   Map<String, dynamic> toJson() {
@@ -112,16 +134,25 @@ class VolunteerDetailResponse {
 class Volunteer {
   String? admissionNo;
   String? name;
-  String? department;
+  Department? department;
   String? role;
 
   Volunteer({this.admissionNo, this.name, this.department, this.role});
 
   factory Volunteer.fromJson(Map<String, dynamic> json) {
-    return Volunteer(admissionNo: json['admission_number'] as String?, name: json['name'] as String?, department: json['department'] as String?, role: json['role'] as String?);
+    return Volunteer(
+        admissionNo: json['admission_number'] as String?,
+        name: json['name'] as String?,
+        department: Department.fromJson(json['department']),
+        role: json['role'] as String?);
   }
 
   Map<String, dynamic> toJson() {
-    return {'admission_number': admissionNo, 'name': name, 'department': department, 'role': role};
+    return {
+      'admission_number': admissionNo,
+      'name': name,
+      'department': department?.toJson(),
+      'role': role
+    };
   }
 }

@@ -7,6 +7,7 @@ import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/program/add_program_screen.dart';
+import 'package:nss/view/program/students_enrolled.dart';
 
 class ProgramsScreen extends StatelessWidget {
   const ProgramsScreen({super.key});
@@ -210,7 +211,24 @@ class ProgramsScreen extends StatelessWidget {
                                                           fontWeight:
                                                               FontWeight.w100),
                                                     ),
-                                                  )
+                                                  ),
+                                                // if (LocalStorage()
+                                                //         .readUser()
+                                                //         .role !=
+                                                //     'vol')
+                                                //   Align(
+                                                //     alignment:
+                                                //         Alignment.bottomRight,
+                                                //     child: TextButton(
+                                                //         onPressed: () {
+                                                //           Get.to(() =>
+                                                //               StudentsEnrolled(
+                                                //                   data: c.searchList[
+                                                //                       index]));
+                                                //         },
+                                                //         child: Text(
+                                                //             'Students Enrolled')),
+                                                //   )
                                               ],
                                             )),
                                       ),

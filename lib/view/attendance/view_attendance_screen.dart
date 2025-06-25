@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/database/local_storage.dart';
-import 'package:nss/model/attendance_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';

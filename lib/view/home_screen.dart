@@ -43,7 +43,8 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
           Visibility(
-            visible: (LocalStorage().readUser().role == 'sec') && (MediaQuery.of(context).size.width < 800),
+            visible: (LocalStorage().readUser().role == 'sec') &&
+                (MediaQuery.of(context).size.width < 800),
             child: IconButton(
               onPressed: () => showModalBottomSheet(
                 showDragHandle: true,
@@ -101,7 +102,9 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: MediaQuery.of(context).size.width > 800 ? null : CustomNavBar(currentIndex: 0),
+      bottomNavigationBar: MediaQuery.of(context).size.width > 800
+          ? null
+          : CustomNavBar(currentIndex: 0),
     );
   }
 
@@ -114,11 +117,15 @@ class HomeScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.volunteer_activism, color: Theme.of(context).colorScheme.onPrimary),
+            Icon(Icons.volunteer_activism,
+                color: Theme.of(context).colorScheme.onPrimary),
             SizedBox(width: 8),
             Text(
               "Not Me But You",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimary),
             ),
           ],
         ),
@@ -140,7 +147,8 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Text(
                         "NSS Farook College",
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "Let's make a difference today",
@@ -173,23 +181,68 @@ class HomeScreen extends StatelessWidget {
 
     switch (LocalStorage().readUser().role) {
       case 'sec':
-        children.add(_menuCard("View Attendance", Icons.event, context, () => Get.to(() => ViewAttendanceScreen(isViewAttendance: true, id: LocalStorage().readUser().admissionNo!)), [Colors.teal.shade900, Colors.teal.shade600, Colors.teal.shade300]));
-        children.add(_menuCard("Programs", Icons.upcoming_outlined, context, () => Get.to(() => ProgramsScreen()), [Theme.of(context).colorScheme.onErrorContainer, Theme.of(context).colorScheme.error]));
-        children.add(_menuCard("Manage Volunteers", Icons.manage_accounts, context, () => Get.to(() => VolunteersListScreen()), [Colors.blue.shade900, Colors.blue.shade600, Colors.blue.shade300]));
-        children.add(_menuCard("Manage Attendance", Icons.edit_calendar, context, () => Get.to(() => ManageAttendanceScreen()), [Colors.green.shade900, Colors.green.shade600, Colors.green.shade300]));
+        children.add(_menuCard(
+            "View Attendance",
+            Icons.event,
+            context,
+            () => Get.to(() => ViewAttendanceScreen(
+                isViewAttendance: true,
+                id: LocalStorage().readUser().admissionNo!)),
+            [
+              Colors.teal.shade900,
+              Colors.teal.shade600,
+              Colors.teal.shade300
+            ]));
+        children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
+            () => Get.to(() => ProgramsScreen()), [
+          Theme.of(context).colorScheme.onErrorContainer,
+          Theme.of(context).colorScheme.error
+        ]));
+        children.add(_menuCard("Manage Volunteers", Icons.manage_accounts,
+            context, () => Get.to(() => VolunteersListScreen()), [
+          Colors.blue.shade900,
+          Colors.blue.shade600,
+          Colors.blue.shade300
+        ]));
+        children.add(_menuCard("Manage Attendance", Icons.edit_calendar,
+            context, () => Get.to(() => ManageAttendanceScreen()), [
+          Colors.green.shade900,
+          Colors.green.shade600,
+          Colors.green.shade300
+        ]));
         break;
 
       case 'po':
-        children.add(_menuCard("Programs", Icons.upcoming_outlined, context, () => Get.to(() => ProgramsScreen()), [Theme.of(context).colorScheme.onErrorContainer, Theme.of(context).colorScheme.error]));
-        children.add(_menuCard("Volunteers", Icons.manage_accounts, context, () => Get.to(() => VolunteersListScreen()), [Colors.blue.shade900, Colors.blue.shade600, Colors.blue.shade300]));
-        children.add(_menuCard("Attendance", Icons.edit_calendar, context, () => Get.to(() => ManageAttendanceScreen()), [Colors.green.shade900, Colors.green.shade600, Colors.green.shade300]));
+        children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
+            () => Get.to(() => ProgramsScreen()), [
+          Theme.of(context).colorScheme.onErrorContainer,
+          Theme.of(context).colorScheme.error
+        ]));
+        children.add(_menuCard("Volunteers", Icons.manage_accounts, context,
+            () => Get.to(() => VolunteersListScreen()), [
+          Colors.blue.shade900,
+          Colors.blue.shade600,
+          Colors.blue.shade300
+        ]));
+        children.add(_menuCard("Attendance", Icons.edit_calendar, context,
+            () => Get.to(() => ManageAttendanceScreen()), [
+          Colors.green.shade900,
+          Colors.green.shade600,
+          Colors.green.shade300
+        ]));
         break;
 
       default:
         children.add(_menuCard("View Attendance", Icons.event, context, () {
-          Get.to(() => ViewAttendanceScreen(isViewAttendance: true, id: LocalStorage().readUser().admissionNo!));
+          Get.to(() => ViewAttendanceScreen(
+              isViewAttendance: true,
+              id: LocalStorage().readUser().admissionNo!));
         }, [Colors.teal.shade900, Colors.teal.shade600, Colors.teal.shade300]));
-        children.add(_menuCard("Programs", Icons.upcoming_outlined, context, () => Get.to(() => ProgramsScreen()), [Theme.of(context).colorScheme.onErrorContainer, Theme.of(context).colorScheme.error]));
+        children.add(_menuCard("Programs", Icons.upcoming_outlined, context,
+            () => Get.to(() => ProgramsScreen()), [
+          Theme.of(context).colorScheme.onErrorContainer,
+          Theme.of(context).colorScheme.error
+        ]));
     }
 
     return Expanded(
@@ -211,7 +264,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _menuCard(String title, IconData icon, BuildContext context, VoidCallback onTap, List<Color> colors) {
+  Widget _menuCard(String title, IconData icon, BuildContext context,
+      VoidCallback onTap, List<Color> colors) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -224,7 +278,8 @@ class HomeScreen extends StatelessWidget {
         child: Card(
           color: Colors.transparent,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -234,7 +289,10 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -261,7 +319,9 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.amber,
                 ),
                 SizedBox(width: 5),
-                Obx(() => Text("Upcoming Events (${c.upcomingPrograms.length})", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))),
+                Obx(() => Text("Upcoming Events (${c.upcomingPrograms.length})",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18))),
               ],
             ),
           ),
@@ -276,11 +336,23 @@ class HomeScreen extends StatelessWidget {
                               itemCount: c.upcomingPrograms.length,
                               itemBuilder: (context, index) {
                                 final program = c.upcomingPrograms[index];
-                                final date = DateFormat.yMMMd().format(program.date!);
+                                final date =
+                                    DateFormat.yMMMd().format(program.date!);
                                 return ListTile(
                                   title: Text(program.name ?? ""),
                                   subtitle: Text(date),
-                                  trailing: Text("${program.duration} Hours"),
+                                  trailing: TextButton(
+                                      onPressed: () {
+                                        // c.addParticipant(
+                                        //     c.upcomingPrograms[index]);
+                                        // StudentsEnrolled(
+                                        //     enrolledStudents:
+                                        //         LocalStorage().readUser());
+                                        // c.studentsEnrolled
+                                        //     .add(LocalStorage().readUser());
+                                        // log(c.studentsEnrolled.toString());
+                                      },
+                                      child: Text('Enroll')),
                                 );
                               },
                               separatorBuilder: (context, index) => Divider(),

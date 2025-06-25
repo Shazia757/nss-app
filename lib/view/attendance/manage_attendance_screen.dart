@@ -94,8 +94,8 @@ class ManageAttendanceScreen extends StatelessWidget {
                               ),
                             ),
                             title: Text(c.searchList[index].name ?? ''),
-                            subtitle:
-                                Text(c.searchList[index].department ?? ''),
+                            subtitle: Text(
+                                "${c.searchList[index].department?.category} ${c.searchList[index].department?.name ?? ''}"),
                             onChanged: (value) {
                               if (value == true) {
                                 c.selectedVolList.add(c.searchList[index]);
@@ -191,8 +191,9 @@ class ManageAttendanceScreen extends StatelessWidget {
                                     (c.selectedVolList[i].admissionNo)
                                         .toString()),
                                 title: Text(c.selectedVolList[i].name ?? ''),
-                                subtitle:
-                                    Text(c.selectedVolList[i].department ?? ''),
+                                subtitle: Text(
+                                    c.selectedVolList[i].department?.name ??
+                                        ''),
                               )),
                     ),
                     onConfirm: () => c.onSubmitAttendance(),

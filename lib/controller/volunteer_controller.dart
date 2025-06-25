@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +10,7 @@ import 'package:nss/view/volunteers/profile_screen.dart';
 
 class VolunteerController extends GetxController {
   TextEditingController nameController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
+  TextEditingController departmentController = TextEditingController();
   TextEditingController courseController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -29,38 +27,51 @@ class VolunteerController extends GetxController {
   RxString role = 'vol'.obs;
   RxString caste = ''.obs;
   RxString gender = ''.obs;
-  String department = '';
+  // String department = '';
+  RxList<Department> departmentList = <Department>[].obs;
+
+  int? departmentID;
+
+  @override
+  void onInit() {
+    getDepartments();
+    super.onInit();
+  }
+
+  void getDepartments() async {
+    api.getDepartments().then(
+      (value) {
+        departmentList.assignAll(value?.programs?.toList() ?? []);
+      },
+    );
+  }
 
   void addVolunteer() async {
     isUpdateButtonLoading.value = true;
-    api
-        .addVolunteer(Users(
-      admissionNo: admissionNoController.text,
-      name: nameController.text,
-      email: emailController.text,
-      createdBy: LocalStorage().readUser().admissionNo,
-      phoneNo: phoneController.text,
-      dob: dob,
-      //TODO
-      /*    department: Department(
-        category: categoryController.text,
-        name: department,
-      ), */
-      role: role.value,
-      rollNo: rollNoController.text,
-      year: yearController.text,
-      caste: casteController.text,
-      gender: genderController.text,
-    ))
-        .then(
+    api.addVolunteer({
+      'admission_number': admissionNoController.text,
+      'name': nameController.text,
+      'email': emailController.text,
+      'created_by': LocalStorage().readUser().admissionNo,
+      'phone_number': phoneController.text,
+      'date_of_birth': dob.toString(),
+      'department': departmentID,
+      'roll_number': rollNoController.text,
+      'role': role.value,
+      'year': yearController.text,
+      'caste': casteController.text,
+      'gender': genderController.text,
+    }).then(
       (value) {
         isUpdateButtonLoading.value = false;
         Get.back();
         if (value?.status ?? false) {
           Get.back();
-          CustomWidgets.showSnackBar('Success', value?.message ?? 'Volunteer added successfully.');
+          CustomWidgets.showSnackBar(
+              'Success', value?.message ?? 'Volunteer added successfully.');
         } else {
-          CustomWidgets.showSnackBar('Error', value?.message ?? 'Failed to add volunteer.');
+          CustomWidgets.showSnackBar(
+              'Error', value?.message ?? 'Failed to add volunteer.');
         }
       },
     );
@@ -75,7 +86,7 @@ class VolunteerController extends GetxController {
       'updated_by': LocalStorage().readUser().admissionNo,
       'phone_number': phoneController.text,
       'date_of_birth': dob.toString(),
-      'department': categoryController.text,
+      'department': departmentID,
       'roll_number': rollNoController.text,
       'role': role.value,
       'year': yearController.text,
@@ -87,9 +98,11 @@ class VolunteerController extends GetxController {
         Get.back();
         if (response?.status == true) {
           Get.back();
-          CustomWidgets.showSnackBar('Success', response?.message ?? 'Volunteer updated successfully.');
+          CustomWidgets.showSnackBar('Success',
+              response?.message ?? 'Volunteer updated successfully.');
         } else {
-          CustomWidgets.showSnackBar('Error', response?.message ?? 'Failed to update volunteer.');
+          CustomWidgets.showSnackBar(
+              'Error', response?.message ?? 'Failed to update volunteer.');
         }
       },
     );
@@ -104,9 +117,11 @@ class VolunteerController extends GetxController {
         if (response?.status == true) {
           Get.back();
           Get.back();
-          CustomWidgets.showSnackBar("Success", response?.message ?? "Volunteer deleted successfully.");
+          CustomWidgets.showSnackBar("Success",
+              response?.message ?? "Volunteer deleted successfully.");
         } else {
-          CustomWidgets.showSnackBar("Error", response?.message ?? "Failed to delete volunteer.");
+          CustomWidgets.showSnackBar(
+              "Error", response?.message ?? "Failed to delete volunteer.");
         }
       },
     ).then((value) => onInit());
@@ -116,11 +131,13 @@ class VolunteerController extends GetxController {
     nameController.text = user.name ?? "";
     emailController.text = user.email ?? "";
     phoneController.text = user.phoneNo ?? "";
-    //TODO: Set department properly
-    // categoryController.text = user.department?.name ?? "";
+    departmentID = user.department?.id;
+    departmentController.text =
+        "${user.department?.category} ${user.department?.name}";
     rollNoController.text = user.rollNo?.toString() ?? "";
     admissionNoController.text = user.admissionNo ?? "";
-    dobController.text = (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
+    dobController.text =
+        (user.dob != null) ? DateFormat.yMMMd().format(user.dob!) : "";
     dob = user.dob;
     role.value = user.role ?? 'vol';
     yearController.text = user.year ?? "";
@@ -132,7 +149,7 @@ class VolunteerController extends GetxController {
     nameController.clear();
     emailController.clear();
     phoneController.clear();
-    categoryController.clear();
+    departmentController.clear();
     rollNoController.clear();
     admissionNoController.clear();
     dobController.clear();
@@ -163,7 +180,8 @@ class VolunteerController extends GetxController {
       CustomWidgets.showSnackBar('Invalid', 'Please select gender');
       return false;
     }
-    if (categoryController.text.isEmpty) {
+    if ((departmentID ?? "").toString().isEmpty ||
+        departmentController.text.isEmpty) {
       CustomWidgets.showSnackBar('Invalid', 'Please add department');
       return false;
     }
@@ -205,8 +223,8 @@ class VolunteerListController extends GetxController {
     isLoading.value = true;
     Api().getVolunteers().then(
       (value) {
-        final data = value?.data?.where((element) => element.role != 'po').toList();
-        log(data.toString());
+        final data =
+            value?.data?.where((element) => element.role != 'po').toList();
         usersList.assignAll(data ?? []);
         searchList.assignAll(usersList);
         isLoading.value = false;

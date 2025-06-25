@@ -92,8 +92,8 @@ class VolunteersListScreen extends StatelessWidget {
                                 ),
                               ),
                               title: Text(c.searchList[index].name ?? ''),
-                              subtitle:
-                                  Text(c.searchList[index].department ?? ''),
+                              subtitle: Text(
+                                  "${c.searchList[index].department?.category} ${c.searchList[index].department?.name ?? ''}"),
                               trailing: IconButton(
                                   onPressed: () => c.updateVolunteer(
                                       (c.searchList[index].admissionNo)
