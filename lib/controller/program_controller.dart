@@ -4,15 +4,18 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
+import 'package:nss/model/enrollment_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import '../model/programs_model.dart';
 
 class ProgramListController extends GetxController {
   RxList<Program> programsList = <Program>[].obs;
   RxList<Program> searchList = <Program>[].obs;
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
   TextEditingController searchController = TextEditingController();
   RxString date = 'oldest'.obs;
+  RxList<ProgramEnrollmentDetails> enrollmentList =
+      <ProgramEnrollmentDetails>[].obs;
 
   @override
   void onInit() {
@@ -27,6 +30,16 @@ class ProgramListController extends GetxController {
         programsList.assignAll(value?.programs ?? []);
         searchList.assignAll(programsList);
         searchList.sort((a, b) => b.date!.compareTo(a.date!));
+        isLoading.value = false;
+      },
+    );
+  }
+
+  void getEnrolledStudents(String id) async {
+    isLoading.value = true;
+    Api().getEnrolledStudents(id).then(
+      (value) {
+        enrollmentList.assignAll(value?.enrollmentList?.toList() ?? []);
         isLoading.value = false;
       },
     );

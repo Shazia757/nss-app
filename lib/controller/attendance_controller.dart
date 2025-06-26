@@ -142,32 +142,6 @@ class AttendanceController extends GetxController {
     ).then((value) => onInit());
   }
 
-  // void sort(int columnIndex, bool ascending) {
-  //   sortColumnIndex.value = columnIndex;
-  //   isAscending.value = ascending;
-
-  //   if (columnIndex == 0) {
-  //     attendanceList.sort((a, b) =>
-  //         ascending ? a.date!.compareTo(b.date!) : b.date!.compareTo(a.date!));
-  //   } else if (columnIndex == 1) {
-  //     attendanceList.sort((a, b) => ascending
-  //         ? (a.name ?? '').compareTo(b.name ?? '')
-  //         : (b.name ?? '').compareTo(a.name ?? ''));
-  //   } else if (columnIndex == 2) {
-  //     attendanceList.sort((a, b) {
-  //       final hoursA = a.hours;
-  //       final hoursB = b.hours;
-
-  //       if (hoursA == null && hoursB == null) return 0;
-  //       if (hoursA == null) return 1;
-  //       if (hoursB == null) return -1;
-
-  //       return ascending ? hoursA.compareTo(hoursB) : hoursB.compareTo(hoursA);
-  //     });
-  //   }
-  //   attendanceList.refresh();
-  // }
-
   void onSearchTextChanged(String value) async {
     if (value.isEmpty) {
       searchController.clear();

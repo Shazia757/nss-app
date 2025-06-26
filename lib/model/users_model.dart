@@ -30,12 +30,11 @@ class GeneralResponse {
   bool? status;
   String? message;
 
-  GeneralResponse({required this.status,this.message});
+  GeneralResponse({required this.status, this.message});
 
-   factory GeneralResponse.fromJson(Map<String, dynamic> json) {
+  factory GeneralResponse.fromJson(Map<String, dynamic> json) {
     return GeneralResponse(
-        status: json['status'] as bool?,
-        message: json['message'] as String?);
+        status: json['status'] as bool?, message: json['message'] as String?);
   }
 
   Map<String, dynamic> toJson() {

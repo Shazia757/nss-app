@@ -339,21 +339,35 @@ class HomeScreen extends StatelessWidget {
                                 final date =
                                     DateFormat.yMMMd().format(program.date!);
                                 return ListTile(
-                                  title: Text(program.name ?? ""),
-                                  subtitle: Text(date),
-                                  trailing: TextButton(
-                                      onPressed: () {
-                                        // c.addParticipant(
-                                        //     c.upcomingPrograms[index]);
-                                        // StudentsEnrolled(
-                                        //     enrolledStudents:
-                                        //         LocalStorage().readUser());
-                                        // c.studentsEnrolled
-                                        //     .add(LocalStorage().readUser());
-                                        // log(c.studentsEnrolled.toString());
-                                      },
-                                      child: Text('Enroll')),
-                                );
+                                    title: Text(program.name ?? ""),
+                                    subtitle: Text(date),
+                                    trailing:
+                                        (LocalStorage().readUser().role ==
+                                                'vol')
+                                            ? TextButton(
+                                                onPressed: () {
+                                                  CustomWidgets()
+                                                      .showConfirmationDialog(
+                                                          title:
+                                                              "Enroll to Program",
+                                                          message:
+                                                              "Are you sure you want to enroll to this program?",
+                                                          onConfirm: () =>
+                                                              c.enroll(program),
+                                                          data: Obx(
+                                                            () => (c.isLoading
+                                                                    .value)
+                                                                ? CircularProgressIndicator()
+                                                                : Text(
+                                                                    "Confirm",
+                                                                    style: TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .primary)),
+                                                          ));
+                                                },
+                                                child: Text('Enroll'))
+                                            : Text("${program.duration} hrs"));
                               },
                               separatorBuilder: (context, index) => Divider(),
                             ),

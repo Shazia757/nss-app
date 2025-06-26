@@ -52,7 +52,7 @@ class DeleteAccountScreen extends StatelessWidget {
                     ),
                     onConfirm: () => c.deleteAccount(),
                     data: Obx(
-                      ()=> (c.isLoading.value)
+                      () => (c.isLoading.value)
                           ? CircularProgressIndicator()
                           : Text('Confirm'),
                     )),

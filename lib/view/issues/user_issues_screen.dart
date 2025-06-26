@@ -256,15 +256,6 @@ class ScreenUserIssues extends StatelessWidget {
                         child: Text("Cancel", style: TextStyle(color: Color(0xff5f5791))),
                       ),
                     ],
-                    // title: data.subject ?? "N/A",
-                    // middleText: data.description ?? "N/A",
-                    // barrierDismissible: true,
-                    // actions: [
-                    //   TextButton(
-                    //     onPressed: () => Get.back(),
-                    //     child: Text("Close"),
-                    //   ),
-                    // ],
                   )
                 : CustomWidgets.showToast('Unable to load data');
           });

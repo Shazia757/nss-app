@@ -27,7 +27,6 @@ class VolunteerController extends GetxController {
   RxString role = 'vol'.obs;
   RxString caste = ''.obs;
   RxString gender = ''.obs;
-  // String department = '';
   RxList<Department> departmentList = <Department>[].obs;
 
   int? departmentID;

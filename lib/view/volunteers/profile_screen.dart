@@ -71,17 +71,20 @@ class VolunteerAddScreen extends StatelessWidget {
               readOnly: isProfilePage,
             ),
 
-            CustomWidgets.searchableDropDown(
-                controller: c.departmentController,
-                stringValueOf: (item) =>
-                    "${item.category ?? ""} ${item.name ?? ''}",
-                onSelected: (p0) {
-                  c.departmentController.text =
-                      "${p0.category ?? ""} ${p0.name ?? ''}";
-                  c.departmentID = p0.id;
-                },
-                selectionList: c.departmentList,
-                label: "Department"),
+            AbsorbPointer(
+              absorbing: isProfilePage,
+              child: CustomWidgets.searchableDropDown(
+                  controller: c.departmentController,
+                  stringValueOf: (item) =>
+                      "${item.category ?? ""} ${item.name ?? ''}",
+                  onSelected: (p0) {
+                    c.departmentController.text =
+                        "${p0.category ?? ""} ${p0.name ?? ''}";
+                    c.departmentID = p0.id;
+                  },
+                  selectionList: c.departmentList,
+                  label: "Department"),
+            ),
             CustomWidgets().textField(
                 controller: c.yearController,
                 label: "Year of Study",
@@ -115,6 +118,7 @@ class VolunteerAddScreen extends StatelessWidget {
                 controller: c.phoneController,
                 label: "Phone",
                 readOnly: isProfilePage),
+            SizedBox(height: 5),
             AbsorbPointer(
               absorbing: isProfilePage,
               child: Row(
@@ -172,58 +176,8 @@ class VolunteerAddScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // CustomWidgets().textField(
-            //     controller: c.categoryController,
-            //     label: "Department",
-            //     readOnly: isProfilePage,
-            //     margin: EdgeInsets.symmetric(vertical: 5)),
-
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: Card(
-            //         margin: EdgeInsets.only(right: 5),
-            //         child: Padding(
-            //           padding: EdgeInsets.only(left: 15),
-            //           child: DropdownMenu(
-            //             inputDecorationTheme: InputDecorationTheme(
-            //                 activeIndicatorBorder:
-            //                     BorderSide(style: BorderStyle.none),
-            //                 border: InputBorder.none),
-            //             dropdownMenuEntries: [],
-            //             // controller: c.programController,
-            //             label: Text('Programs'),
-            //             onSelected: (value) {},
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Expanded(
-            //       child: Card(
-            //         child: Padding(
-            //           padding: const EdgeInsets.only(left: 15),
-            //           child: DropdownMenu(
-            //             inputDecorationTheme: InputDecorationTheme(
-            //                 activeIndicatorBorder:
-            //                     BorderSide(style: BorderStyle.none),
-            //                 border: InputBorder.none),
-            //             dropdownMenuEntries: [
-            //               DropdownMenuEntry(value: '', label: ''),
-            //               DropdownMenuEntry(value: '', label: ''),
-            //               DropdownMenuEntry(value: '', label: '')
-            //             ],
-            //             controller: c.courseController,
-            //             label: Text('Course'),
-            //             onSelected: (value) {},
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-
             Card(
-              margin: EdgeInsets.zero,
+              margin: EdgeInsets.symmetric(vertical: 10),
               elevation: 2,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),

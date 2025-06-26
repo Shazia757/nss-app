@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/model/department.dart';
+import 'package:nss/model/enrollment_model.dart';
 import 'package:nss/model/issues_model.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/users_model.dart';
@@ -136,7 +137,7 @@ class Api {
 
 //------------------Add Volunteer---------------------------//
 
-  Future<GeneralResponse?> addVolunteer(Map<String,dynamic> user) async {
+  Future<GeneralResponse?> addVolunteer(Map<String, dynamic> user) async {
     try {
       log("request :${jsonEncode(user)}");
 
@@ -312,6 +313,24 @@ class Api {
       return null;
     }
   }
+  //------------------Get Students Enrolled---------------------------//
+
+  Future<EnrollmentResponse?> getEnrolledStudents(String id) async {
+    try {
+      final response = await http
+          .post(Uri.parse('$baseUrl/get_enrollment_list/'),
+              body: jsonEncode({'id': id}), headers: headers)
+          .timeout(Duration(seconds: 60));
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      log(responseJson.toString());
+      return EnrollmentResponse.fromJson(responseJson);
+    } catch (e) {
+      checkConnectivity();
+      log('Api error:$e');
+      return null;
+    }
+  }
   //------------------Get Attendance---------------------------//
 
   Future<AttendanceResponse?> getAttendance(String admissionNo) async {
@@ -435,6 +454,25 @@ class Api {
           .patch(Uri.parse('$baseUrl/resolve_issue/'),
               body: jsonEncode(data), headers: headers)
           .timeout(Duration(seconds: 60));
+
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      checkConnectivity();
+      log('Api error:$e');
+      return null;
+    }
+  }
+
+  //------------------Enrollment---------------------------//
+
+  Future<GeneralResponse?> enrollToProgram(Map<String, dynamic> data) async {
+    try {
+      final response = await http
+          .post(Uri.parse('$baseUrl/enroll_program/'),
+              body: jsonEncode(data), headers: headers)
+          .timeout(Duration(seconds: 60));
+      log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);

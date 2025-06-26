@@ -107,28 +107,39 @@ class AccountController extends GetxController {
 
   Future<void> changePassword(String id) async {
     isLoading.value = true;
-    api.changePassword({'admission_number': id, 'old_password': oldpasswordController.text, 'new_password': confirmPassController.text}).then((value) {
+    api.changePassword({
+      'admission_number': id,
+      'old_password': oldpasswordController.text,
+      'new_password': confirmPassController.text
+    }).then((value) {
       isLoading.value = false;
       if (value?.status == true) {
         Get.to(() => LoginScreen());
-        CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
+        CustomWidgets.showSnackBar(
+            'Success', value?.message ?? 'Password Changed.');
       } else {
         Get.back();
-        CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
+        CustomWidgets.showSnackBar(
+            'Error', value?.message ?? 'Password not changed.');
       }
     });
   }
 
   Future<void> resetPassword(String id) async {
     isLoading.value = true;
-    api.resetPassword({'admission_number': id, 'new_password': confirmPassController.text}).then((value) {
+    api.resetPassword({
+      'admission_number': id,
+      'new_password': confirmPassController.text
+    }).then((value) {
       isLoading.value = false;
       if (value?.status == true) {
         Get.back();
-        CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
+        CustomWidgets.showSnackBar(
+            'Success', value?.message ?? 'Password Changed.');
       } else {
         Get.back();
-        CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
+        CustomWidgets.showSnackBar(
+            'Error', value?.message ?? 'Password not changed.');
       }
     });
   }
@@ -155,7 +166,8 @@ class AccountController extends GetxController {
         },
       );
     } else {
-      CustomWidgets.showSnackBar('Invalid', 'Please specify reason to delete account.(Min 20 characters)');
+      CustomWidgets.showSnackBar('Invalid',
+          'Please specify reason to delete account.(Min 20 characters)');
     }
   }
 

@@ -1,9 +1,9 @@
 class DepartmentList {
   bool? status;
   String? message;
- List<Department>? programs;
+  List<Department>? programs;
 
-   DepartmentList({this.status, this.message, this.programs});
+  DepartmentList({this.status, this.message, this.programs});
 
   factory DepartmentList.fromJson(Map<String, dynamic> json) {
     return DepartmentList(

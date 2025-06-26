@@ -212,23 +212,29 @@ class ProgramsScreen extends StatelessWidget {
                                                               FontWeight.w100),
                                                     ),
                                                   ),
-                                                // if (LocalStorage()
-                                                //         .readUser()
-                                                //         .role !=
-                                                //     'vol')
-                                                //   Align(
-                                                //     alignment:
-                                                //         Alignment.bottomRight,
-                                                //     child: TextButton(
-                                                //         onPressed: () {
-                                                //           Get.to(() =>
-                                                //               StudentsEnrolled(
-                                                //                   data: c.searchList[
-                                                //                       index]));
-                                                //         },
-                                                //         child: Text(
-                                                //             'Students Enrolled')),
-                                                //   )
+                                                if (LocalStorage()
+                                                        .readUser()
+                                                        .role !=
+                                                    'vol')
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.bottomRight,
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          c.getEnrolledStudents(
+                                                              c
+                                                                  .searchList[
+                                                                      index]
+                                                                  .id
+                                                                  .toString());
+                                                          Get.to(() =>
+                                                              StudentsEnrolled(
+                                                                  data: c.searchList[
+                                                                      index]));
+                                                        },
+                                                        child: Text(
+                                                            'Students Enrolled')),
+                                                  )
                                               ],
                                             )),
                                       ),

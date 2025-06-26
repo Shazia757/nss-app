@@ -27,9 +27,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   RxList<Issues> modifiedClosedList = <Issues>[].obs;
   RxString reportedTo = 'both'.obs;
   RxBool sortByOldest = true.obs;
-
   late TabController adminTabController;
-
   RxBool isResolved = false.obs;
 
   // Date? date;
@@ -44,7 +42,8 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     if (reportedTo.value == "all") {
       modifiedOpenedList.assignAll(openedList);
     } else {
-      modifiedOpenedList.assignAll(openedList.where((p0) => p0.to == reportedTo.value).toList());
+      modifiedOpenedList.assignAll(
+          openedList.where((p0) => p0.to == reportedTo.value).toList());
     }
   }
 
@@ -52,13 +51,15 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     if (reportedTo.value == "all") {
       modifiedClosedList.assignAll(closedList);
     } else {
-      modifiedClosedList.assignAll(closedList.where((p0) => p0.to == reportedTo.value).toList());
+      modifiedClosedList.assignAll(
+          closedList.where((p0) => p0.to == reportedTo.value).toList());
     }
   }
 
   void resolvedBy(String? admID) {
     resolvedByAdmID.value = admID ?? '';
-    modifiedClosedList.assignAll(closedList.where((e) => e.updatedBy == admID).toList());
+    modifiedClosedList
+        .assignAll(closedList.where((e) => e.updatedBy == admID).toList());
   }
 
   void sortByOldestDate(bool isOldest) {
@@ -68,13 +69,21 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void _sortOpenedList() {
-    (sortByOldest.isTrue) ? modifiedOpenedList.sort((a, b) => a.createdDate!.compareTo(b.createdDate!)) : modifiedOpenedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+    (sortByOldest.isTrue)
+        ? modifiedOpenedList
+            .sort((a, b) => a.createdDate!.compareTo(b.createdDate!))
+        : modifiedOpenedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
     log("OpenList ${modifiedOpenedList.toString()}");
   }
 
   void _sortClosedList() {
-    (sortByOldest.isTrue) ? modifiedClosedList.sort((a, b) => a.createdDate!.compareTo(b.createdDate!)) : modifiedClosedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+    (sortByOldest.isTrue)
+        ? modifiedClosedList
+            .sort((a, b) => a.createdDate!.compareTo(b.createdDate!))
+        : modifiedClosedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
     log("Closed data : ${modifiedClosedList.toString()}");
   }
@@ -84,7 +93,9 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
     tabController = TabController(length: 2, vsync: this);
     adminTabController = TabController(length: 2, vsync: this);
     getAdmins();
-    (LocalStorage().readUser().role != 'vol') ? getAdminIssues() : getVolIssues();
+    (LocalStorage().readUser().role != 'vol')
+        ? getAdminIssues()
+        : getVolIssues();
 
     super.onInit();
   }
@@ -103,8 +114,10 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         closedList = value?.closedIssues ?? [];
         modifiedOpenedList.assignAll(openedList);
         modifiedClosedList.assignAll(closedList);
-        modifiedOpenedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
-        modifiedClosedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+        modifiedOpenedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+        modifiedClosedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
         isLoading.value = false;
       },
@@ -120,8 +133,10 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         closedList = value?.closedIssues ?? [];
         modifiedOpenedList.assignAll(openedList);
         modifiedClosedList.assignAll(closedList);
-        modifiedOpenedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
-        modifiedClosedList.sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+        modifiedOpenedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
+        modifiedClosedList
+            .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
         isLoading.value = false;
       },
@@ -130,16 +145,25 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
 
   void reportIssue() {
     isReportLoading.value = true;
-    Api().addIssue({'subject': subjectController.text, 'description': desController.text, 'assigned_to': submittedTo.value, 'created_by': (LocalStorage().readUser().admissionNo).toString(), 'updated_by': (LocalStorage().readUser().admissionNo).toString()}).then(
+    Api().addIssue({
+      'subject': subjectController.text,
+      'description': desController.text,
+      'assigned_to': submittedTo.value,
+      'created_by': (LocalStorage().readUser().admissionNo).toString(),
+      'updated_by': (LocalStorage().readUser().admissionNo).toString()
+    }).then(
       (value) {
         isReportLoading.value = false;
+        Get.back();
         if (value?.status ?? false) {
           subjectController.clear();
           desController.clear();
-          Get.back();
-          CustomWidgets.showSnackBar("Success", value?.message ?? "Issue reported successfully");
+
+          CustomWidgets.showSnackBar(
+              "Success", value?.message ?? "Issue reported successfully");
         } else {
-          CustomWidgets.showSnackBar("Error", value?.message ?? 'Failed to report issue.');
+          CustomWidgets.showSnackBar(
+              "Error", value?.message ?? 'Failed to report issue.');
         }
       },
     ).then((value) => onInit());
@@ -147,15 +171,18 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
 
   void resolveIssue(int? id) {
     isLoading.value = true;
-    Api().resolveIssue({'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
+    Api().resolveIssue(
+        {'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
       (value) {
         isLoading.value = false;
         if (value?.status ?? false) {
           Get.back();
           Get.back();
-          CustomWidgets.showSnackBar("Success", value?.message ?? "Issue resolved successfully.");
+          CustomWidgets.showSnackBar(
+              "Success", value?.message ?? "Issue resolved successfully.");
         } else {
-          CustomWidgets.showSnackBar('Error', value?.message ?? 'Failed to resolve issue.');
+          CustomWidgets.showSnackBar(
+              'Error', value?.message ?? 'Failed to resolve issue.');
         }
       },
     ).then((value) => onInit());
