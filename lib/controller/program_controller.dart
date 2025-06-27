@@ -5,22 +5,35 @@ import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/enrollment_model.dart';
+import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import '../model/programs_model.dart';
+import '../view/program/students_enrollment_screen.dart';
 
 class ProgramListController extends GetxController {
   RxList<Program> programsList = <Program>[].obs;
   RxList<Program> searchList = <Program>[].obs;
   RxBool isLoading = false.obs;
+  RxBool isButtonLoading = false.obs;
   TextEditingController searchController = TextEditingController();
   RxString date = 'oldest'.obs;
   RxList<ProgramEnrollmentDetails> enrollmentList =
       <ProgramEnrollmentDetails>[].obs;
+  RxList<Volunteer> selectedVolList = <Volunteer>[].obs;
 
   @override
   void onInit() {
     getPrograms();
     super.onInit();
+  }
+
+  void selectAllVolunteers() {
+    selectedVolList.clear();
+    for (ProgramEnrollmentDetails vol in enrollmentList) {
+      if (vol.volunteer != null) {
+        selectedVolList.add(vol.volunteer!);
+      }
+    }
   }
 
   void getPrograms() async {
@@ -35,12 +48,47 @@ class ProgramListController extends GetxController {
     );
   }
 
-  void getEnrolledStudents(String id) async {
+  void addAttendance(Program? program) {
     isLoading.value = true;
-    Api().getEnrolledStudents(id).then(
+    bool response = true;
+    for (Volunteer e in selectedVolList) {
+      log(e.toString());
+      Api().addAttendance({
+        'date': program?.date.toString(),
+        'hours': program?.duration,
+        'marked_by': (LocalStorage().readUser().admissionNo).toString(),
+        'program_name': program?.name,
+        'admission_number': e.admissionNo.toString(),
+      }).then(
+        (value) {
+          isLoading.value = false;
+          if (!(value?.status ?? true)) {
+            response = false;
+          }
+        },
+      );
+    }
+    if (response) {
+      Get.back();
+      CustomWidgets.showSnackBar('Success', 'Attendance added successfully');
+    } else {
+      CustomWidgets.showSnackBar('Error', 'Some attendance not added');
+    }
+  }
+
+  void getEnrolledStudents(Program? program, RxBool loading) async {
+    loading.value = true;
+    Api().getEnrolledStudents(program?.id).then(
       (value) {
-        enrollmentList.assignAll(value?.enrollmentList?.toList() ?? []);
-        isLoading.value = false;
+        if ((value?.enrollmentList ?? []).isEmpty) {
+          CustomWidgets.showToast('No volunteers enrolled');
+        } else {
+          enrollmentList.assignAll(value?.enrollmentList?.toList() ?? []);
+          selectAllVolunteers();
+
+          Get.to(() => StudentsEnrollmentScreen(data: program));
+        }
+        loading.value = false;
       },
     );
   }

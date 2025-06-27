@@ -1,3 +1,5 @@
+import 'package:nss/model/volunteer_model.dart';
+
 class Issues {
   String? to;
   DateTime? createdDate;
@@ -5,7 +7,7 @@ class Issues {
   DateTime? updatedDate;
   String? subject;
   String? description;
-  String? createdBy;
+  Volunteer? createdBy;
   String? updatedBy;
   bool? isOpen;
 
@@ -27,7 +29,7 @@ class Issues {
       updatedDate: DateTime.tryParse(data['updated_at']),
       subject: data['subject'],
       description: data['description'],
-      createdBy: data['created_by'],
+      createdBy: Volunteer.fromJson(data['created_by']),
       id: data['id'],
       updatedBy: data['updated_by'],
     );
@@ -41,6 +43,7 @@ class Issues {
       'description': description,
       'id': id,
       'updated_by': updatedBy,
+      'created_by': createdBy?.toJson()
     };
   }
 }
@@ -51,14 +54,19 @@ class IssueResponse {
   List<Issues>? openIssues;
   List<Issues>? closedIssues;
 
-  IssueResponse({this.status, this.message, this.openIssues, this.closedIssues});
+  IssueResponse(
+      {this.status, this.message, this.openIssues, this.closedIssues});
 
   factory IssueResponse.fromJson(Map<String, dynamic> json) {
     return IssueResponse(
       status: json['status'] as bool?,
       message: json['message'] as String?,
-      openIssues: (json['open_issues'] as List<dynamic>?)?.map((e) => Issues.fromJson(e as Map<String, dynamic>)).toList(),
-      closedIssues: (json['closed_issues'] as List<dynamic>?)?.map((e) => Issues.fromJson(e as Map<String, dynamic>)).toList(),
+      openIssues: (json['open_issues'] as List<dynamic>?)
+          ?.map((e) => Issues.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      closedIssues: (json['closed_issues'] as List<dynamic>?)
+          ?.map((e) => Issues.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 

@@ -315,7 +315,7 @@ class Api {
   }
   //------------------Get Students Enrolled---------------------------//
 
-  Future<EnrollmentResponse?> getEnrolledStudents(String id) async {
+  Future<EnrollmentResponse?> getEnrolledStudents(int? id) async {
     try {
       final response = await http
           .post(Uri.parse('$baseUrl/get_enrollment_list/'),
@@ -358,7 +358,7 @@ class Api {
   Future<GeneralResponse?> addAttendance(Map<String, dynamic> data) async {
     try {
       log("request :$data");
-      log('data: ${(data.toString())}');
+
       final response = await http
           .post(Uri.parse('$baseUrl/add_attendance/'),
               body: jsonEncode(data), headers: headers)

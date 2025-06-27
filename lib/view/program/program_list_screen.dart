@@ -7,7 +7,6 @@ import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
 import 'package:nss/view/common_pages/no_data.dart';
 import 'package:nss/view/program/add_program_screen.dart';
-import 'package:nss/view/program/students_enrolled.dart';
 
 class ProgramsScreen extends StatelessWidget {
   const ProgramsScreen({super.key});
@@ -115,6 +114,7 @@ class ProgramsScreen extends StatelessWidget {
                       child: ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
+                            RxBool loading = false.obs;
                             RxBool isExpanded = false.obs;
                             final date = (c.searchList[index].date == null)
                                 ? "N/A"
@@ -219,21 +219,21 @@ class ProgramsScreen extends StatelessWidget {
                                                   Align(
                                                     alignment:
                                                         Alignment.bottomRight,
-                                                    child: TextButton(
-                                                        onPressed: () {
-                                                          c.getEnrolledStudents(
-                                                              c
-                                                                  .searchList[
-                                                                      index]
-                                                                  .id
-                                                                  .toString());
-                                                          Get.to(() =>
-                                                              StudentsEnrolled(
-                                                                  data: c.searchList[
-                                                                      index]));
-                                                        },
-                                                        child: Text(
-                                                            'Students Enrolled')),
+                                                    child: Obx(() => Visibility(
+                                                          visible:
+                                                              loading.isFalse,
+                                                          replacement:
+                                                              CircularProgressIndicator(),
+                                                          child: ElevatedButton(
+                                                              onPressed: () {
+                                                                c.getEnrolledStudents(
+                                                                    c.searchList[
+                                                                        index],
+                                                                    loading);
+                                                              },
+                                                              child: Text(
+                                                                  'Participants')),
+                                                        )),
                                                   )
                                               ],
                                             )),

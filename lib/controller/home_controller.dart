@@ -8,6 +8,7 @@ class HomeController extends GetxController {
   RxList<Program> upcomingPrograms = <Program>[].obs;
   final api = Api();
   RxBool isLoading = true.obs;
+  RxBool isEnrolledLoading = false.obs;
 
   @override
   void onInit() {
@@ -28,13 +29,13 @@ class HomeController extends GetxController {
   }
 
   void enroll(Program program) async {
-    isLoading.value = true;
+    isEnrolledLoading.value = true;
     api.enrollToProgram({
       'program': program.id,
       'volunteer': LocalStorage().readUser().admissionNo
     }).then(
       (response) {
-        isLoading.value = false;
+        isEnrolledLoading.value = false;
         Get.back();
         if (response?.status == true) {
           Get.back();

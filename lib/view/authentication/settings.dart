@@ -56,7 +56,8 @@ class SettingsScreen extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text("Admission No: ${user.admissionNo ?? "N/A"}",
                             style: theme.textTheme.bodySmall),
-                        Text("Department: ${user.department ?? "N/A"}",
+                        Text(
+                            "Department: ${user.department?.category} ${user.department?.name}",
                             style: theme.textTheme.bodySmall),
                         Text("Role: ${user.role ?? "N/A"}",
                             style: theme.textTheme.bodySmall),

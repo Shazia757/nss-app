@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () => showModalBottomSheet(
                 showDragHandle: true,
                 context: context,
-                builder: (context) => _upcomingEvents(c, context),
+                builder: (context) => _upcomingEvents(c),
               ),
               icon: Icon(Icons.notifications_active_outlined, size: 30),
             ),
@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(width: 20),
                       Flexible(
                         flex: 1,
-                        child: _upcomingEvents(c, context),
+                        child: _upcomingEvents(c),
                       ),
                     ],
                   )
@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       Visibility(
                         visible: LocalStorage().readUser().role != 'sec',
-                        child: Expanded(child: _upcomingEvents(c, context)),
+                        child: Expanded(child: _upcomingEvents(c)),
                       ),
                     ],
                   ),
@@ -303,7 +303,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _upcomingEvents(HomeController c, BuildContext context) {
+  Widget _upcomingEvents(HomeController c) {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -341,33 +341,29 @@ class HomeScreen extends StatelessWidget {
                                 return ListTile(
                                     title: Text(program.name ?? ""),
                                     subtitle: Text(date),
-                                    trailing:
-                                        (LocalStorage().readUser().role ==
-                                                'vol')
-                                            ? TextButton(
-                                                onPressed: () {
-                                                  CustomWidgets()
-                                                      .showConfirmationDialog(
-                                                          title:
-                                                              "Enroll to Program",
-                                                          message:
-                                                              "Are you sure you want to enroll to this program?",
-                                                          onConfirm: () =>
-                                                              c.enroll(program),
-                                                          data: Obx(
-                                                            () => (c.isLoading
-                                                                    .value)
-                                                                ? CircularProgressIndicator()
-                                                                : Text(
-                                                                    "Confirm",
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .primary)),
-                                                          ));
-                                                },
-                                                child: Text('Enroll'))
-                                            : Text("${program.duration} hrs"));
+                                    trailing: (LocalStorage().readUser().role ==
+                                            'vol')
+                                        ? TextButton(
+                                            onPressed: () {
+                                              CustomWidgets()
+                                                  .showConfirmationDialog(
+                                                      title:
+                                                          "Enroll to Program",
+                                                      message:
+                                                          "Are you sure you want to enroll to this program?",
+                                                      onConfirm: () =>
+                                                          c.enroll(program),
+                                                      data: Obx(
+                                                        () => (c.isLoading
+                                                                .value)
+                                                            ? CircularProgressIndicator()
+                                                            : Text(
+                                                                "Confirm",
+                                                              ),
+                                                      ));
+                                            },
+                                            child: Text('Enroll'))
+                                        : Text("${program.duration} hrs"));
                               },
                               separatorBuilder: (context, index) => Divider(),
                             ),
