@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/common_pages/loading.dart';
@@ -18,14 +17,11 @@ class ScreenAdminIssues extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Issues",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text("Issues", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
-        ],
+        actions: [IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))],
       ),
       bottomNavigationBar: CustomNavBar(currentIndex: 1),
       body: SafeArea(
@@ -37,8 +33,7 @@ class ScreenAdminIssues extends StatelessWidget {
               TabBar(
                 controller: c.adminTabController,
                 labelColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                unselectedLabelColor:
-                    Theme.of(context).colorScheme.onPrimaryContainer,
+                unselectedLabelColor: Theme.of(context).colorScheme.onPrimaryContainer,
                 onTap: (value) => c.isResolved.value = (value == 1),
                 tabs: [
                   Tab(text: "Opened"),
@@ -90,8 +85,7 @@ class ScreenAdminIssues extends StatelessWidget {
                                           isOpen: false,
                                         );
                                       },
-                                      separatorBuilder: (_, __) =>
-                                          SizedBox(height: 12),
+                                      separatorBuilder: (_, __) => SizedBox(height: 12),
                                       itemCount: c.modifiedClosedList.length,
                                     ),
                                   ),
@@ -114,19 +108,14 @@ class ScreenAdminIssues extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(
-                  child: Text("Secretary"),
-                  onPressed: () => c.filterByRole('sec')),
+              MenuItemButton(child: Text("Secretary"), onPressed: () => c.filterByRole('sec')),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(
-                    child: Text("Program Officer"),
-                    onPressed: () => c.filterByRole('po')),
+                child: MenuItemButton(child: Text("Program Officer"), onPressed: () => c.filterByRole('po')),
               ),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(
-                    child: Text("All"), onPressed: () => c.filterByRole('all')),
+                child: MenuItemButton(child: Text("All"), onPressed: () => c.filterByRole('all')),
               ),
             ], label: "\tAssigned to", icon: Icons.filter_alt_rounded),
             SizedBox(
@@ -135,12 +124,8 @@ class ScreenAdminIssues extends StatelessWidget {
               child: VerticalDivider(indent: 5, endIndent: 2),
             ),
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(
-                  child: Text("Oldest"),
-                  onPressed: () => c.sortByOldestDate(true)),
-              MenuItemButton(
-                  child: Text("Latest"),
-                  onPressed: () => c.sortByOldestDate(false)),
+              MenuItemButton(child: Text("Oldest"), onPressed: () => c.sortByOldestDate(true)),
+              MenuItemButton(child: Text("Latest"), onPressed: () => c.sortByOldestDate(false)),
             ], label: "\t\tSort by date", icon: Icons.sort),
             Visibility(
               visible: c.isResolved.isTrue,
@@ -155,9 +140,7 @@ class ScreenAdminIssues extends StatelessWidget {
               child: CustomWidgets().menuBuilder(
                   menuChildren: c.adminList
                       .map(
-                        (e) => MenuItemButton(
-                            child: Text(e?.name ?? "N/A"),
-                            onPressed: () => c.resolvedBy(e?.admissionNo)),
+                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e?.admissionNo)),
                       )
                       .toList(),
                   label: "  Resolved By",
@@ -171,8 +154,7 @@ class ScreenAdminIssues extends StatelessWidget {
     );
   }
 
-  Card issueListTile(
-      {required Issues data, required bool isOpen, required int count}) {
+  Card issueListTile({required Issues data, required bool isOpen, required int count}) {
     final to = (data.to == 'po') ? 'Program Officer' : 'Secretary';
     RxBool isDataLoading = false.obs;
     return Card(
@@ -181,22 +163,17 @@ class ScreenAdminIssues extends StatelessWidget {
         ),
         elevation: 3,
         margin: EdgeInsets.symmetric(vertical: 12),
-        shadowColor: isOpen
-            ? const Color.fromARGB(98, 159, 16, 6)
-            : const Color.fromARGB(71, 76, 175, 79),
+        shadowColor: isOpen ? const Color.fromARGB(98, 159, 16, 6) : const Color.fromARGB(71, 76, 175, 79),
         child: ListTile(
             contentPadding: EdgeInsets.all(16),
             leading: Obx(() => isDataLoading.isTrue
                 ? CircularProgressIndicator()
                 : CircleAvatar(
                     radius: 24,
-                    backgroundColor: isOpen
-                        ? const Color.fromARGB(255, 159, 16, 6)
-                        : Colors.green,
+                    backgroundColor: isOpen ? const Color.fromARGB(255, 159, 16, 6) : Colors.green,
                     child: Text(
                       "$count",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   )),
             title: Text(
@@ -211,8 +188,7 @@ class ScreenAdminIssues extends StatelessWidget {
               DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
             ),
             onTap: () {
-              final dept =
-                  "${data.createdBy?.department?.category} ${data.createdBy?.department?.name}";
+              final dept = "${data.createdBy?.department?.category} ${data.createdBy?.department?.name}";
               Get.defaultDialog(
                 title: data.subject ?? "N/A",
                 content: Column(
@@ -232,11 +208,7 @@ class ScreenAdminIssues extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(isOpen
-                                ? DateFormat.yMMMd()
-                                    .format(data.createdDate ?? DateTime.now())
-                                : DateFormat.yMMMd().format(
-                                    data.updatedDate ?? DateTime.now())),
+                            Text(isOpen ? DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()) : DateFormat.yMMMd().format(data.updatedDate ?? DateTime.now())),
                             Text('${data.createdBy?.name}'),
                             Text('${data.createdBy?.admissionNo}'),
                             Text(dept),
@@ -249,36 +221,31 @@ class ScreenAdminIssues extends StatelessWidget {
                   ],
                 ),
                 backgroundColor: Colors.white,
-                titleStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                titleStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 actions: [
                   isOpen
                       ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff5f5791)),
-                          onPressed: () =>
-                              CustomWidgets().showConfirmationDialog(
-                                  title: "Resolve Issue",
-                                  content: Text(
-                                    "Are you sure you have resolved the issue?",
-                                  ),
-                                  onConfirm: () => c.resolveIssue(data.id),
-                                  data: Obx(
-                                    () => (c.isLoading.value)
-                                        ? CircularProgressIndicator()
-                                        : Text(
-                                            "Confirm",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                  )),
-                          child: Text("Resolve",
-                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Color(0xff5f5791)),
+                          onPressed: () => CustomWidgets().showConfirmationDialog(
+                              title: "Resolve Issue",
+                              content: Text(
+                                "Are you sure you have resolved the issue?",
+                              ),
+                              onConfirm: () => c.resolveIssue(data.id),
+                              data: Obx(
+                                () => (c.isLoading.value)
+                                    ? CircularProgressIndicator()
+                                    : Text(
+                                        "Confirm",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                              )),
+                          child: Text("Resolve", style: TextStyle(color: Colors.white)),
                         )
                       : SizedBox(),
                   TextButton(
                     onPressed: () => Get.back(),
-                    child: Text("Cancel",
-                        style: TextStyle(color: Color(0xff5f5791))),
+                    child: Text("Cancel", style: TextStyle(color: Color(0xff5f5791))),
                   ),
                 ],
               );
