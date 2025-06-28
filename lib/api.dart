@@ -372,6 +372,23 @@ class Api {
       return null;
     }
   }
+  //------------------version check---------------------------//
+
+  Future<GeneralResponse?> checkVersion() async {
+    // try {
+    //   final response = await http
+    //       .post(Uri.parse('$baseUrl/check_version/'),
+    //           body: jsonEncode({"version": '0.0.1'}), headers: headers)
+    //       .timeout(Duration(seconds: 60));
+    //   log('response: ${(response.body)}');
+    //   final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+    //   return GeneralResponse.fromJson(responseJson);
+    // } catch (e) {
+    //   checkConnectivity();
+    //   log('Api error:$e');
+    return GeneralResponse(status: true);
+    //}
+  }
 
   //------------------Delete Attendance---------------------------//
 

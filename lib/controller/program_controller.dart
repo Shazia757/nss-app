@@ -16,10 +16,14 @@ class ProgramListController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isButtonLoading = false.obs;
   TextEditingController searchController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
   RxString date = 'oldest'.obs;
   RxList<ProgramEnrollmentDetails> enrollmentList =
       <ProgramEnrollmentDetails>[].obs;
   RxList<Volunteer> selectedVolList = <Volunteer>[].obs;
+
+  DateTime programDate = DateTime.now();
+  RxString showProgramDate = ''.obs;
 
   @override
   void onInit() {
@@ -54,11 +58,11 @@ class ProgramListController extends GetxController {
     for (Volunteer e in selectedVolList) {
       log(e.toString());
       Api().addAttendance({
-        'date': program?.date.toString(),
-        'hours': program?.duration,
-        'marked_by': (LocalStorage().readUser().admissionNo).toString(),
+        'date':programDate,
+        'hours': durationController.text,
+        'marked_by': LocalStorage().readUser().admissionNo,
         'program_name': program?.name,
-        'admission_number': e.admissionNo.toString(),
+        'admission_number': e.admissionNo,
       }).then(
         (value) {
           isLoading.value = false;
@@ -85,6 +89,9 @@ class ProgramListController extends GetxController {
         } else {
           enrollmentList.assignAll(value?.enrollmentList?.toList() ?? []);
           selectAllVolunteers();
+          durationController.text = "${program?.duration}";
+          programDate = program?.date ?? DateTime.now();
+          showProgramDate.value = DateFormat.yMMMd().format(programDate);
 
           Get.to(() => StudentsEnrollmentScreen(data: program));
         }

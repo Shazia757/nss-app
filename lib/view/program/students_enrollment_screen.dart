@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/controller/program_controller.dart';
@@ -22,7 +23,11 @@ class StudentsEnrollmentScreen extends StatelessWidget {
         title: Text(data!.name ?? ''),
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [TextButton(onPressed: () => c.selectAllVolunteers(), child: Text("select all"))],
+        actions: [
+          TextButton(
+              onPressed: () => c.selectAllVolunteers(),
+              child: Text("select all"))
+        ],
       ),
       floatingActionButton: Obx(() => c.selectedVolList.isNotEmpty
           ? FloatingActionButton(
@@ -34,16 +39,20 @@ class StudentsEnrollmentScreen extends StatelessWidget {
                     child: ListView.builder(
                         itemCount: c.selectedVolList.length,
                         itemBuilder: (context, i) => ListTile(
-                              trailing: Text((c.selectedVolList[i].admissionNo).toString()),
+                              trailing: Text((c.selectedVolList[i].admissionNo)
+                                  .toString()),
                               title: Text(c.selectedVolList[i].name ?? ''),
-                              subtitle: Text(c.selectedVolList[i].department?.name ?? ''),
+                              subtitle: Text(
+                                  c.selectedVolList[i].department?.name ?? ''),
                             )),
                   ),
                   onConfirm: () {
                     c.addAttendance(data);
                   },
                   data: Obx(
-                    () => c.isLoading.value ? CircularProgressIndicator() : Text('Confirm'),
+                    () => c.isLoading.value
+                        ? CircularProgressIndicator()
+                        : Text('Confirm'),
                   )),
               child: Icon(Icons.add),
             )
@@ -73,38 +82,45 @@ class StudentsEnrollmentScreen extends StatelessWidget {
                                 onPressed: () {
                                   showDatePicker(
                                       context: context,
-                                      firstDate: DateTime.now().subtract(Duration(days: 365)),
+                                      firstDate: DateTime.now()
+                                          .subtract(Duration(days: 365)),
                                       lastDate: DateTime.now().add(
                                         Duration(days: 365),
                                       )).then(
                                     (value) {
-                                      log("value: $value");
+                                      c.programDate = value ?? DateTime.now();
+                                      c.showProgramDate.value =
+                                          DateFormat.yMMMd()
+                                              .format(c.programDate);
                                     },
                                   );
                                 },
                                 iconAlignment: IconAlignment.end,
                                 icon: Icon(Icons.edit_calendar),
-                                label: Text(
-                                  DateFormat.yMMMd().format(DateTime.parse(data!.date.toString())),
-                                ),
+                                label: Text(c.showProgramDate.value),
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.timer_outlined, size: 20),
-                                  Text(
-                                    " ${data!.duration.toString()} hrs",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+                              SizedBox(
+                                width: 60,
+                                height: 50,
+                                child: CustomWidgets().textField(
+                                    elevation: 1,
+                                    controller: c.durationController,
+                                    label: "",
+                                    keyboardType: TextInputType.number,
+                                    suffix: Text("Hrs")),
+                              )
+
+                              // TextButton.icon(
+                              //   onPressed: () {},
+                              //   label: Text(
+                              //     "${data!.duration.toString()} hrs",
+                              //     style: TextStyle(fontWeight: FontWeight.bold),
+                              //   ),
+                              //   icon: Icon(Icons.timer_outlined, size: 20),
+                              // ),
                             ],
                           ),
                         ),
-
-                        // Text(
-                        //   data!.name ?? "",
-                        //   style: Theme.of(context).textTheme.titleLarge,
-                        // ),
                         Expanded(
                           child: ListView.separated(
                             shrinkWrap: true,
@@ -112,30 +128,28 @@ class StudentsEnrollmentScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return Obx(() => CheckboxListTile(
                                     value: c.selectedVolList.any(
-                                      (element) => element.admissionNo == c.enrollmentList[index].volunteer?.admissionNo,
+                                      (element) =>
+                                          element.admissionNo ==
+                                          c.enrollmentList[index].volunteer
+                                              ?.admissionNo,
                                     ),
                                     onChanged: (value) {
                                       if (value ?? false) {
-                                        c.selectedVolList.add(c.enrollmentList[index].volunteer!);
+                                        c.selectedVolList.add(
+                                            c.enrollmentList[index].volunteer!);
                                       } else {
                                         c.selectedVolList.removeWhere(
-                                          (element) => element.admissionNo == c.enrollmentList[index].volunteer?.admissionNo,
+                                          (element) =>
+                                              element.admissionNo ==
+                                              c.enrollmentList[index].volunteer
+                                                  ?.admissionNo,
                                         );
                                       }
                                     },
-                                    // secondary: SizedBox(
-                                    //   width: 40,
-                                    //   height: 60,
-                                    //   child: Align(
-                                    //     alignment: Alignment.center,
-                                    //     child: Text(
-                                    //       c.enrollmentList[index].volunteer?.admissionNo ?? '',
-                                    //       style: TextStyle(fontSize: 14),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    title: Text("${c.enrollmentList[index].volunteer?.name ?? ''} [${c.enrollmentList[index].volunteer?.admissionNo ?? ''}]"),
-                                    subtitle: Text("${c.enrollmentList[index].volunteer?.department?.category ?? ''} ${c.enrollmentList[index].volunteer?.department?.name ?? ''}"),
+                                    title: Text(
+                                        "${c.enrollmentList[index].volunteer?.name ?? ''} [${c.enrollmentList[index].volunteer?.admissionNo ?? ''}]"),
+                                    subtitle: Text(
+                                        "${c.enrollmentList[index].volunteer?.department?.category ?? ''} ${c.enrollmentList[index].volunteer?.department?.name ?? ''}"),
                                   ));
                             },
                             separatorBuilder: (context, index) => Divider(),

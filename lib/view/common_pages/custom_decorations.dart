@@ -167,6 +167,7 @@ class CustomWidgets {
     Color? color,
     int maxlines = 1,
     String? hintText,
+    Widget? prefix,
   }) {
     return Card(
       color: color,
@@ -191,6 +192,7 @@ class CustomWidgets {
             border: InputBorder.none,
             labelStyle: labelStyle,
             suffix: suffix,
+            prefix: prefix
           ),
         ),
       ),
