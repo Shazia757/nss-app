@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/controller/program_controller.dart';
@@ -88,7 +85,7 @@ class StudentsEnrollmentScreen extends StatelessWidget {
                                         Duration(days: 365),
                                       )).then(
                                     (value) {
-                                      c.programDate = value ?? DateTime.now();
+                                      c.programDate = value ?? c.programDate;
                                       c.showProgramDate.value =
                                           DateFormat.yMMMd()
                                               .format(c.programDate);
