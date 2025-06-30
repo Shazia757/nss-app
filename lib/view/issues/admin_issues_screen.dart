@@ -201,8 +201,8 @@ class ScreenAdminIssues extends StatelessWidget {
                           children: [
                             Text(isOpen ? 'Reported on:' : 'Resolved on:'),
                             Text('Reported by:'),
-                            Text('Admission number: '),
-                            Text('Department:'),
+                            Text('Admission no: '),
+                            // Text('Department:'),
                           ],
                         ),
                         Column(
@@ -211,8 +211,28 @@ class ScreenAdminIssues extends StatelessWidget {
                             Text(isOpen ? DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()) : DateFormat.yMMMd().format(data.updatedDate ?? DateTime.now())),
                             Text('${data.createdBy?.name}'),
                             Text('${data.createdBy?.admissionNo}'),
-                            Text(dept),
+                            // Text(dept),
                           ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Reported by: '),
+                        SizedBox(
+                          width: MediaQuery.of(Get.context!).size.width * .5,
+                          child: Text('${data.createdBy?.name}', maxLines: 3),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Department: '),
+                        SizedBox(
+                          width: MediaQuery.of(Get.context!).size.width * .5,
+                          child: Text(dept, maxLines: 3),
                         ),
                       ],
                     ),
