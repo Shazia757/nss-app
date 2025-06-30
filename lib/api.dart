@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -31,12 +32,7 @@ class Api {
           )
           .timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      log(LoginResponse.fromJson(responseJson)
-              .data
-              .department
-              ?.name
-              .toString() ??
-          "null");
+      log(LoginResponse.fromJson(responseJson).data.department?.name.toString() ?? "null");
       return LoginResponse.fromJson(responseJson);
     } catch (e) {
       checkConnectivity();
@@ -50,10 +46,7 @@ class Api {
   Future<GeneralResponse?> changePassword(Map<String, dynamic> data) async {
     try {
       log("request :${jsonEncode(data)}");
-      final response = await http
-          .post(Uri.parse('$baseUrl/change_password/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/change_password/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -67,10 +60,7 @@ class Api {
 
   Future<GeneralResponse?> resetPassword(Map<String, dynamic> data) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/reset_password/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/reset_password/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -85,9 +75,7 @@ class Api {
 
   Future<VolunteerList?> getVolunteers() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_volunteers/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_volunteers/')).timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
@@ -102,9 +90,7 @@ class Api {
 
   Future<VolunteerList?> getAdmins() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_admins/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_admins/')).timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
@@ -120,11 +106,7 @@ class Api {
 
   Future<VolunteerDetailResponse?> volunteerDetails(String admissionNo) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/get_volunteer_details/'),
-              body: jsonEncode({'admission_number': admissionNo}),
-              headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/get_volunteer_details/'), body: jsonEncode({'admission_number': admissionNo}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerDetailResponse.fromJson(responseJson);
@@ -141,10 +123,7 @@ class Api {
     try {
       log("request :${jsonEncode(user)}");
 
-      final response = await http
-          .post(Uri.parse('$baseUrl/add_volunteer/'),
-              body: jsonEncode(user), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/add_volunteer/'), body: jsonEncode(user), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log(response.body);
@@ -162,10 +141,7 @@ class Api {
   Future<GeneralResponse?> updateVolunteer(Map<String, dynamic> data) async {
     try {
       log("request :${jsonEncode(data)}");
-      final response = await http
-          .patch(Uri.parse('$baseUrl/update_volunteer/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.patch(Uri.parse('$baseUrl/update_volunteer/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -180,10 +156,7 @@ class Api {
 
   Future<GeneralResponse?> deleteVolunteer(String id) async {
     try {
-      final response = await http
-          .delete(Uri.parse('$baseUrl/delete_volunteer/'),
-              body: jsonEncode({'admission_number': id}), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.delete(Uri.parse('$baseUrl/delete_volunteer/'), body: jsonEncode({'admission_number': id}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -198,9 +171,7 @@ class Api {
 
   Future<ProgramResponse?> allPrograms() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_all_programs/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_all_programs/')).timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -214,9 +185,7 @@ class Api {
 
   Future<ProgramNameResponse?> programNames() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_programs/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_programs/')).timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramNameResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -230,9 +199,7 @@ class Api {
 
   Future<ProgramResponse?> getUpcomingPrograms() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_upcoming_programs/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_upcoming_programs/')).timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -248,10 +215,7 @@ class Api {
     try {
       final url = '$baseUrl/add_program/';
 
-      final response = await http
-          .post(Uri.parse(url),
-              body: jsonEncode(program.toJson()), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse(url), body: jsonEncode(program.toJson()), headers: headers).timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
       return GeneralResponse.fromJson(responseJson);
@@ -266,9 +230,7 @@ class Api {
 
   Future<GeneralResponse?> updateProgram(Map<String, dynamic> data) async {
     try {
-      final response = await http
-          .patch(Uri.parse('$baseUrl/update_program/'), body: data)
-          .timeout(Duration(seconds: 60));
+      final response = await http.patch(Uri.parse('$baseUrl/update_program/'), body: data).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -283,10 +245,7 @@ class Api {
 
   Future<GeneralResponse?> deleteProgram(int id) async {
     try {
-      final response = await http
-          .delete(Uri.parse('$baseUrl/delete_program/'),
-              body: jsonEncode({'id': id.toString()}), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.delete(Uri.parse('$baseUrl/delete_program/'), body: jsonEncode({'id': id.toString()}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -301,9 +260,7 @@ class Api {
 
   Future<DepartmentList?> getDepartments() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/get_departments/'))
-          .timeout(Duration(seconds: 60));
+      final response = await http.get(Uri.parse('$baseUrl/get_departments/')).timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return DepartmentList.fromJson(responseJson);
@@ -317,10 +274,7 @@ class Api {
 
   Future<EnrollmentResponse?> getEnrolledStudents(int? id) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/get_enrollment_list/'),
-              body: jsonEncode({'id': id}), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/get_enrollment_list/'), body: jsonEncode({'id': id}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log(responseJson.toString());
@@ -335,11 +289,7 @@ class Api {
 
   Future<AttendanceResponse?> getAttendance(String admissionNo) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/get_attendance/'),
-              body: jsonEncode({'admission_number': admissionNo}),
-              headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/get_attendance/'), body: jsonEncode({'admission_number': admissionNo}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log("json resp:$responseJson");
@@ -359,10 +309,7 @@ class Api {
     try {
       log("request :$data");
 
-      final response = await http
-          .post(Uri.parse('$baseUrl/add_attendance/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/add_attendance/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -375,29 +322,23 @@ class Api {
   //------------------version check---------------------------//
 
   Future<GeneralResponse?> checkVersion() async {
-    // try {
-    //   final response = await http
-    //       .post(Uri.parse('$baseUrl/check_version/'),
-    //           body: jsonEncode({"version": '0.0.1'}), headers: headers)
-    //       .timeout(Duration(seconds: 60));
-    //   log('response: ${(response.body)}');
-    //   final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-    //   return GeneralResponse.fromJson(responseJson);
-    // } catch (e) {
-    //   checkConnectivity();
-    //   log('Api error:$e');
-    return GeneralResponse(status: true);
-    //}
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/check_version/'), body: jsonEncode({"version": '0.0.1', "os": Platform.operatingSystem}), headers: headers).timeout(Duration(seconds: 60));
+      log('response: ${(response.body)}');
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return GeneralResponse.fromJson(responseJson);
+    } catch (e) {
+      checkConnectivity();
+      log('Api error:$e');
+      return GeneralResponse(status: true);
+    }
   }
 
   //------------------Delete Attendance---------------------------//
 
   Future<GeneralResponse?> deleteAttendance(int id) async {
     try {
-      final response = await http
-          .delete(Uri.parse('$baseUrl/delete_attendance/'),
-              body: jsonEncode({'id': id}), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.delete(Uri.parse('$baseUrl/delete_attendance/'), body: jsonEncode({'id': id}), headers: headers).timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
@@ -411,10 +352,7 @@ class Api {
 
   Future<IssueResponse?> getAdminIssues(String role) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/get_issue_by_role/'),
-              body: jsonEncode({'role': role}), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/get_issue_by_role/'), body: jsonEncode({'role': role}), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -429,11 +367,7 @@ class Api {
 
   Future<IssueResponse?> getVolIssues(String admissionNo) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/get_issue_by_user/'),
-              body: jsonEncode({'admission_number': admissionNo}),
-              headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/get_issue_by_user/'), body: jsonEncode({'admission_number': admissionNo}), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -449,10 +383,7 @@ class Api {
 
   Future<GeneralResponse?> addIssue(Map<String, dynamic> data) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/add_issue/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/add_issue/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -467,10 +398,7 @@ class Api {
 
   Future<GeneralResponse?> resolveIssue(Map<String, dynamic> data) async {
     try {
-      final response = await http
-          .patch(Uri.parse('$baseUrl/resolve_issue/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.patch(Uri.parse('$baseUrl/resolve_issue/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -485,10 +413,7 @@ class Api {
 
   Future<GeneralResponse?> enrollToProgram(Map<String, dynamic> data) async {
     try {
-      final response = await http
-          .post(Uri.parse('$baseUrl/enroll_program/'),
-              body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 60));
+      final response = await http.post(Uri.parse('$baseUrl/enroll_program/'), body: jsonEncode(data), headers: headers).timeout(Duration(seconds: 60));
       log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;

@@ -19,17 +19,28 @@ class _SplashScreenState extends State<SplashScreen> {
       (value) {
         Api().checkVersion().then(
           (value) {
-            if(value?.status??false){
-               ((LocalStorage().readUser().admissionNo == null) ||
-                    (LocalStorage().readUser().admissionNo == ''))
-                ? Get.offAll(() => LoginScreen())
-                : Get.offAll(
-                    () => HomeScreen(),
-                  );
-            }else{
-              Get.to(()=>AppUpdateScreen());
+            if (value?.message == 'Up to date') {
+              ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
+                  ? Get.offAll(() => LoginScreen())
+                  : Get.offAll(
+                      () => HomeScreen(),
+                    );
+            } else {
+              if (value?.status ?? false) {
+                Get.to(() => AppUpdateScreen(status: true));
+              } else {
+                Get.offAll(() => AppUpdateScreen(status: false));
+              }
             }
-           
+            // if (value?.status ?? false) {
+            //   ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
+            //       ? Get.offAll(() => LoginScreen())
+            //       : Get.offAll(
+            //           () => HomeScreen(),
+            //         );
+            // } else {
+            //   Get.to(() => AppUpdateScreen());
+            // }
           },
         );
       },
@@ -60,13 +71,35 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
 class AppUpdateScreen extends StatelessWidget {
-  const AppUpdateScreen({super.key});
+  const AppUpdateScreen({super.key, required this.status});
+  final bool status;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: SizedBox(),
+        actions: [
+          TextButton(
+              onPressed: () {
+                ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
+                    ? Get.offAll(() => LoginScreen())
+                    : Get.offAll(
+                        () => HomeScreen(),
+                      );
+              },
+              child: (status)
+                  ? const Text(
+                      "Skip",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    )
+                  : SizedBox()),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -82,15 +115,25 @@ class AppUpdateScreen extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Title
-              const Text(
-                "Update Available",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              (status)
+                  ? const Text(
+                      "Update Available",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  : const Text(
+                      "Update Required",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
               const SizedBox(height: 16),
 
               // Subtitle / description
@@ -120,7 +163,7 @@ class AppUpdateScreen extends StatelessWidget {
                   },
                   child: const Text(
                     "Update Now",
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -128,15 +171,6 @@ class AppUpdateScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Skip Button
-              TextButton(
-                onPressed: () {
-                  // TODO: Handle skip logic
-                },
-                child: const Text(
-                  "Skip",
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              ),
             ],
           ),
         ),
