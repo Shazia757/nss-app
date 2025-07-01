@@ -218,77 +218,79 @@ class ScreenAdminIssues extends StatelessWidget {
 
   Future<dynamic> dialog(Issues data, bool isOpen, String dept) {
     return showDialog(
-              context: Get.context!,
-              builder: (context) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                backgroundColor: Colors.white,
-                title: Text(
-                  data.subject ?? "N/A",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+      context: Get.context!,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: Colors.white,
+        title: Text(
+          data.subject ?? "N/A",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _infoRow("Status:", isOpen ? "Open" : "Resolved"),
+              _infoRow(
+                  isOpen ? "Reported on:" : "Resolved on:",
+                  DateFormat.yMMMd().format(
+                    isOpen
+                        ? (data.createdDate ?? DateTime.now())
+                        : (data.updatedDate ?? DateTime.now()),
+                  )),
+              _infoRow("Reported by:", data.createdBy?.name ?? "N/A"),
+              _infoRow("Admission no:", data.createdBy?.admissionNo ?? "N/A"),
+              _infoRow("Department:", dept),
+              const SizedBox(height: 20),
+              Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _infoRow("Status:", isOpen ? "Open" : "Resolved"),
-                      _infoRow(
-                          isOpen ? "Reported on:" : "Resolved on:",
-                          DateFormat.yMMMd().format(
-                            isOpen
-                                ? (data.createdDate ?? DateTime.now())
-                                : (data.updatedDate ?? DateTime.now()),
-                          )),
-                      _infoRow("Reported by:", data.createdBy?.name ?? "N/A"),
-                      _infoRow("Admission no:",
-                          data.createdBy?.admissionNo ?? "N/A"),
-                      _infoRow("Department:", dept),
-                      const SizedBox(height: 20),
-                      const Text(
-                        "Description",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        width: double.maxFinite,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(data.description ?? "N/A"),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  if (isOpen)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff5f5791),
-                      ),
-                      onPressed: () => CustomWidgets().showConfirmationDialog(
-                        title: "Resolve Issue",
-                        content: const Text(
-                            "Are you sure you have resolved the issue?"),
-                        onConfirm: () => c.resolveIssue(data.id),
-                        data: Obx(() => c.isLoading.value
-                            ? const CircularProgressIndicator()
-                            : const Text("Confirm",
-                                style: TextStyle(color: Colors.red))),
-                      ),
-                      child: const Text("Resolve",
-                          style: TextStyle(color: Colors.white)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Description",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel",
-                        style: TextStyle(color: Color(0xff5f5791))),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(data.description ?? "N/A"),
+                  ],
+                ),
               ),
-            );
+            ],
+          ),
+        ),
+        actions: [
+          if (isOpen)
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff5f5791),
+              ),
+              onPressed: () => CustomWidgets().showConfirmationDialog(
+                title: "Resolve Issue",
+                content:
+                    const Text("Are you sure you have resolved the issue?"),
+                onConfirm: () => c.resolveIssue(data.id),
+                data: Obx(() => c.isLoading.value
+                    ? const CircularProgressIndicator()
+                    : const Text("Confirm",
+                        style: TextStyle(color: Colors.red))),
+              ),
+              child:
+                  const Text("Resolve", style: TextStyle(color: Colors.white)),
+            ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel",
+                style: TextStyle(color: Color(0xff5f5791))),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _infoRow(String title, String value) {

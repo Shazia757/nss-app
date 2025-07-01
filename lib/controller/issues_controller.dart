@@ -175,9 +175,10 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         {'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
       (value) {
         isLoading.value = false;
+        Get.back();
         if (value?.status ?? false) {
           Get.back();
-          Get.back();
+
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Issue resolved successfully.");
         } else {
