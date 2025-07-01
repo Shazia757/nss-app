@@ -17,11 +17,14 @@ class ScreenAdminIssues extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Issues", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text("Issues",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))],
+        actions: [
+          IconButton(onPressed: () => c.onInit(), icon: Icon(Icons.refresh))
+        ],
       ),
       bottomNavigationBar: CustomNavBar(currentIndex: 1),
       body: SafeArea(
@@ -33,7 +36,8 @@ class ScreenAdminIssues extends StatelessWidget {
               TabBar(
                 controller: c.adminTabController,
                 labelColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                unselectedLabelColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                unselectedLabelColor:
+                    Theme.of(context).colorScheme.onPrimaryContainer,
                 onTap: (value) => c.isResolved.value = (value == 1),
                 tabs: [
                   Tab(text: "Opened"),
@@ -85,7 +89,8 @@ class ScreenAdminIssues extends StatelessWidget {
                                           isOpen: false,
                                         );
                                       },
-                                      separatorBuilder: (_, __) => SizedBox(height: 12),
+                                      separatorBuilder: (_, __) =>
+                                          SizedBox(height: 12),
                                       itemCount: c.modifiedClosedList.length,
                                     ),
                                   ),
@@ -108,14 +113,19 @@ class ScreenAdminIssues extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(child: Text("Secretary"), onPressed: () => c.filterByRole('sec')),
+              MenuItemButton(
+                  child: Text("Secretary"),
+                  onPressed: () => c.filterByRole('sec')),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(child: Text("Program Officer"), onPressed: () => c.filterByRole('po')),
+                child: MenuItemButton(
+                    child: Text("Program Officer"),
+                    onPressed: () => c.filterByRole('po')),
               ),
               Visibility(
                 visible: LocalStorage().readUser().role != 'sec',
-                child: MenuItemButton(child: Text("All"), onPressed: () => c.filterByRole('all')),
+                child: MenuItemButton(
+                    child: Text("All"), onPressed: () => c.filterByRole('all')),
               ),
             ], label: "\tAssigned to", icon: Icons.filter_alt_rounded),
             SizedBox(
@@ -124,8 +134,12 @@ class ScreenAdminIssues extends StatelessWidget {
               child: VerticalDivider(indent: 5, endIndent: 2),
             ),
             CustomWidgets().menuBuilder(menuChildren: [
-              MenuItemButton(child: Text("Oldest"), onPressed: () => c.sortByOldestDate(true)),
-              MenuItemButton(child: Text("Latest"), onPressed: () => c.sortByOldestDate(false)),
+              MenuItemButton(
+                  child: Text("Oldest"),
+                  onPressed: () => c.sortByOldestDate(true)),
+              MenuItemButton(
+                  child: Text("Latest"),
+                  onPressed: () => c.sortByOldestDate(false)),
             ], label: "\t\tSort by date", icon: Icons.sort),
             Visibility(
               visible: c.isResolved.isTrue,
@@ -140,7 +154,9 @@ class ScreenAdminIssues extends StatelessWidget {
               child: CustomWidgets().menuBuilder(
                   menuChildren: c.adminList
                       .map(
-                        (e) => MenuItemButton(child: Text(e?.name ?? "N/A"), onPressed: () => c.resolvedBy(e?.admissionNo)),
+                        (e) => MenuItemButton(
+                            child: Text(e?.name ?? "N/A"),
+                            onPressed: () => c.resolvedBy(e?.admissionNo)),
                       )
                       .toList(),
                   label: "  Resolved By",
@@ -154,7 +170,8 @@ class ScreenAdminIssues extends StatelessWidget {
     );
   }
 
-  Card issueListTile({required Issues data, required bool isOpen, required int count}) {
+  Card issueListTile(
+      {required Issues data, required bool isOpen, required int count}) {
     final to = (data.to == 'po') ? 'Program Officer' : 'Secretary';
     RxBool isDataLoading = false.obs;
     return Card(
@@ -163,17 +180,22 @@ class ScreenAdminIssues extends StatelessWidget {
         ),
         elevation: 3,
         margin: EdgeInsets.symmetric(vertical: 12),
-        shadowColor: isOpen ? const Color.fromARGB(98, 159, 16, 6) : const Color.fromARGB(71, 76, 175, 79),
+        shadowColor: isOpen
+            ? const Color.fromARGB(98, 159, 16, 6)
+            : const Color.fromARGB(71, 76, 175, 79),
         child: ListTile(
             contentPadding: EdgeInsets.all(16),
             leading: Obx(() => isDataLoading.isTrue
                 ? CircularProgressIndicator()
                 : CircleAvatar(
                     radius: 24,
-                    backgroundColor: isOpen ? const Color.fromARGB(255, 159, 16, 6) : Colors.green,
+                    backgroundColor: isOpen
+                        ? const Color.fromARGB(255, 159, 16, 6)
+                        : Colors.green,
                     child: Text(
                       "$count",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   )),
             title: Text(
@@ -188,87 +210,107 @@ class ScreenAdminIssues extends StatelessWidget {
               DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()),
             ),
             onTap: () {
-              final dept = "${data.createdBy?.department?.category} ${data.createdBy?.department?.name}";
-              Get.defaultDialog(
-                title: data.subject ?? "N/A",
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(isOpen ? 'Reported on:' : 'Resolved on:'),
-                            Text('Reported by:'),
-                            Text('Admission no: '),
-                            // Text('Department:'),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(isOpen ? DateFormat.yMMMd().format(data.createdDate ?? DateTime.now()) : DateFormat.yMMMd().format(data.updatedDate ?? DateTime.now())),
-                            Text('${data.createdBy?.name}'),
-                            Text('${data.createdBy?.admissionNo}'),
-                            // Text(dept),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Reported by: '),
-                        SizedBox(
-                          width: MediaQuery.of(Get.context!).size.width * .5,
-                          child: Text('${data.createdBy?.name}', maxLines: 3),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Department: '),
-                        SizedBox(
-                          width: MediaQuery.of(Get.context!).size.width * .5,
-                          child: Text(dept, maxLines: 3),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Text(data.description ?? "N/A"),
-                  ],
-                ),
+              final dept =
+                  "${data.createdBy?.department?.category} ${data.createdBy?.department?.name}";
+              dialog(data, isOpen, dept);
+            }));
+  }
+
+  Future<dynamic> dialog(Issues data, bool isOpen, String dept) {
+    return showDialog(
+              context: Get.context!,
+              builder: (context) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 backgroundColor: Colors.white,
-                titleStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                title: Text(
+                  data.subject ?? "N/A",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _infoRow("Status:", isOpen ? "Open" : "Resolved"),
+                      _infoRow(
+                          isOpen ? "Reported on:" : "Resolved on:",
+                          DateFormat.yMMMd().format(
+                            isOpen
+                                ? (data.createdDate ?? DateTime.now())
+                                : (data.updatedDate ?? DateTime.now()),
+                          )),
+                      _infoRow("Reported by:", data.createdBy?.name ?? "N/A"),
+                      _infoRow("Admission no:",
+                          data.createdBy?.admissionNo ?? "N/A"),
+                      _infoRow("Department:", dept),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Description",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(data.description ?? "N/A"),
+                      ),
+                    ],
+                  ),
+                ),
                 actions: [
-                  isOpen
-                      ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Color(0xff5f5791)),
-                          onPressed: () => CustomWidgets().showConfirmationDialog(
-                              title: "Resolve Issue",
-                              content: Text(
-                                "Are you sure you have resolved the issue?",
-                              ),
-                              onConfirm: () => c.resolveIssue(data.id),
-                              data: Obx(
-                                () => (c.isLoading.value)
-                                    ? CircularProgressIndicator()
-                                    : Text(
-                                        "Confirm",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                              )),
-                          child: Text("Resolve", style: TextStyle(color: Colors.white)),
-                        )
-                      : SizedBox(),
+                  if (isOpen)
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff5f5791),
+                      ),
+                      onPressed: () => CustomWidgets().showConfirmationDialog(
+                        title: "Resolve Issue",
+                        content: const Text(
+                            "Are you sure you have resolved the issue?"),
+                        onConfirm: () => c.resolveIssue(data.id),
+                        data: Obx(() => c.isLoading.value
+                            ? const CircularProgressIndicator()
+                            : const Text("Confirm",
+                                style: TextStyle(color: Colors.red))),
+                      ),
+                      child: const Text("Resolve",
+                          style: TextStyle(color: Colors.white)),
+                    ),
                   TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text("Cancel", style: TextStyle(color: Color(0xff5f5791))),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel",
+                        style: TextStyle(color: Color(0xff5f5791))),
                   ),
                 ],
-              );
-            }));
+              ),
+            );
+  }
+
+  Widget _infoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "$title ",
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black87),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
