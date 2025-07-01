@@ -23,7 +23,9 @@ class StudentsEnrollmentScreen extends StatelessWidget {
         actions: [
           TextButton(
               onPressed: () => c.selectAllVolunteers(),
-              child: Text("select all"))
+              child: Text("Select all",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primaryContainer)))
         ],
       ),
       floatingActionButton: Obx(() => c.selectedVolList.isNotEmpty

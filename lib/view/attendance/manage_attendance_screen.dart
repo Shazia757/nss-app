@@ -52,14 +52,22 @@ class ManageAttendanceScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                CustomWidgets().searchBar(
-                  constraints: BoxConstraints.tight(Size(350, 50)),
-                  leading: Icon(Icons.search),
-                  controller: c.searchController,
-                  hintText: 'Search',
-                  onChanged: (value) => c.onSearchTextChanged(value),
-                  visible: c.searchController.text.isNotEmpty,
-                  onPressedCancel: () => c.onSearchTextChanged(''),
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: CustomWidgets().searchBar(
+                        constraints: BoxConstraints.tight(Size(350, 50)),
+                        leading: Icon(Icons.search),
+                        controller: c.searchController,
+                        hintText: 'Search',
+                        onChanged: (value) => c.onSearchTextChanged(value),
+                        visible: c.searchController.text.isNotEmpty,
+                        onPressedCancel: () => c.onSearchTextChanged(''),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                  ],
                 ),
                 Expanded(
                   child: ListView.separated(

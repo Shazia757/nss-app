@@ -58,13 +58,21 @@ class VolunteersListScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                CustomWidgets().searchBar(
-                  constraints: BoxConstraints.tight(Size(350, 50)),
-                  controller: c.searchController,
-                  hintText: 'Search Volunteer',
-                  onChanged: (value) => c.onSearchTextChanged(value),
-                  visible: c.searchController.text.isNotEmpty,
-                  onPressedCancel: () => c.onSearchTextChanged(''),
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: CustomWidgets().searchBar(
+                        constraints: BoxConstraints.tight(Size(350, 50)),
+                        controller: c.searchController,
+                        hintText: 'Search Volunteer',
+                        onChanged: (value) => c.onSearchTextChanged(value),
+                        visible: c.searchController.text.isNotEmpty,
+                        onPressedCancel: () => c.onSearchTextChanged(''),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                  ],
                 ),
                 Expanded(
                   child: ListView.separated(
@@ -75,32 +83,33 @@ class VolunteersListScreen extends StatelessWidget {
                           onTap: () => c.updateVolunteer(
                               (c.searchList[index].admissionNo).toString()),
                           child: ListTile(
-                              leading: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: Card(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                        c.searchList[index].admissionNo ?? ''),
-                                  ),
+                            leading: SizedBox(
+                              width: 60,
+                              height: 60,
+                              child: Card(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                      c.searchList[index].admissionNo ?? ''),
                                 ),
                               ),
-                              title: Text(c.searchList[index].name ?? ''),
-                              subtitle: Text(
-                                  "${c.searchList[index].department?.category} ${c.searchList[index].department?.name ?? ''}"),
-                              trailing: IconButton(
-                                  onPressed: () => c.updateVolunteer(
-                                      (c.searchList[index].admissionNo)
-                                          .toString()),
-                                  icon: Icon(
-                                    Icons.edit_note_outlined,
-                                  ))));
+                            ),
+                            title: Text(c.searchList[index].name ?? ''),
+                            subtitle: Text(
+                                "${c.searchList[index].department?.category} ${c.searchList[index].department?.name ?? ''}"),
+                            // trailing: IconButton(
+                            //     onPressed: () => c.updateVolunteer(
+                            //         (c.searchList[index].admissionNo)
+                            //             .toString()),
+                            //     icon: Icon(
+                            //       Icons.edit_note_outlined,
+                            //     ))
+                          ));
                     },
                     separatorBuilder: (context, index) => Divider(),
                   ),
