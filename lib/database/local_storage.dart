@@ -13,6 +13,24 @@ class LocalStorage {
     }
   }
 
+  writeToken(String toc) {
+    try {
+      _box.write('token', toc);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  String? readToken() {
+    try {
+      final token = _box.read('token');
+      return token;
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
   static bool get isAdmin {
     final data = GetStorage().read('user');
     if (data['role'] != 'vol') {

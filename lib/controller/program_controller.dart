@@ -144,7 +144,7 @@ class AddProgramController extends GetxController {
         .then(
       (value) {
         isUpdateButtonLoading.value = false;
-        if (value?.status == true) {
+        if (value?.status??false) {
           Get.back();
           Get.back();
           CustomWidgets.showSnackBar(

@@ -19,13 +19,14 @@ class VolunteersListScreen extends StatelessWidget {
         () {
           if ((c.isLoading.isFalse)) {
             return FloatingActionButton(
-              onPressed: () =>
-                  Get.to(() => VolunteerAddScreen(isUpdateScreen: false))
-                      ?.then((value) => c.onInit()),
-              child: Icon(Icons.add),
+              onPressed: () async {
+                await Get.to(() => VolunteerAddScreen(isUpdateScreen: false));
+                c.onInit();
+              },
+              child: const Icon(Icons.add),
             );
           } else {
-            return SizedBox();
+            return SizedBox.shrink();
           }
         },
       ),
@@ -63,7 +64,7 @@ class VolunteersListScreen extends StatelessWidget {
                     SizedBox(width: 10),
                     Expanded(
                       child: CustomWidgets().searchBar(
-                        constraints: BoxConstraints.tight(Size(350, 50)),
+                        constraints: const BoxConstraints.tightFor(height: 40),
                         controller: c.searchController,
                         hintText: 'Search Volunteer',
                         onChanged: (value) => c.onSearchTextChanged(value),
@@ -102,13 +103,6 @@ class VolunteersListScreen extends StatelessWidget {
                             title: Text(c.searchList[index].name ?? ''),
                             subtitle: Text(
                                 "${c.searchList[index].department?.category} ${c.searchList[index].department?.name ?? ''}"),
-                            // trailing: IconButton(
-                            //     onPressed: () => c.updateVolunteer(
-                            //         (c.searchList[index].admissionNo)
-                            //             .toString()),
-                            //     icon: Icon(
-                            //       Icons.edit_note_outlined,
-                            //     ))
                           ));
                     },
                     separatorBuilder: (context, index) => Divider(),
