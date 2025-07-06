@@ -119,6 +119,10 @@ class ViewAttendanceScreen extends StatelessWidget {
                                   "Total Hours Attended",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey[600]),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -126,24 +130,33 @@ class ViewAttendanceScreen extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
-                          SizedBox(width: 10),
-                          Column(
-                            children: [
-                              Text(
-                                "Total Programs Attended",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[600]),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                "${c.totalPrograms}",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          if (LocalStorage.isAdmin) const SizedBox(width: 20),
+                          Flexible(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Total Programs Attended",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[600]),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "${c.totalPrograms}",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

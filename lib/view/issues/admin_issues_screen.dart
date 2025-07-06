@@ -211,7 +211,7 @@ class ScreenAdminIssues extends StatelessWidget {
             ),
             onTap: () {
               final dept =
-                  "${data.createdBy?.department?.category} ${data.createdBy?.department?.name}";
+                  "${data.createdBy?.department?.category??''} ${data.createdBy?.department?.name??""}";
               dialog(data, isOpen, dept);
             }));
   }

@@ -19,8 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
       (value) {
         Api().checkVersion().then(
           (value) {
-            if (value?.message == 'Up to date') {
-              ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
+            if (value?.message == 'Up to date.') {
+              ((LocalStorage().readUser().admissionNo == null) ||
+                      (LocalStorage().readUser().admissionNo == ''))
                   ? Get.offAll(() => LoginScreen())
                   : Get.offAll(
                       () => HomeScreen(),
@@ -32,15 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 Get.offAll(() => AppUpdateScreen(status: false));
               }
             }
-            // if (value?.status ?? false) {
-            //   ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
-            //       ? Get.offAll(() => LoginScreen())
-            //       : Get.offAll(
-            //           () => HomeScreen(),
-            //         );
-            // } else {
-            //   Get.to(() => AppUpdateScreen());
-            // }
           },
         );
       },
@@ -86,7 +78,8 @@ class AppUpdateScreen extends StatelessWidget {
         actions: [
           TextButton(
               onPressed: () {
-                ((LocalStorage().readUser().admissionNo == null) || (LocalStorage().readUser().admissionNo == ''))
+                ((LocalStorage().readUser().admissionNo == null) ||
+                        (LocalStorage().readUser().admissionNo == ''))
                     ? Get.offAll(() => LoginScreen())
                     : Get.offAll(
                         () => HomeScreen(),
@@ -163,7 +156,10 @@ class AppUpdateScreen extends StatelessWidget {
                   },
                   child: const Text(
                     "Update Now",
-                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
