@@ -213,8 +213,7 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse(Urls.deleteVolunteer),
-              body: jsonEncode({'admission_number': id}),
-              headers: await getHeader())
+              body: jsonEncode({'volunteer': id}), headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -369,7 +368,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.getAttendance),
-              body: jsonEncode({'volunteer': admissionNo}),
+              body: jsonEncode({'admission_number': admissionNo}),
               headers: await getHeader())
           .timeout(Duration(seconds: 60));
 

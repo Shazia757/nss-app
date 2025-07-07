@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                       _mottoSection(context),
                       SizedBox(height: 20),
                       _gridMenu(context, isDesktop),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       Visibility(
                         visible: LocalStorage().readUser().role != 'sec',
                         child: Expanded(child: _upcomingEvents(c)),
@@ -254,7 +254,9 @@ class HomeScreen extends StatelessWidget {
               : LocalStorage().readUser().role == 'po'
                   ? 3
                   : 2,
-          childAspectRatio: isDesktop ? 1.2 : 1,
+          childAspectRatio: (LocalStorage().readUser().role == 'vol')
+              ? 1.2
+              : (isDesktop ? 1.2 : 1),
           physics: NeverScrollableScrollPhysics(),
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
