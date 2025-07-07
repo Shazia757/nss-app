@@ -369,7 +369,7 @@ class HomeScreen extends StatelessWidget {
                                                       onConfirm: () =>
                                                           c.enroll(program),
                                                       data: Obx(
-                                                        () => (c.isLoading
+                                                        () => (c.isEnrolledLoading
                                                                 .value)
                                                             ? CircularProgressIndicator()
                                                             : Text(

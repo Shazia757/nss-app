@@ -52,27 +52,31 @@ class ProgramListController extends GetxController {
     );
   }
 
-  void addAttendance(Program? program) {
+  void addAttendance(Program? program) async {
     isLoading.value = true;
     bool response = true;
     for (Volunteer e in selectedVolList) {
       log(e.toString());
-      Api().addAttendance({
-        'date':programDate,
+      final value = await Api().addAttendance({
+        'date': programDate.toString(),
         'hours': durationController.text,
         'marked_by': LocalStorage().readUser().admissionNo,
         'program_name': program?.name,
-        'admission_number': e.admissionNo,
-      }).then(
-        (value) {
-          isLoading.value = false;
-          if (!(value?.status ?? true)) {
-            response = false;
-          }
-        },
-      );
+        'volunteer': e.admissionNo,
+      });
+      if (!(value?.status ?? true)) response = false;
     }
+    isLoading.value = false;
+    //
+    // .then(
+    //   (value) {
+    //
+    //
+    //   },
+    // );
+    // }
     if (response) {
+      Get.back();
       Get.back();
       CustomWidgets.showSnackBar('Success', 'Attendance added successfully');
     } else {
@@ -144,7 +148,7 @@ class AddProgramController extends GetxController {
         .then(
       (value) {
         isUpdateButtonLoading.value = false;
-        if (value?.status??false) {
+        if (value?.status ?? false) {
           Get.back();
           Get.back();
           CustomWidgets.showSnackBar(

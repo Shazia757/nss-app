@@ -111,6 +111,9 @@ class ViewAttendanceScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: (LocalStorage.isAdmin)
+                            ? (MainAxisAlignment.start)
+                            : MainAxisAlignment.center,
                         children: [
                           if (LocalStorage.isAdmin)
                             Column(
