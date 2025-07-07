@@ -30,7 +30,7 @@ class AccountController extends GetxController {
   @override
   onInit() {
     if (kDebugMode) {
-      userNameController.text = 'sec@fc';
+      userNameController.text = '2769';
       passwordController.text = '0000';
     }
 
@@ -52,9 +52,11 @@ class AccountController extends GetxController {
 
     api.login({'admission_number': userName, 'password': password}).then(
       (response) async {
-        if (response?.status == true && response?.data.admissionNo != null) {
+        if (response?.status == true && response?.data?.admissionNo != null) {
           await LocalStorage().writeUser(response?.data ?? Users());
-          CustomWidgets.showSnackBar('Welcome', '${response?.data.name}',
+          await LocalStorage().writeToken(response?.token??'');
+
+          CustomWidgets.showSnackBar('Welcome', '${response?.data?.name}',
               icon: Icon(
                 Icons.login,
                 color: Colors.white,

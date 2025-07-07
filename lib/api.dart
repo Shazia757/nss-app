@@ -15,8 +15,8 @@ import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/no_connection_page.dart';
 
 class Urls {
-  static String base = 'https://nssapi.bvocfarookcollege.com/api';
-  // 'https://nss.noorabiyad.com/api';
+  static String base = 'https://nss.noorabiyad.com/api';
+  // 'https://nssapi.bvocfarookcollege.com/api';
   static String login = '$base/login/';
   static String changePassword = '$base/change_password/';
   static String resetPassword = '$base/reset_password/';
@@ -45,12 +45,12 @@ class Urls {
   static String checkVersion = '$base/check_version/';
 }
 
-Map<String, String>? getHeader() {
+Future<Map<String, String>?> getHeader() async {
   return {
     "Content-type": "application/json",
     "OS": Platform.operatingSystem,
     "App-version": "1.0.0",
-    "Authorization": LocalStorage().readToken()??''
+    "Authorization": await LocalStorage().readToken() ?? ''
   };
 }
 
@@ -63,16 +63,11 @@ class Api {
           .post(
             Uri.parse(Urls.login),
             body: jsonEncode(data),
-            headers: getHeader(),
+            headers: await getHeader(),
           )
           .timeout(Duration(seconds: 60));
+      log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      log(LoginResponse.fromJson(responseJson)
-              .data
-              .department
-              ?.name
-              .toString() ??
-          "null");
       return LoginResponse.fromJson(responseJson);
     } catch (e) {
       checkConnectivity();
@@ -88,7 +83,7 @@ class Api {
       log("request :${jsonEncode(data)}");
       final response = await http
           .post(Uri.parse(Urls.changePassword),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -105,7 +100,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.resetPassword),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -122,7 +117,7 @@ class Api {
   Future<VolunteerList?> getVolunteers() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getVolunteers))
+          .get(Uri.parse(Urls.getVolunteers), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -139,7 +134,7 @@ class Api {
   Future<VolunteerList?> getAdmins() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getAdmins))
+          .get(Uri.parse(Urls.getAdmins), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -159,7 +154,7 @@ class Api {
       final response = await http
           .post(Uri.parse(Urls.volunteerDetails),
               body: jsonEncode({'admission_number': admissionNo}),
-              headers: getHeader())
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -179,7 +174,7 @@ class Api {
 
       final response = await http
           .post(Uri.parse(Urls.addVolunteer),
-              body: jsonEncode(user), headers: getHeader())
+              body: jsonEncode(user), headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -200,7 +195,7 @@ class Api {
       log("request :${jsonEncode(data)}");
       final response = await http
           .patch(Uri.parse(Urls.updateVolunteer),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -218,7 +213,8 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse(Urls.deleteVolunteer),
-              body: jsonEncode({'admission_number': id}), headers: getHeader())
+              body: jsonEncode({'admission_number': id}),
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -235,7 +231,7 @@ class Api {
   Future<ProgramResponse?> allPrograms() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getAllPrograms))
+          .get(Uri.parse(Urls.getAllPrograms), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
@@ -251,7 +247,7 @@ class Api {
   Future<ProgramNameResponse?> programNames() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getProgramNames))
+          .get(Uri.parse(Urls.getProgramNames), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramNameResponse.fromJson(responseAsJson);
@@ -267,7 +263,7 @@ class Api {
   Future<ProgramResponse?> getUpcomingPrograms() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getUpcomingPrograms))
+          .get(Uri.parse(Urls.getUpcomingPrograms), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
@@ -284,7 +280,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.addProgram),
-              body: jsonEncode(program.toJson()), headers: getHeader())
+              body: jsonEncode(program.toJson()), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -301,7 +297,8 @@ class Api {
   Future<GeneralResponse?> updateProgram(Map<String, dynamic> data) async {
     try {
       final response = await http
-          .patch(Uri.parse(Urls.updateProgram), body: data)
+          .patch(Uri.parse(Urls.updateProgram),
+              body: data, headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -319,7 +316,8 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse(Urls.deleteProgram),
-              body: jsonEncode({'id': id.toString()}), headers: getHeader())
+              body: jsonEncode({'id': id.toString()}),
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -336,7 +334,7 @@ class Api {
   Future<DepartmentList?> getDepartments() async {
     try {
       final response = await http
-          .get(Uri.parse(Urls.getDepartments))
+          .get(Uri.parse(Urls.getDepartments), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -353,7 +351,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.getEnrolledStudents),
-              body: jsonEncode({'id': id}), headers: getHeader())
+              body: jsonEncode({'id': id}), headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -371,8 +369,8 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.getAttendance),
-              body: jsonEncode({'admission_number': admissionNo}),
-              headers: getHeader())
+              body: jsonEncode({'volunteer': admissionNo}),
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -395,7 +393,7 @@ class Api {
 
       final response = await http
           .post(Uri.parse(Urls.addAttendance),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -413,7 +411,7 @@ class Api {
     try {
       final response = await http
           .delete(Uri.parse(Urls.deleteAttendance),
-              body: jsonEncode({'id': id}), headers: getHeader())
+              body: jsonEncode({'id': id}), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -427,11 +425,14 @@ class Api {
 
   Future<GeneralResponse?> checkVersion() async {
     try {
+      // log(headers.toString());
+      // getHeader();
+      // log(header.toString());
       final response = await http
           .post(Uri.parse(Urls.checkVersion),
               body: jsonEncode(
-                  {"version": '0.0.2', "os": Platform.operatingSystem}),
-              headers: getHeader())
+                  {"version": '1.0.0', "os": Platform.operatingSystem}),
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -449,7 +450,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.getAdminIssue),
-              body: jsonEncode({'role': role}), headers: getHeader())
+              body: jsonEncode({'role': role}), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -468,7 +469,7 @@ class Api {
       final response = await http
           .post(Uri.parse(Urls.getVolIssue),
               body: jsonEncode({'admission_number': admissionNo}),
-              headers: getHeader())
+              headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -487,7 +488,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.addIssue),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body);
 
@@ -505,7 +506,7 @@ class Api {
     try {
       final response = await http
           .patch(Uri.parse(Urls.resolveIssue),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -523,7 +524,7 @@ class Api {
     try {
       final response = await http
           .post(Uri.parse(Urls.enrollToProgram),
-              body: jsonEncode(data), headers: getHeader())
+              body: jsonEncode(data), headers: await getHeader())
           .timeout(Duration(seconds: 60));
       log(response.body);
 

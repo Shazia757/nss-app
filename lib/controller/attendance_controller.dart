@@ -41,7 +41,9 @@ class AttendanceController extends GetxController {
     isLoading.value = true;
     Api().getVolunteers().then(
       (value) {
-        usersList.assignAll(value?.data ?? []);
+        final data =
+            value?.data?.where((element) => element.role != 'po').toList();
+        usersList.assignAll(data ?? []);
         searchList.assignAll(usersList);
         searchList.sort((a, b) => a.name!.compareTo(b.name!));
         isLoading.value = false;
@@ -98,26 +100,21 @@ class AttendanceController extends GetxController {
     return true;
   }
 
-  onSubmitAttendance() {
+  onSubmitAttendance() async {
     isLoading.value = true;
     bool response = true;
-
     for (Volunteer e in selectedVolList) {
-      Api().addAttendance({
+      final value = await Api().addAttendance({
         'date': date.toString(),
         'hours': int.tryParse(durationController.text),
         'marked_by': (LocalStorage().readUser().admissionNo).toString(),
         'program_name': programName,
-        'admission_number': e.admissionNo.toString(),
-      }).then(
-        (value) {
-          isLoading.value = false;
-          if (!(value?.status ?? true)) {
-            response = false;
-          }
-        },
-      );
+        'volunteer': e.admissionNo.toString(),
+      });
+      if (!(value?.status ?? true)) response = false;
     }
+
+    isLoading.value = false;
     if (response) {
       Get.back();
       Get.back();

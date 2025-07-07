@@ -21,9 +21,9 @@ class LocalStorage {
     }
   }
 
-  String? readToken() {
+  Future<String?> readToken()async {
     try {
-      final token = _box.read('token');
+      final token =await _box.read('token');
       return token;
     } catch (e) {
       log(e.toString());

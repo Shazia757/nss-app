@@ -78,7 +78,7 @@ class Users {
 
   @override
   String toString() {
-    return 'Login(username:$admissionNo,name:$name)';
+    return 'Login(username:$admissionNo,name:$name,role:$role,$caste,$createdBy)';
   }
 }
 
