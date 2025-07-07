@@ -211,7 +211,7 @@ class ScreenAdminIssues extends StatelessWidget {
             ),
             onTap: () {
               final dept =
-                  "${data.createdBy?.department?.category??''} ${data.createdBy?.department?.name??""}";
+                  "${data.createdBy?.department?.category ?? ''} ${data.createdBy?.department?.name ?? ""}";
               dialog(data, isOpen, dept);
             }));
   }
@@ -238,7 +238,8 @@ class ScreenAdminIssues extends StatelessWidget {
                         ? (data.createdDate ?? DateTime.now())
                         : (data.updatedDate ?? DateTime.now()),
                   )),
-              _infoRow("Reported by:", data.createdBy?.name ?? "N/A"),
+              _infoRow(isOpen ? "Reported by:" : "Resolved by:",
+                  data.createdBy?.name ?? "N/A"),
               _infoRow("Admission no:", data.createdBy?.admissionNo ?? "N/A"),
               _infoRow("Department:", dept),
               const SizedBox(height: 20),

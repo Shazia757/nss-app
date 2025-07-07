@@ -295,10 +295,13 @@ class Api {
 
   Future<GeneralResponse?> updateProgram(Map<String, dynamic> data) async {
     try {
+      log("request :${jsonEncode(data)}");
+
       final response = await http
           .patch(Uri.parse(Urls.updateProgram),
               body: data, headers: await getHeader())
           .timeout(Duration(seconds: 60));
+      log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);

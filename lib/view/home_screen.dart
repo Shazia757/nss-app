@@ -254,9 +254,7 @@ class HomeScreen extends StatelessWidget {
               : LocalStorage().readUser().role == 'po'
                   ? 3
                   : 2,
-          childAspectRatio: (LocalStorage().readUser().role == 'vol')
-              ? 1.2
-              : (isDesktop ? 1.2 : 1),
+          childAspectRatio: isDesktop ? 1.2 : 1,
           physics: NeverScrollableScrollPhysics(),
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
