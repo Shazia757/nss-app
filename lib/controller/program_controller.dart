@@ -60,7 +60,6 @@ class ProgramListController extends GetxController {
       final value = await Api().addAttendance({
         'date': programDate.toString(),
         'hours': durationController.text,
-        'marked_by': LocalStorage().readUser().admissionNo,
         'program_name': program?.name,
         'volunteer': e.admissionNo,
       });
@@ -143,7 +142,6 @@ class AddProgramController extends GetxController {
             name: nameController.text,
             date: date,
             duration: int.tryParse(durationController.text),
-            createdBy: (LocalStorage().readUser().admissionNo).toString(),
             description: descController.text))
         .then(
       (value) {
@@ -173,7 +171,7 @@ class AddProgramController extends GetxController {
     }).then(
       (value) {
         isUpdateButtonLoading.value = false;
-        if (value?.status == true) {
+        if (value?.status??false) {
           Get.back();
           Get.back();
           CustomWidgets.showSnackBar(

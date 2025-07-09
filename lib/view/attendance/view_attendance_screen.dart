@@ -84,7 +84,7 @@ class ViewAttendanceScreen extends StatelessWidget {
                       if (!isViewAttendance)
                         DataCell(
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
+                            icon: Icon(Icons.close_sharp, color: Colors.red),
                             onPressed: () => CustomWidgets().showConfirmationDialog(
                                 title: "Delete Attendance",
                                 message:

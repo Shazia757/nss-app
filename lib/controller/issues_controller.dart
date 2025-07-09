@@ -108,7 +108,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
 
   getAdminIssues() {
     isLoading.value = true;
-    Api().getAdminIssues(LocalStorage().readUser().role!).then(
+    Api().getAdminIssues().then(
       (value) {
         openedList = value?.openIssues ?? [];
         closedList = value?.closedIssues ?? [];
@@ -127,7 +127,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   void getVolIssues() {
     isLoading.value = true;
 
-    Api().getVolIssues(LocalStorage().readUser().admissionNo!).then(
+    Api().getVolIssues().then(
       (value) {
         openedList = value?.openIssues ?? [];
         closedList = value?.closedIssues ?? [];
@@ -149,8 +149,6 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
       'subject': subjectController.text,
       'description': desController.text,
       'assigned_to': submittedTo.value,
-      'created_by': (LocalStorage().readUser().admissionNo).toString(),
-      'updated_by': (LocalStorage().readUser().admissionNo).toString()
     }).then(
       (value) {
         isReportLoading.value = false;
@@ -172,7 +170,7 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
   void resolveIssue(int? id) {
     isLoading.value = true;
     Api().resolveIssue(
-        {'id': id, 'updated_by': LocalStorage().readUser().admissionNo}).then(
+        {'id': id}).then(
       (value) {
         isLoading.value = false;
         Get.back();

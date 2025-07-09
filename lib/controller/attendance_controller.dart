@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/attendance_model.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -107,7 +106,6 @@ class AttendanceController extends GetxController {
       final value = await Api().addAttendance({
         'date': date.toString(),
         'hours': int.tryParse(durationController.text),
-        'marked_by': (LocalStorage().readUser().admissionNo).toString(),
         'program_name': programName,
         'volunteer': e.admissionNo.toString(),
       });

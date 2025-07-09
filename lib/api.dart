@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:nss/database/local_storage.dart';
@@ -12,6 +13,7 @@ import 'package:nss/model/issues_model.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/model/users_model.dart';
 import 'package:nss/model/volunteer_model.dart';
+import 'package:nss/view/authentication/login_screen.dart';
 import 'package:nss/view/common_pages/no_connection_page.dart';
 
 class Urls {
@@ -43,10 +45,16 @@ class Urls {
   static String resolveIssue = '$base/resolve_issue/';
   static String enrollToProgram = '$base/enroll_program/';
   static String checkVersion = '$base/check_version/';
+  static String logout = '$base/logout/';
 }
 
 Future<Map<String, String>?> getHeader() async {
-  return {"Content-type": "application/json", "OS": Platform.operatingSystem, "App-version": "1.0.0", "Authorization": await LocalStorage().readToken() ?? ''};
+  return {
+    "Content-type": "application/json",
+    "OS": Platform.operatingSystem,
+    "App-version": "1.0.0",
+    "Authorization": await LocalStorage().readToken() ?? ''
+  };
 }
 
 class Api {
@@ -76,10 +84,17 @@ class Api {
   Future<GeneralResponse?> changePassword(Map<String, dynamic> data) async {
     try {
       log("request :${jsonEncode(data)}");
-      final response = await http.post(Uri.parse(Urls.changePassword), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.changePassword),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      return GeneralResponse.fromJson(responseJson);
+      if (response.statusCode == 200) {
+        return GeneralResponse.fromJson(responseJson);
+      } else if (response.body.contains('Invalid token')) {
+        await tokenExpired();
+      }
     } catch (e) {
       checkConnectivity();
       log('Api error:$e');
@@ -90,7 +105,10 @@ class Api {
 
   Future<GeneralResponse?> resetPassword(Map<String, dynamic> data) async {
     try {
-      final response = await http.post(Uri.parse(Urls.resetPassword), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.resetPassword),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -105,7 +123,9 @@ class Api {
 
   Future<VolunteerList?> getVolunteers() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getVolunteers), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getVolunteers), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
@@ -120,7 +140,9 @@ class Api {
 
   Future<VolunteerList?> getAdmins() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getAdmins), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getAdmins), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerList.fromJson(responseJson);
@@ -136,7 +158,11 @@ class Api {
 
   Future<VolunteerDetailResponse?> volunteerDetails(String admissionNo) async {
     try {
-      final response = await http.post(Uri.parse(Urls.volunteerDetails), body: jsonEncode({'admission_number': admissionNo}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.volunteerDetails),
+              body: jsonEncode({'admission_number': admissionNo}),
+              headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return VolunteerDetailResponse.fromJson(responseJson);
@@ -153,7 +179,10 @@ class Api {
     try {
       log("request :${jsonEncode(user)}");
 
-      final response = await http.post(Uri.parse(Urls.addVolunteer), body: jsonEncode(user), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.addVolunteer),
+              body: jsonEncode(user), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log(response.body);
@@ -171,7 +200,10 @@ class Api {
   Future<GeneralResponse?> updateVolunteer(Map<String, dynamic> data) async {
     try {
       log("request :${jsonEncode(data)}");
-      final response = await http.patch(Uri.parse(Urls.updateVolunteer), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .patch(Uri.parse(Urls.updateVolunteer),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -186,7 +218,10 @@ class Api {
 
   Future<GeneralResponse?> deleteVolunteer(String id) async {
     try {
-      final response = await http.delete(Uri.parse(Urls.deleteVolunteer), body: jsonEncode({'volunteer': id}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .delete(Uri.parse(Urls.deleteVolunteer),
+              body: jsonEncode({'volunteer': id}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -201,7 +236,9 @@ class Api {
 
   Future<ProgramResponse?> allPrograms() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getAllPrograms), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getAllPrograms), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -215,7 +252,9 @@ class Api {
 
   Future<ProgramNameResponse?> programNames() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getProgramNames), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getProgramNames), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramNameResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -229,7 +268,9 @@ class Api {
 
   Future<ProgramResponse?> getUpcomingPrograms() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getUpcomingPrograms), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getUpcomingPrograms), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       final responseAsJson = jsonDecode(response.body) as Map<String, dynamic>;
       return ProgramResponse.fromJson(responseAsJson);
     } catch (e) {
@@ -243,7 +284,10 @@ class Api {
 
   Future<GeneralResponse?> addProgram(Program program) async {
     try {
-      final response = await http.post(Uri.parse(Urls.addProgram), body: jsonEncode(program.toJson()), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.addProgram),
+              body: jsonEncode(program.toJson()), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
       return GeneralResponse.fromJson(responseJson);
@@ -260,7 +304,10 @@ class Api {
     try {
       log("request :${jsonEncode(data)}");
 
-      final response = await http.patch(Uri.parse(Urls.updateProgram), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .patch(Uri.parse(Urls.updateProgram),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -276,7 +323,11 @@ class Api {
 
   Future<GeneralResponse?> deleteProgram(int id) async {
     try {
-      final response = await http.delete(Uri.parse(Urls.deleteProgram), body: jsonEncode({'id': id.toString()}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .delete(Uri.parse(Urls.deleteProgram),
+              body: jsonEncode({'id': id.toString()}),
+              headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -291,7 +342,9 @@ class Api {
 
   Future<DepartmentList?> getDepartments() async {
     try {
-      final response = await http.get(Uri.parse(Urls.getDepartments), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .get(Uri.parse(Urls.getDepartments), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body.toString());
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return DepartmentList.fromJson(responseJson);
@@ -305,7 +358,10 @@ class Api {
 
   Future<EnrollmentResponse?> getEnrolledStudents(int? id) async {
     try {
-      final response = await http.post(Uri.parse(Urls.getEnrolledStudents), body: jsonEncode({'id': id}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.getEnrolledStudents),
+              body: jsonEncode({'id': id}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log(responseJson.toString());
@@ -320,7 +376,11 @@ class Api {
 
   Future<AttendanceResponse?> getAttendance(String admissionNo) async {
     try {
-      final response = await http.post(Uri.parse(Urls.getAttendance), body: jsonEncode({'admission_number': admissionNo}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.getAttendance),
+              body: jsonEncode({'admission_number': admissionNo}),
+              headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       log("json resp:$responseJson");
@@ -340,7 +400,10 @@ class Api {
     try {
       log("request :$data");
 
-      final response = await http.post(Uri.parse(Urls.addAttendance), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.addAttendance),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -355,7 +418,10 @@ class Api {
 
   Future<GeneralResponse?> deleteAttendance(int id) async {
     try {
-      final response = await http.delete(Uri.parse(Urls.deleteAttendance), body: jsonEncode({'id': id}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .delete(Uri.parse(Urls.deleteAttendance),
+              body: jsonEncode({'id': id}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
     } catch (e) {
@@ -368,10 +434,10 @@ class Api {
 
   Future<GeneralResponse?> checkVersion() async {
     try {
-      // log(headers.toString());
-      // getHeader();
-      // log(header.toString());
-      final response = await http.post(Uri.parse(Urls.checkVersion), body: jsonEncode({"version": '1.0.0', "os": Platform.operatingSystem}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.checkVersion),
+              body: jsonEncode({}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log('response: ${(response.body)}');
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -384,9 +450,12 @@ class Api {
 
   //------------------Get Admin Issues ---------------------------//
 
-  Future<IssueResponse?> getAdminIssues(String role) async {
+  Future<IssueResponse?> getAdminIssues() async {
     try {
-      final response = await http.post(Uri.parse(Urls.getAdminIssue), body: jsonEncode({'role': role}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.getAdminIssue),
+              body: jsonEncode({}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -399,9 +468,12 @@ class Api {
   }
   //------------------Get Volunteer Issues ---------------------------//
 
-  Future<IssueResponse?> getVolIssues(String admissionNo) async {
+  Future<IssueResponse?> getVolIssues() async {
     try {
-      final response = await http.post(Uri.parse(Urls.getVolIssue), body: jsonEncode({'admission_number': admissionNo}), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.getVolIssue),
+              body: jsonEncode({}), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -417,7 +489,10 @@ class Api {
 
   Future<GeneralResponse?> addIssue(Map<String, dynamic> data) async {
     try {
-      final response = await http.post(Uri.parse(Urls.addIssue), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.addIssue),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -432,7 +507,10 @@ class Api {
 
   Future<GeneralResponse?> resolveIssue(Map<String, dynamic> data) async {
     try {
-      final response = await http.patch(Uri.parse(Urls.resolveIssue), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .patch(Uri.parse(Urls.resolveIssue),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
       return GeneralResponse.fromJson(responseJson);
@@ -447,7 +525,10 @@ class Api {
 
   Future<GeneralResponse?> enrollToProgram(Map<String, dynamic> data) async {
     try {
-      final response = await http.post(Uri.parse(Urls.enrollToProgram), body: jsonEncode(data), headers: await getHeader()).timeout(Duration(seconds: 60));
+      final response = await http
+          .post(Uri.parse(Urls.enrollToProgram),
+              body: jsonEncode(data), headers: await getHeader())
+          .timeout(Duration(seconds: 60));
       log(response.body);
 
       final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
@@ -458,6 +539,27 @@ class Api {
       return null;
     }
   }
+
+  //------------------Logout---------------------------//
+
+  Future<LoginResponse?> logout() async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse(Urls.logout),
+            body: jsonEncode({}),
+            headers: await getHeader(),
+          )
+          .timeout(Duration(seconds: 60));
+      log(response.body);
+      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+      return LoginResponse.fromJson(responseJson);
+    } catch (e) {
+      checkConnectivity();
+      log('Api error during logout:$e');
+    }
+    return null;
+  }
 }
 
 checkConnectivity() async {
@@ -465,4 +567,35 @@ checkConnectivity() async {
   if (connectivityResult.contains(ConnectivityResult.none)) {
     Get.to(() => NoInternetScreen());
   }
+}
+tokenExpired() async {
+  log('Token expired');
+  await Get.dialog(
+    AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      backgroundColor: Colors.white,
+      title: Text(
+        'Session Expired',
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      content: Text('This session as expired. Please login again.'),
+      actions: [
+        TextButton(
+          onPressed: () => logout(),
+          child: Text('Ok'),
+        )
+      ],
+    ),
+  );
+}
+
+void logout() {
+  Api().logout().then(
+    (value) {
+      if (value?.status ?? false) {
+        LocalStorage().clearAll();
+        Get.offAll(() => LoginScreen());
+      }
+    },
+  );
 }

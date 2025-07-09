@@ -1,19 +1,20 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nss/controller/account_controller.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/authentication/delete_account_screen.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'change_password_screen.dart';
-import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AccountController c = Get.put(AccountController());
     final user = LocalStorage().readUser();
     final theme = Theme.of(context);
 
@@ -88,11 +89,12 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => CustomWidgets().showConfirmationDialog(
                 title: 'Logout',
                 message: 'Are you sure you want to logout?',
-                onConfirm: () {
-                  LocalStorage().clearAll();
-                  Get.offAll(() => LoginScreen());
-                },
-                data: Text("Confirm", style: TextStyle(color: Colors.red))),
+                onConfirm: () => c.logout(),
+                data: Obx(
+                  () => (c.isLoading.value)
+                      ? CircularProgressIndicator()
+                      : Text("Confirm", style: TextStyle(color: Colors.red)),
+                )),
           ),
           CustomWidgets().buildActionButton(
             context: context,

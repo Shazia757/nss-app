@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/programs_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
 
@@ -30,10 +29,7 @@ class HomeController extends GetxController {
 
   void enroll(Program program) async {
     isEnrolledLoading.value = true;
-    api.enrollToProgram({
-      'program': program.id,
-      'volunteer': LocalStorage().readUser().admissionNo
-    }).then(
+    api.enrollToProgram({'program': program.id}).then(
       (response) {
         isEnrolledLoading.value = false;
         Get.back();

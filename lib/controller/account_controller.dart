@@ -54,7 +54,7 @@ class AccountController extends GetxController {
       (response) async {
         if (response?.status == true && response?.data?.admissionNo != null) {
           await LocalStorage().writeUser(response?.data ?? Users());
-          await LocalStorage().writeToken(response?.token??'');
+          await LocalStorage().writeToken(response?.token ?? '');
 
           CustomWidgets.showSnackBar('Welcome', '${response?.data?.name}',
               icon: Icon(
@@ -72,21 +72,20 @@ class AccountController extends GetxController {
   }
 
   bool onChangePassValidation() {
-    if ((oldpasswordController.text.trim().isEmpty)) {
+    if (oldpasswordController.text.trim().isEmpty) {
       CustomWidgets.showSnackBar('Invalid', 'Please enter old password.');
-      Get.back();
       return false;
-    } else if ((newPassController.text.trim().isEmpty)) {
+    }
+    if ((newPassController.text.trim().isEmpty)) {
       CustomWidgets.showSnackBar('Invalid', 'Please enter new password.');
-      Get.back();
       return false;
-    } else if (confirmPassController.text.trim().isEmpty) {
-      CustomWidgets.showSnackBar('Invalid', 'Confirm password is empty.');
-      Get.back();
+    }
+    if (confirmPassController.text.trim().isEmpty) {
+      CustomWidgets.showSnackBar('Invalid', 'Please confirm password.');
       return false;
-    } else if (newPassController.text != confirmPassController.text) {
+    }
+    if (newPassController.text != confirmPassController.text) {
       CustomWidgets.showSnackBar('Invalid', 'Passwords do not match');
-      Get.back();
       return false;
     }
 
@@ -110,12 +109,11 @@ class AccountController extends GetxController {
   Future<void> changePassword(String id) async {
     isLoading.value = true;
     api.changePassword({
-      'admission_number': id,
       'old_password': oldpasswordController.text,
       'new_password': confirmPassController.text
     }).then((value) {
       isLoading.value = false;
-      if (value?.status == true) {
+      if (value?.status ?? false) {
         Get.to(() => LoginScreen());
         CustomWidgets.showSnackBar(
             'Success', value?.message ?? 'Password Changed.');
@@ -134,7 +132,7 @@ class AccountController extends GetxController {
       'new_password': confirmPassController.text
     }).then((value) {
       isLoading.value = false;
-      if (value?.status == true) {
+      if (value?.status ?? false) {
         Get.back();
         CustomWidgets.showSnackBar(
             'Success', value?.message ?? 'Password Changed.');
@@ -153,8 +151,6 @@ class AccountController extends GetxController {
         'subject': 'Account delete request',
         'description': reasonController.text,
         'assigned_to': 'sec',
-        'created_by': (LocalStorage().readUser().admissionNo).toString(),
-        'updated_by': (LocalStorage().readUser().admissionNo).toString(),
       };
       Api().addIssue(data).then(
         (value) {
@@ -171,6 +167,19 @@ class AccountController extends GetxController {
       CustomWidgets.showSnackBar('Invalid',
           'Please specify reason to delete account.(Min 20 characters)');
     }
+  }
+
+  void logout() {
+    isLoading.value = true;
+    api.logout().then(
+      (value) {
+        isLoading.value = false;
+        if (value?.status ?? false) {
+          LocalStorage().clearAll();
+          Get.offAll(() => LoginScreen());
+        }
+      },
+    );
   }
 
   void showPassword() => isObscure.value = false;

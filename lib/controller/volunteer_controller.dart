@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nss/api.dart';
-import 'package:nss/database/local_storage.dart';
 import 'package:nss/model/department.dart';
 import 'package:nss/model/volunteer_model.dart';
 import 'package:nss/view/common_pages/custom_decorations.dart';
@@ -51,7 +50,6 @@ class VolunteerController extends GetxController {
       'admission_number': admissionNoController.text,
       'name': nameController.text,
       'email': emailController.text,
-      'created_by': LocalStorage().readUser().admissionNo,
       'phone_number': phoneController.text,
       'date_of_birth': dob.toString(),
       'department': departmentID,
@@ -82,7 +80,6 @@ class VolunteerController extends GetxController {
       'admission_number': admissionNoController.text,
       'name': nameController.text,
       'email': emailController.text,
-      'updated_by': LocalStorage().readUser().admissionNo,
       'phone_number': phoneController.text,
       'date_of_birth': dob.toString(),
       'department': departmentID,
