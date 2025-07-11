@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nss/api.dart';
 import 'package:nss/view/authentication/login_screen.dart';
+
+import '../../database/local_storage.dart';
 
 class TokenExpiredScreen extends StatelessWidget {
   const TokenExpiredScreen({super.key});
@@ -35,14 +38,21 @@ class TokenExpiredScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                foregroundColor:
+                    Theme.of(context).colorScheme.onPrimaryContainer,
               ),
               onPressed: () {
-                Get.offAll(() => LoginScreen()); // Navigate back to login
+                Api().logout().then(
+                  (value) {
+                    LocalStorage().clearAll();
+                    Get.offAll(() => LoginScreen());
+                  },
+                );
               },
-              child: const Text('Log In Again'),
+              child: const Text('Logout'),
             ),
           ],
         ),
