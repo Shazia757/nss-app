@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
@@ -67,8 +66,6 @@ class AttendanceController extends GetxController {
       (value) {
         attendanceList.assignAll(value?.attendance ?? []);
         attendanceList.sort((a, b) => b.date!.compareTo(a.date!));
-
-        log(attendanceList.toString());
         isLoading.value = false;
         isAttendanceLoading.value = false;
 
@@ -150,7 +147,6 @@ class AttendanceController extends GetxController {
       }).toList();
 
       searchList.assignAll(filtered);
-      log(searchList.toString());
     }
   }
 }

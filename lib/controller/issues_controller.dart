@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nss/api.dart';
@@ -75,7 +73,6 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         : modifiedOpenedList
             .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
-    log("OpenList ${modifiedOpenedList.toString()}");
   }
 
   void _sortClosedList() {
@@ -85,7 +82,6 @@ class IssuesController extends GetxController with GetTickerProviderStateMixin {
         : modifiedClosedList
             .sort((a, b) => b.createdDate!.compareTo(a.createdDate!));
 
-    log("Closed data : ${modifiedClosedList.toString()}");
   }
 
   @override

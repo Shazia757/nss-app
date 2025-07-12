@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +55,6 @@ class ProgramListController extends GetxController {
     isLoading.value = true;
     bool response = true;
     for (Volunteer e in selectedVolList) {
-      log(e.toString());
       final value = await Api().addAttendance({
         'date': programDate.toString(),
         'hours': durationController.text,
@@ -226,7 +224,6 @@ class AddProgramController extends GetxController {
     nameController.text = program.name ?? '';
     descController.text = program.description ?? '';
     date = program.date;
-    log(date.toString());
     dateController.text =
         (program.date) != null ? DateFormat.yMMMd().format(program.date!) : '';
     durationController.text =
