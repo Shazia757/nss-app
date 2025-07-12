@@ -171,68 +171,49 @@ class ProgramsScreen extends StatelessWidget {
                                           textAlign: TextAlign.start,
                                         ),
                                       ),
-                                      InkWell(
-                                          onTap: () {
-                                            isExpanded.value =
-                                                !isExpanded.value;
-                                          },
-                                          child: Obx(
-                                            () => (isExpanded.value == false)
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0),
-                                                    child: Text(
-                                                      'show details',
-                                                      style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
-                                                    ),
-                                                  )
-                                                : Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0,
-                                                            bottom: 10),
-                                                    child: Text(
-                                                      'hide details',
-                                                      style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
-                                                    ),
-                                                  ),
-                                          )),
-                                      // ),
+                                      TextButton.icon(
+                                        onPressed: () {
+                                          isExpanded.value = !isExpanded.value;
+                                        },
+                                        icon: Obx(() => Icon(
+                                              isExpanded.value
+                                                  ? Icons.expand_less
+                                                  : Icons.expand_more,
+                                              size: 18,
+                                            )),
+                                        label: Obx(() => Text(
+                                              isExpanded.value
+                                                  ? 'Hide details'
+                                                  : 'Show details',
+                                              style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                        ),
+                                      ),
                                       Obx(() => (isExpanded.value)
                                           ? Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 8.0),
-                                              child: Text(c.searchList[index]
-                                                      .description ??
-                                                  ""),
+                                              child: Text(
+                                                c.searchList[index]
+                                                        .description ??
+                                                    "",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
                                             )
-                                          : SizedBox()),
-                                      //   Padding(
-                                      //     padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                                      //     child: Obx(() => Wrap(
-                                      //           children: [
-                                      //             Text(
-                                      //               c.searchList[index].description ?? "",
-                                      //               maxLines: (isExpanded.value) ? null : 3,
-                                      //               overflow: (isExpanded.value) ? TextOverflow.visible : TextOverflow.ellipsis,
-                                      //               style: TextStyle(color: Colors.grey.shade800),
-                                      //             ),
-                                      //             if (((c.searchList[index].description?.length ?? 0) > 200))
-                                      //               TextButton(
-                                      //                 onPressed: () => isExpanded.value = !isExpanded.value,
-                                      //                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                                      //                 child: Text(
-                                      //                   isExpanded.value ? 'show less' : 'show more',
-                                      //                   style: TextStyle(fontWeight: FontWeight.w100),
-                                      //                 ),
-                                      //               ),
+                                          : SizedBox.shrink()),
+
                                       if (LocalStorage().readUser().role !=
                                           'vol')
                                         Align(
