@@ -270,9 +270,7 @@ class VolunteerAddScreen extends StatelessWidget {
                       title: "Delete Volunteer",
                       message:
                           "Are you sure you want to delete this volunteer?",
-                      onConfirm: () {
-                        c.deleteVolunteer();
-                      },
+                      onConfirm: () => c.deleteVolunteer(),
                       data: Obx(
                         () => c.isDeleteButtonLoading.value
                             ? CircularProgressIndicator()

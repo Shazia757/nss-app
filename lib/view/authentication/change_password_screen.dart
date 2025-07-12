@@ -140,7 +140,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                 CustomWidgets().showConfirmationDialog(
                                     title: "Reset Password",
                                     message:
-                                        "Are you sure you want to reset your password?",
+                                        "Are you sure you want to reset the password?",
                                     onConfirm: () => c.resetPassword(userId),
                                     data: Obx(
                                       () => (c.isLoading.value)

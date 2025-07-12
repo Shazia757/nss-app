@@ -110,7 +110,7 @@ class VolunteerController extends GetxController {
       (response) {
         isDeleteButtonLoading.value = false;
 
-        if (response?.status == true) {
+        if (response?.status??false) {
           Get.back();
           Get.back();
           CustomWidgets.showSnackBar("Success",

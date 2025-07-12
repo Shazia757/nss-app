@@ -51,7 +51,8 @@ class ViewAttendanceScreen extends StatelessWidget {
             padding: EdgeInsets.all(10),
             children: [
               DataTable(
-                columnSpacing: 15,
+                columnSpacing: 10,
+                horizontalMargin: 10,
                 columns: [
                   DataColumn(label: _buildTableCell('Date', isHeader: true)),
                   DataColumn(label: _buildTableCell('Name', isHeader: true)),
@@ -85,15 +86,18 @@ class ViewAttendanceScreen extends StatelessWidget {
                         DataCell(
                           IconButton(
                             icon: Icon(Icons.close_sharp, color: Colors.red),
-                            onPressed: () => CustomWidgets().showConfirmationDialog(
-                                title: "Delete Attendance",
-                                message:
-                                    "Are you sure you want to delete attendance for the program?",
-                                onConfirm: () =>
-                                    c.deleteAttendance(rowData.id ?? 0),
-                                data: c.isLoading.isTrue
-                                    ? Center(child: CircularProgressIndicator())
-                                    : Text('Confirm')),
+                            onPressed: () => CustomWidgets()
+                                .showConfirmationDialog(
+                                    title: "Delete Attendance",
+                                    message:
+                                        "Are you sure you want to delete attendance for the program?",
+                                    onConfirm: () =>
+                                        c.deleteAttendance(rowData.id ?? 0),
+                                    data: Obx(
+                                      () => c.isDeleteButtonLoading.isTrue
+                                          ? CircularProgressIndicator()
+                                          : Text('Confirm'),
+                                    )),
                           ),
                         ),
                     ],

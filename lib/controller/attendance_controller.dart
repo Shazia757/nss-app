@@ -19,7 +19,8 @@ class AttendanceController extends GetxController {
   RxInt sortColumnIndex = 0.obs;
   RxBool isAscending = true.obs;
   String programName = '';
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
+  RxBool isDeleteButtonLoading = false.obs;
   RxBool isAttendanceLoading = false.obs;
 
   RxBool isProgramLoading = true.obs;
@@ -119,10 +120,12 @@ class AttendanceController extends GetxController {
     }
   }
 
-  deleteAttendance(int id) {
+  deleteAttendance(int id) async {
+    isDeleteButtonLoading.value = true;
     Api().deleteAttendance(id).then(
       (value) {
-        if (value?.status == true) {
+        isDeleteButtonLoading.value = false;
+        if (value?.status ?? false) {
           Get.back();
           CustomWidgets.showSnackBar(
               "Success", value?.message ?? "Attendance deleted successfully.");
@@ -131,7 +134,7 @@ class AttendanceController extends GetxController {
               "Error", value?.message ?? 'Failed to delete attendance.');
         }
       },
-    ).then((value) => onInit());
+    );
   }
 
   void onSearchTextChanged(String value) async {
