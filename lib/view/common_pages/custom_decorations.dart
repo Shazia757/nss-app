@@ -186,14 +186,13 @@ class CustomWidgets {
           keyboardType: keyboardType,
           maxLines: maxlines,
           decoration: InputDecoration(
-            hintText: hintText,
-            errorText: errorText,
-            labelText: label,
-            border: InputBorder.none,
-            labelStyle: labelStyle,
-            suffix: suffix,
-            prefix: prefix
-          ),
+              hintText: hintText,
+              errorText: errorText,
+              labelText: label,
+              border: InputBorder.none,
+              labelStyle: labelStyle,
+              suffix: suffix,
+              prefix: prefix),
         ),
       ),
     );
@@ -216,9 +215,10 @@ class CustomWidgets {
       padding: padding,
       child: Card(
         elevation: 2,
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             controller: controller,
             readOnly: true,
