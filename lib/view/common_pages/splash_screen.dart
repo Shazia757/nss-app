@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:nss/api.dart';
 import 'package:nss/database/local_storage.dart';
 import 'package:nss/view/authentication/login_screen.dart';
+import 'package:nss/view/common_pages/custom_decorations.dart';
 import 'package:nss/view/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 1)).then(
+    Future.delayed(Duration(seconds: 3)).then(
       (value) {
         Api().checkVersion().then(
           (value) {
@@ -45,23 +46,31 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CircleAvatar(
-              minRadius: 50,
-              child: Image.asset("assets/logos/logo.png", height: 150),
+            SizedBox(),
+            Column(
+              children: [
+                CircleAvatar(
+                  minRadius: 50,
+                  child: Image.asset("assets/logos/logo.png", height: 150),
+                ),
+                SizedBox(height: 25),
+                Text(
+                  "NSS Farook College",
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            SizedBox(height: 25),
-            Text(
-              "NSS Farook College",
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
+            CustomWidgets().footer()
           ],
         ),
       ),
     );
   }
+
+
 }
 
 class AppUpdateScreen extends StatelessWidget {

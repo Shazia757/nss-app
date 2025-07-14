@@ -35,3 +35,13 @@ Future<Map<String, String>?> getHeader() async {
     "Authorization": await LocalStorage().readToken() ?? ''
   };
 }
+
+String formatKey(String key) {
+  String formattedKey = key.replaceAllMapped(
+      RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
+  formattedKey =
+      formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
+  //formattedKey = formattedKey.replaceAll("from", "replace");
+  return formattedKey;
+}
+

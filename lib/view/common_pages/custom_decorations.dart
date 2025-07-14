@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nss/config/urls.dart';
+import 'package:nss/config/utils.dart';
 import 'package:nss/view/home_screen.dart';
 import 'package:nss/view/issues/user_issues_screen.dart';
 import 'package:nss/view/volunteers/profile_screen.dart';
@@ -427,15 +429,26 @@ class CustomWidgets {
       ),
     );
   }
-}
 
-String formatKey(String key) {
-  String formattedKey = key.replaceAllMapped(
-      RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
-  formattedKey =
-      formattedKey.replaceFirst(formattedKey[0], formattedKey[0].toUpperCase());
-  //formattedKey = formattedKey.replaceAll("from", "replace");
-  return formattedKey;
+  Column footer() {
+    return Column(
+      children: [
+        Text(
+          "Developed by Bvoc Software Development",
+          style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 12,
+              fontWeight: FontWeight.w500),
+        ),
+        SizedBox(height: 5),
+        Text(
+          "version ${Details.appVersion}",
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 10),
+        ),
+        SizedBox(height: 50)
+      ],
+    );
+  }
 }
 
 class CustomNavBar extends StatelessWidget {

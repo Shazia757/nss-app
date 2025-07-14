@@ -16,51 +16,58 @@ class DeleteAccountScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         foregroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Please specify reason to delete this account:",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontSize: 17),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              "Why do you want to delete your account?",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          CustomWidgets().textField(
-            controller: c.reasonController,
-            label: '',
-            hintText: 'Please specify the reason here',
-            maxlines: 8,
-            margin: EdgeInsets.symmetric(horizontal: 10),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CustomWidgets().buildActionButton(
-                context: context,
-                onPressed: () => CustomWidgets().showConfirmationDialog(
-                    title: "Do you want to delete?",
-                    content: Text(
-                      "This will send request to the admin to delete your account.After approving, all your data will be lost and cannot login again.",
-                    ),
-                    onConfirm: () => c.deleteAccount(),
-                    data: Obx(
-                      () => (c.isLoading.value)
-                          ? CircularProgressIndicator()
-                          : Text('Confirm'),
-                    )),
-                text: "Delete Account",
-                icon: Icons.delete,
-                color: const Color.fromARGB(255, 158, 13, 3)),
-          )
-        ],
+            const SizedBox(height: 16),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: c.reasonController,
+                  maxLines: 6,
+                  decoration: const InputDecoration(
+                    hintText: "Please specify your reason here...",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomWidgets().buildActionButton(
+                  context: context,
+                  onPressed: () => (c.reasonController.text.isNotEmpty)
+                      ? CustomWidgets().showConfirmationDialog(
+                          title: "Do you want to delete?",
+                          content: Text(
+                            "This will send request to the admin to delete your account. After approving, all your data will be lost and cannot login again.",
+                          ),
+                          onConfirm: () => c.deleteAccount(),
+                          data: Obx(
+                            () => (c.isLoading.value)
+                                ? CircularProgressIndicator()
+                                : Text('Confirm'),
+                          ))
+                      : CustomWidgets.showToast('Please specify the reason'),
+                  text: "Delete Account",
+                  icon: Icons.delete,
+                  color: const Color.fromARGB(255, 158, 13, 3)),
+            )
+          ],
+        ),
       ),
     );
   }

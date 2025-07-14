@@ -1,4 +1,3 @@
-
 class Urls {
   static String base = 'https://nss.noorabiyad.com/api';
   // 'https://nssapi.bvocfarookcollege.com/api';
@@ -29,4 +28,11 @@ class Urls {
   static String enrollToProgram = '$base/enroll_program/';
   static String checkVersion = '$base/check_version/';
   static String logout = '$base/logout/';
+}
+
+class Details {
+  static String appVersion = '0.0.1';
+  static String contactNo1 = '+919745457585';
+  static String contactNo2 = '+919497343998';
+  static String contactEmail = 'nss@farookcollege.ac.in';
 }
