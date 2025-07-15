@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -108,38 +110,28 @@ class AccountController extends GetxController {
 
   Future<void> changePassword(String id) async {
     isLoading.value = true;
-    api.changePassword({
-      'old_password': oldpasswordController.text,
-      'new_password': confirmPassController.text
-    }).then((value) {
+    api.changePassword({'old_password': oldpasswordController.text, 'new_password': confirmPassController.text}).then((value) {
       isLoading.value = false;
       if (value?.status ?? false) {
         Get.to(() => LoginScreen());
-        CustomWidgets.showSnackBar(
-            'Success', value?.message ?? 'Password Changed.');
+        CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
       } else {
         Get.back();
-        CustomWidgets.showSnackBar(
-            'Error', value?.message ?? 'Password not changed.');
+        CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
       }
     });
   }
 
   Future<void> resetPassword(String id) async {
     isLoading.value = true;
-    api.resetPassword({
-      'admission_number': id,
-      'new_password': confirmPassController.text
-    }).then((value) {
+    api.resetPassword({'admission_number': id, 'new_password': confirmPassController.text}).then((value) {
       isLoading.value = false;
       if (value?.status ?? false) {
         Get.back();
-        CustomWidgets.showSnackBar(
-            'Success', value?.message ?? 'Password Changed.');
+        CustomWidgets.showSnackBar('Success', value?.message ?? 'Password Changed.');
       } else {
         Get.back();
-        CustomWidgets.showSnackBar(
-            'Error', value?.message ?? 'Password not changed.');
+        CustomWidgets.showSnackBar('Error', value?.message ?? 'Password not changed.');
       }
     });
   }
@@ -164,17 +156,18 @@ class AccountController extends GetxController {
         },
       );
     } else {
-      CustomWidgets.showSnackBar('Invalid',
-          'Please specify reason to delete account.(Min 20 characters)');
+      CustomWidgets.showSnackBar('Invalid', 'Please specify reason to delete account.(Min 20 characters)');
     }
   }
 
   void logout() {
+    log('Logging out');
     isLoading.value = true;
     api.logout().then(
       (value) {
         isLoading.value = false;
         if (value?.status ?? false) {
+          log(value!.status!.toString());
           LocalStorage().clearAll();
           Get.offAll(() => LoginScreen());
         }
